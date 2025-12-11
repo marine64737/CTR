@@ -1,26 +1,37 @@
 package com.shkim.CTR.question;
 
-import jakarta.validation.constraints.NotNull;
-import org.jspecify.annotations.Nullable;
-import org.springframework.jdbc.core.PreparedStatementSetter;
-
 public class Question {
 
-    @NotNull
-    private int id;
+    private Integer id;
+
+    private String num;
 
     private String title;
 
-    public Question(int id, String title){
-        this.id=id;
+    public Question(Integer id, String num, String title){
+        this.id = id;
+        this.num=num;
         this.title=title;
     }
-    public int getId(){
+
+//    public Question(String num, String title){
+//        this.num=num;
+//        this.title=title;
+//    }
+    public Integer getId(){
         return this.id;
     }
 
-    public void setId(int id){
+    public void setId(Integer id){
         this.id = id;
+    }
+
+    public String getNum(){
+        return this.num;
+    }
+
+    public void setNum(String num){
+        this.num = num;
     }
 
     public String getTitle(){

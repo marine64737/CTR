@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Handling Form Submission</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1>Form</h1>
+<form action="#" th:action="@{/searchcomplete}" th:object="${word}" method="get">
+    <p>검색: <input type="text" th:object="${word}" /></p>
+    <p><input type="submit" value="검색" /> <input type="reset" value="Reset" /></p>
+    <table>
+        <thead>
+        <tr>
+            <th >No.</th>
+            <th >Title</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="num: ${num}">
+            <td th:text="${num.num}"></td>
+            <td th:text="${num.title}"></td>
+        </tr>
+        </tbody>
+        <tbody>
+        <tr th:each="title: ${title}">
+            <td th:text="${title.num}"></td>
+            <td th:text="${title.title}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p><a href="/"><input type="button" value="뒤로 가기" /></p>
+</form>
+</body>
+</html>

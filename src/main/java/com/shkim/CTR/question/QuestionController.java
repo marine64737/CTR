@@ -21,23 +21,24 @@ public class QuestionController {
         QuestionController.jdbcTemplate = jdbcTemplate;
     }
 
-    @GetMapping("/")
-    public String home(Model model){
+    @GetMapping("/list")
+    public String list(Model model){
         List<Question> questions = jdbcTemplate.query("SELECT * FROM question",
-                (rs, rowNum) -> new Question(rs.getInt("id"), rs.getString("title")));
+                (rs, rowNum) -> new Question(rs.getInt("id"), rs.getString("number"), rs.getString("title")));
         model.addAttribute("questions", questions);
-        return  "home";
+        return  "list";
     }
 
     @PostMapping("/result")
     public String questionSubmit(@ModelAttribute Question question){
-        jdbcTemplate.execute("INSERT INTO question (id, title) VALUES ("+question.getId()+", "+"'"+question.getTitle()+"'"+")");
-        return "redirect:/";
+        jdbcTemplate.execute("INSERT INTO question (number, title) VALUES ('"+question.getNum()+"', '"+question.getTitle()+"')");
+        return "redirect:/list";
     }
 
     @GetMapping("/add")
     public String questionAdd(Model model){
-        model.addAttribute(new Question(1, null));
+        model.addAttribute(new Question(null, null, null));
         return "form";
     }
+
 }

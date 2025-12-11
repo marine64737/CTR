@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+<table>
+    <thead>
+    <tr class="row">
+        <th>ID</th>
+        <th>Number</th>
+        <th>Title</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="question: ${questions}">
+        <td  th:text="${question.id}"></td>
+        <td  th:text="${question.num}"></td>
+        <td  th:text="${question.title}"></td>
+    </tr>
+    </tbody>
+</table>
+<p><a href="/add"><input type="button" value="항목 추가" /></p>
+<p><a href="/"><input type="button" value="뒤로 가기" /></p>
+</body>
+</html>

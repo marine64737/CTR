@@ -24,8 +24,26 @@ public class Command implements CommandLineRunner {
         log.info("Creating tables");
         jdbcTemplate.execute("DROP TABLE IF EXISTS question");
         jdbcTemplate.execute("CREATE TABLE question("+
-                "id int, title VARCHAR(255))");
+                "id int AUTO_INCREMENT, number VARCHAR(255), title VARCHAR(255))");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS users");
+        jdbcTemplate.execute("CREATE TABLE users("+
+                "id int AUTO_INCREMENT, userid VARCHAR(255))");
         log.info("Created tables");
+        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1000', 'A+B')");
+        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1001', 'A-B')");
+        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1002', '터렛')");
+        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1003', '피보나치 함수')");
+        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1004', '어린 왕자')");
+        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1005', 'ACM Craft')");
+        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1006', '습격자 초라기')");
+        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1007', '벡터 매칭')");
+        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1008', 'A/B')");
+        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1009', '분산처리')");
+        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1010', '다리 놓기')");
+        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1011', 'Fly me to the Alpha Centauri')");
+        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1012', '유기농 배추')");
+        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1013', 'Contact')");
+
 //        log.info("Creating tables");
 //
 //        jdbcTemplate.execute("DROP TABLE IF EXISTS customers");
