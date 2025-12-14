@@ -10,10 +10,20 @@ public class My {
 
     private int questionId;
 
-    public My(int id, int userId, int questionId){
+    private String language;
+
+    private String code;
+
+    private String startDate;
+
+    private String endDate;
+
+    public My(int id, int userId, int questionId, String startDate, String endDate){
         this.id=id;
         this.userId= userId;
         this.questionId= questionId;
+        this.startDate= startDate;
+        this.endDate = endDate;
     }
     public int getId(){
         return this.id;
