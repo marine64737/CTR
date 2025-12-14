@@ -6,31 +6,28 @@
 </head>
 <body>
 <h1>Form</h1>
-<form action="#" th:action="@{/searchcomplete}" th:object="${word}" method="get">
-    <p>검색: <input type="text" th:object="${word}" /></p>
+<form action="#" th:action="@{/searchcomplete}" method="get">
+    <p>검색: <input type="text" name="word"/></p>
     <p><input type="submit" value="검색" /> <input type="reset" value="Reset" /></p>
-    <table>
-        <thead>
-        <tr>
-            <th >No.</th>
-            <th >Title</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="num: ${num}">
-            <td th:text="${num.num}"></td>
-            <td th:text="${num.title}"></td>
-        </tr>
-        </tbody>
-        <tbody>
-        <tr th:each="title: ${title}">
-            <td th:text="${title.num}"></td>
-            <td th:text="${title.title}"></td>
-        </tr>
-        </tbody>
-    </table>
-
-    <p><a href="/"><input type="button" value="뒤로 가기" /></p>
 </form>
+<table>
+    <thead>
+    <tr>
+        <th >No.</th>
+        <th >Title</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="question: ${questions}">
+        <form action="#" th:action="@{/added}" method="post">
+            <input type="hidden" name = "id" th:value="${question.id}">
+            <td th:text="${question.num}"></td>
+            <td th:text="${question.title}"></td>
+            <td><input type="submit" value="추가"/></td>
+        </form>
+    </tr>
+    </tbody>
+</table>
+<p><a href="/"><input type="button" value="뒤로 가기" /></p>
 </body>
 </html>

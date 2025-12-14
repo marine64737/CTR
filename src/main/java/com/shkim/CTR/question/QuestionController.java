@@ -24,7 +24,7 @@ public class QuestionController {
     @GetMapping("/list")
     public String list(Model model){
         List<Question> questions = jdbcTemplate.query("SELECT * FROM question",
-                (rs, rowNum) -> new Question(rs.getInt("id"), rs.getString("number"), rs.getString("title")));
+                (rs, rowNum) -> new Question(rs.getInt("id"), rs.getString("number"), rs.getString("title"), rs.getString("url")));
         model.addAttribute("questions", questions);
         return  "list";
     }
@@ -37,7 +37,7 @@ public class QuestionController {
 
     @GetMapping("/add")
     public String questionAdd(Model model){
-        model.addAttribute(new Question(null, null, null));
+        model.addAttribute(new Question(null, null, null, null));
         return "form";
     }
 

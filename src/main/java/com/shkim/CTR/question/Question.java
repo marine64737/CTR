@@ -8,10 +8,13 @@ public class Question {
 
     private String title;
 
-    public Question(Integer id, String num, String title){
+    private String url;
+
+    public Question(Integer id, String num, String title, String url){
         this.id = id;
         this.num=num;
         this.title=title;
+        this.url=url;
     }
 
 //    public Question(String num, String title){
@@ -40,6 +43,14 @@ public class Question {
 
     public void setTitle(String title){
         this.title=title;
+    }
+
+    public String getUrl(){
+        return this.url;
+    }
+
+    public void setUrl(String url){
+        this.url=url;
     }
 
     @Override

@@ -8,9 +8,12 @@ public class My {
 
     private int userId;
 
-    public My(int id, int userId){
+    private int questionId;
+
+    public My(int id, int userId, int questionId){
         this.id=id;
         this.userId= userId;
+        this.questionId= questionId;
     }
     public int getId(){
         return this.id;
@@ -26,6 +29,14 @@ public class My {
 
     public void setUserId(int userId){
         this.userId=userId;
+    }
+
+    public int getQuestionId() {
+        return this.questionId;
+    }
+
+    public void setQuestionId(int questionId){
+        this.questionId = questionId;
     }
 
 }

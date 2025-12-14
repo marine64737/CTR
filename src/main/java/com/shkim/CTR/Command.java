@@ -24,25 +24,20 @@ public class Command implements CommandLineRunner {
         log.info("Creating tables");
         jdbcTemplate.execute("DROP TABLE IF EXISTS question");
         jdbcTemplate.execute("CREATE TABLE question("+
-                "id int AUTO_INCREMENT, number VARCHAR(255), title VARCHAR(255))");
-        jdbcTemplate.execute("DROP TABLE IF EXISTS users");
-        jdbcTemplate.execute("CREATE TABLE users("+
-                "id int AUTO_INCREMENT, userid VARCHAR(255))");
+                "id int AUTO_INCREMENT, number VARCHAR(255), title VARCHAR(255), url VARCHAR(255))");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS my");
+        jdbcTemplate.execute("CREATE TABLE my("+
+                "id int AUTO_INCREMENT, userid int, questionid int)");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS temp");
+        jdbcTemplate.execute("CREATE TABLE temp("+
+                "id int AUTO_INCREMENT, today_time VARCHAR(255))");
         log.info("Created tables");
-        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1000', 'A+B')");
-        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1001', 'A-B')");
-        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1002', '터렛')");
-        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1003', '피보나치 함수')");
-        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1004', '어린 왕자')");
-        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1005', 'ACM Craft')");
-        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1006', '습격자 초라기')");
-        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1007', '벡터 매칭')");
-        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1008', 'A/B')");
-        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1009', '분산처리')");
-        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1010', '다리 놓기')");
-        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1011', 'Fly me to the Alpha Centauri')");
-        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1012', '유기농 배추')");
-        jdbcTemplate.execute("INSERT INTO question (number, title) values ('1013', 'Contact')");
+        String[] arr = {"A+B", "A-B", "터렛", "피보나치 함수", "어린 왕자", "ACM Craft", "습격자 초라기", "벡터 매칭", "A/B",
+                "분산처리", "다리 놓기", "Fly me to the Alpha Centauri", "유기농 배추", "Contact"};
+        for (int i=0; i<arr.length; i++){
+            jdbcTemplate.execute("INSERT INTO question (number, title, url) values ('"+(1000+i)+"', '"+arr[i]+"',"+
+                    "'https://www.acmicpc.net/problem/"+(1000+i)+"')");
+        }
 
 //        log.info("Creating tables");
 //
