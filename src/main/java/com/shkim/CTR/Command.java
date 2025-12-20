@@ -24,13 +24,13 @@ public class Command implements CommandLineRunner {
         log.info("Creating tables");
         jdbcTemplate.execute("DROP TABLE IF EXISTS question");
         jdbcTemplate.execute("CREATE TABLE question("+
-                "id int AUTO_INCREMENT, number VARCHAR(255), title VARCHAR(255), url VARCHAR(255))");
+                "id int NOT NULL AUTO_INCREMENT KEY, number VARCHAR(255), title VARCHAR(255), url VARCHAR(255))");
         jdbcTemplate.execute("DROP TABLE IF EXISTS my");
         jdbcTemplate.execute("CREATE TABLE my("+
-                "id int AUTO_INCREMENT, userid int, questionid int)");
+                "id int NOT NULL AUTO_INCREMENT KEY, userid int, questionid int)");
         jdbcTemplate.execute("DROP TABLE IF EXISTS temp");
         jdbcTemplate.execute("CREATE TABLE temp("+
-                "id int AUTO_INCREMENT, today_time VARCHAR(255))");
+                "id int NOT NULL AUTO_INCREMENT KEY, today_time VARCHAR(255))");
         log.info("Created tables");
         String[] arr = {"A+B", "A-B", "터렛", "피보나치 함수", "어린 왕자", "ACM Craft", "습격자 초라기", "벡터 매칭", "A/B",
                 "분산처리", "다리 놓기", "Fly me to the Alpha Centauri", "유기농 배추", "Contact"};
