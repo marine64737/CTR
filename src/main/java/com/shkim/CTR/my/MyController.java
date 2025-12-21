@@ -30,7 +30,12 @@ public class MyController {
         List<Integer> my = jdbcTemplate.query("SELECT questionid FROM my where userid = 1", (rs, rowNum) -> rs.getInt("questionid"));
         List<Question> questions = new ArrayList<>();
         for (int i=my.size()-1; i >= 0; i--) questions.addAll(jdbcTemplate.query("SELECT * FROM question where id = ?",
-                (rs, rowNum) -> new Question(rs.getInt("id"), rs.getString("number"), rs.getString("title"), rs.getString("url")), my.get(i)));
+                (rs, rowNum) -> new Question(
+                        rs.getInt("id"),
+                        rs.getString("number"),
+                        rs.getString("title"),
+                        "https://www.acmicpc.net/problem/"+rs.getString("number")
+                ), my.get(i)));
         List<String> times = jdbcTemplate.query("SELECT today_time FROM temp",
                 (rs, rowNum) -> rs.getString("today_time"));
         model.addAttribute("my", questions);
