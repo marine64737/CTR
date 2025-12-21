@@ -26,25 +26,25 @@ public class Command implements CommandLineRunner {
     public void run(String... strings) {
         log.info("Creating tables");
         //jdbcTemplate.execute("DROP TABLE IF EXISTS question");
-        jdbcTemplate.execute("CREATE TABLE question("+
-                "id int NOT NULL AUTO_INCREMENT KEY, number VARCHAR(255), title VARCHAR(255), level int)" +
-                "IF NOT EXISTS question");
-        for (int t=0; t<340; t++){
-            //List<Problem> apis = webClientService.get(t);
-            List<Object[]> apis = webClientService.getObject(t);
-            jdbcTemplate.batchUpdate("INSERT INTO question(number, title, level) VALUES (?,?,?)", apis);
-            log.info("inserting data: t="+(t+1)+"/340");
+        Integer num = jdbcTemplate.queryForObject("SELECT EXISTS (SELECT * from question)", (rs, rowNum) -> rs.getInt(1));
+        if (num == 0){
+            jdbcTemplate.execute("CREATE TABLE question("+
+                    "id int NOT NULL AUTO_INCREMENT KEY, number VARCHAR(255), title VARCHAR(255), level int)");
+            for (int t=0; t<340; t++){
+                //List<Problem> apis = webClientService.get(t);
+                List<Object[]> apis = webClientService.getObject(t);
+                jdbcTemplate.batchUpdate("INSERT INTO question(number, title, level) VALUES (?,?,?)", apis);
+                log.info("inserting data: t="+(t+1)+"/340");
+            }
         }
 
-
-        //jdbcTemplate.execute("DROP TABLE IF EXISTS my");
-        jdbcTemplate.execute("CREATE TABLE my("+
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS my("+
                 "id int NOT NULL AUTO_INCREMENT KEY, userid int, questionid int)" +
                 "IF NOT EXISTS my");
-        //jdbcTemplate.execute("DROP TABLE IF EXISTS temp");
-        jdbcTemplate.execute("temp CREATE TABLE temp("+
-                "id int NOT NULL AUTO_INCREMENT KEY, today_time VARCHAR(255))" +
-                "IF NOT EXISTS temp");
+
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS temp("+
+                    "id int NOT NULL AUTO_INCREMENT KEY, today_time VARCHAR(255))");
+
         log.info("Created tables");
 //        String[] arr = {"A+B", "A-B", "터렛", "피보나치 함수", "어린 왕자", "ACM Craft", "습격자 초라기", "벡터 매칭", "A/B",
 //                "분산처리", "다리 놓기", "Fly me to the Alpha Centauri", "유기농 배추", "Contact"};
