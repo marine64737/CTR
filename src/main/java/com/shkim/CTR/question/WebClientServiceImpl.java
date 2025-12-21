@@ -1,4 +1,4 @@
-package com.shkim.CTR;
+package com.shkim.CTR.question;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -11,6 +11,32 @@ import java.util.List;
 
 @Service
 public class WebClientServiceImpl {
+    public List<Object[]> getObject(int num){
+        StringBuilder sb = new StringBuilder();
+        for (int i=1000+100*num; i<1000+100*(num+1); i++){
+            sb.append(i);
+            if (i < 1000+100*(num+1)-1) sb.append(',');
+        }
+        WebClient webClient = WebClient
+                .builder()
+                .baseUrl("https://solved.ac/api/v3")
+                .build();
+        List<Problem> response = webClient
+                .get()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .path("/problem/lookup")
+                                .queryParam("problemIds", sb)
+                                .build())
+                .retrieve()
+                .onStatus(HttpStatus.TOO_MANY_REQUESTS::equals, clientResponse -> Mono.error(new RuntimeException("429 Too Many Requests")))
+                .bodyToFlux(Problem.class).collectList()
+                .delaySubscription(Duration.ofMillis(1000)) // 요청 간 기본 1초 딜레이
+                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2)) // 429 시 최대 3번, 2초 간격 재시도
+                        .filter(throwable -> throwable instanceof RuntimeException &&
+                                throwable.getMessage().contains("429"))).block();
+        return response.stream().map(problem -> new Object[]{problem.problemId(), problem.titleKo(), problem.level()}).toList();
+    }
     public List<Problem> get(int num) {
         StringBuilder sb = new StringBuilder();
         for (int i=1000+100*num; i<1000+100*(num+1); i++){

@@ -1,20 +1,23 @@
-package com.shkim.CTR;
+package com.shkim.CTR.question;
 
+import com.shkim.CTR.CtrApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 public class Command implements CommandLineRunner {
     private static final Logger log = LoggerFactory.getLogger(CtrApplication.class);
 
     public static JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public WebClientServiceImpl webClientService;
 
     public Command(JdbcTemplate jdbcTemplate){
         Command.jdbcTemplate = jdbcTemplate;
@@ -24,7 +27,15 @@ public class Command implements CommandLineRunner {
         log.info("Creating tables");
         jdbcTemplate.execute("DROP TABLE IF EXISTS question");
         jdbcTemplate.execute("CREATE TABLE question("+
-                "id int NOT NULL AUTO_INCREMENT KEY, number VARCHAR(255), title VARCHAR(255), url VARCHAR(255))");
+                "id int NOT NULL AUTO_INCREMENT KEY, number VARCHAR(255), title VARCHAR(255), level int)");
+        for (int t=0; t<340; t++){
+            //List<Problem> apis = webClientService.get(t);
+            List<Object[]> apis = webClientService.getObject(t);
+            jdbcTemplate.batchUpdate("INSERT INTO question(number, title, level) VALUES (?,?,?)", apis);
+            log.info("inserting data: t="+(t+1)+"/340");
+        }
+
+
         jdbcTemplate.execute("DROP TABLE IF EXISTS my");
         jdbcTemplate.execute("CREATE TABLE my("+
                 "id int NOT NULL AUTO_INCREMENT KEY, userid int, questionid int)");
@@ -32,12 +43,12 @@ public class Command implements CommandLineRunner {
         jdbcTemplate.execute("CREATE TABLE temp("+
                 "id int NOT NULL AUTO_INCREMENT KEY, today_time VARCHAR(255))");
         log.info("Created tables");
-        String[] arr = {"A+B", "A-B", "터렛", "피보나치 함수", "어린 왕자", "ACM Craft", "습격자 초라기", "벡터 매칭", "A/B",
-                "분산처리", "다리 놓기", "Fly me to the Alpha Centauri", "유기농 배추", "Contact"};
-        for (int i=0; i<arr.length; i++){
-            jdbcTemplate.execute("INSERT INTO question (number, title, url) values ('"+(1000+i)+"', '"+arr[i]+"',"+
-                    "'https://www.acmicpc.net/problem/"+(1000+i)+"')");
-        }
+//        String[] arr = {"A+B", "A-B", "터렛", "피보나치 함수", "어린 왕자", "ACM Craft", "습격자 초라기", "벡터 매칭", "A/B",
+//                "분산처리", "다리 놓기", "Fly me to the Alpha Centauri", "유기농 배추", "Contact"};
+//        for (int i=0; i<arr.length; i++){
+//            jdbcTemplate.execute("INSERT INTO question (number, title, url) values ('"+(1000+i)+"', '"+arr[i]+"',"+
+//                    "'https://www.acmicpc.net/problem/"+(1000+i)+"')");
+//        }
 
 //        log.info("Creating tables");
 //
