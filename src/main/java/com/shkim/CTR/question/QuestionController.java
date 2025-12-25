@@ -1,11 +1,8 @@
 package com.shkim.CTR.question;
 
-import jakarta.validation.Valid;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,26 +20,25 @@ public class QuestionController {
 
     @GetMapping("/list")
     public String list(Model model){
-        List<Question> questions = jdbcTemplate.query("SELECT * FROM question",
-                (rs, rowNum) -> new Question(
-                        rs.getInt("id"),
-                        rs.getString("number"),
-                        rs.getString("title"),
-                        "https://www.acmicpc.net/problem/"+rs.getString("number")));
+        List<ProblemDTO> questions = jdbcTemplate.query("SELECT * FROM problem",
+                (rs, rowNum) -> new ProblemDTO(
+                        rs.getInt("problemId"),
+                        rs.getString("titleKo"),
+                        "https://www.acmicpc.net/problem/"+rs.getInt("problemId")));
         model.addAttribute("questions", questions);
         return  "list";
     }
 
     @PostMapping("/result")
-    public String questionSubmit(@ModelAttribute Question question){
-        jdbcTemplate.execute("INSERT INTO question (number, title) VALUES ('"+question.getNum()+"', '"+question.getTitle()+"')");
+    public String questionSubmit(@ModelAttribute ProblemDTO problemDTO){
+        jdbcTemplate.execute("INSERT INTO problem (problemId, titleKo) VALUES ('"+problemDTO.getId()+"', '"+problemDTO.getTitle()+"')");
         return "redirect:/list";
     }
 
-    @GetMapping("/add")
-    public String questionAdd(Model model){
-        model.addAttribute(new Question(null, null, null, null));
-        return "form";
-    }
+//    @GetMapping("/add")
+//    public String questionAdd(Model model){
+//        model.addAttribute(new ProblemDTO(null, null, null));
+//        return "form";
+//    }
 
 }

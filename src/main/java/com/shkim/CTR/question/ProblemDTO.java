@@ -1,18 +1,15 @@
 package com.shkim.CTR.question;
 
-public class Question {
+public class ProblemDTO {
 
-    private Integer id;
-
-    private String num;
+    private int id;
 
     private String title;
 
     private String url;
 
-    public Question(Integer id, String num, String title, String url){
+    public ProblemDTO(int id, String title, String url){
         this.id = id;
-        this.num=num;
         this.title=title;
         this.url=url;
     }
@@ -21,20 +18,12 @@ public class Question {
 //        this.num=num;
 //        this.title=title;
 //    }
-    public Integer getId(){
+    public int getId(){
         return this.id;
     }
 
     public void setId(Integer id){
         this.id = id;
-    }
-
-    public String getNum(){
-        return this.num;
-    }
-
-    public void setNum(String num){
-        this.num = num;
     }
 
     public String getTitle(){

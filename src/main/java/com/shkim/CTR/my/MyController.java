@@ -1,17 +1,15 @@
 package com.shkim.CTR.my;
 
-import com.shkim.CTR.question.Question;
+import com.shkim.CTR.question.Problem;
+import com.shkim.CTR.question.ProblemDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -25,16 +23,15 @@ public class MyController {
         MyController.jdbcTemplate = jdbcTemplate;
     }
 
-    @GetMapping("/")
+    @GetMapping("/home")
     public String home(Model model){
-        List<Integer> my = jdbcTemplate.query("SELECT questionid FROM my where userid = 1", (rs, rowNum) -> rs.getInt("questionid"));
-        List<Question> questions = new ArrayList<>();
-        for (int i=my.size()-1; i >= 0; i--) questions.addAll(jdbcTemplate.query("SELECT * FROM question where id = ?",
-                (rs, rowNum) -> new Question(
-                        rs.getInt("id"),
-                        rs.getString("number"),
-                        rs.getString("title"),
-                        "https://www.acmicpc.net/problem/"+rs.getString("number")
+        List<Integer> my = jdbcTemplate.query("SELECT problemid FROM my where userid = 1 order by id desc", (rs, rowNum) -> rs.getInt("problemid"));
+        List<ProblemDTO> questions = new ArrayList<>();
+        for (int i=my.size()-1; i >= 0; i--) questions.addAll(jdbcTemplate.query("SELECT problemId, titleKo FROM problem where problemId = ?",
+                (rs, rowNum) -> new ProblemDTO(
+                        rs.getInt("problemId"),
+                        rs.getString("titleKo"),
+                        "https://www.acmicpc.net/problem/"+rs.getInt("problemId")
                 ), my.get(i)));
         List<String> times = jdbcTemplate.query("SELECT today_time FROM temp",
                 (rs, rowNum) -> rs.getString("today_time"));
@@ -52,21 +49,20 @@ public class MyController {
     @GetMapping("/searchcomplete")
     public String searchcomplete(@RequestParam(name = "word") String word, Model model){
         String sql = "%"+word+"%";
-        List<Question> questions = jdbcTemplate.query("SELECT * FROM question WHERE number LIKE ? OR title LIKE ?",
-                (rs, rowNum) -> new Question(rs.getInt("id"), rs.getString("number"), rs.getString("title"), null), sql, sql);
+        List<ProblemDTO> questions = jdbcTemplate.query("SELECT problemId, titleKo FROM problem WHERE problemId LIKE ? OR titleKo LIKE ?",
+                (rs, rowNum) -> new ProblemDTO(rs.getInt("problemId"), rs.getString("titleKo"), null), sql, sql);
         model.addAttribute("questions", questions);
+        model.addAttribute("word", word);
         return "search";
     }
 
     @PostMapping("/added")
     public String add(@RequestParam(name = "id") int id, Model model){
-        List<Question> questionList = jdbcTemplate.query("SELECT * FROM question WHERE id = ?",
-                (rs, rowNum) -> new Question(rs.getInt("id"), rs.getString("number"), rs.getString("title"), null), id);
-        for (Question question : questionList) {
-            jdbcTemplate.execute("INSERT INTO my(userid, questionid) VALUES(1, " + question.getId() + ")");
-        }
+        ProblemDTO problem = jdbcTemplate.queryForObject("SELECT problemId, titleKo FROM problem WHERE problemId = ?",
+                (rs, rowNum) -> new ProblemDTO(rs.getInt("problemId"), rs.getString("titleKo"), "https://www.acmicpc.net/problem/"+rs.getInt("problemId")), id);
+        jdbcTemplate.execute("INSERT INTO my(userid, questionid) VALUES(1, " + problem.getId()+ ")");
         home(model);
-        return "redirect:/";
+        return "redirect:/home";
     }
     @PostMapping("/time")
     public String time(Model model){

@@ -2,21 +2,19 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <title>Problem List</title>
 </head>
 <body>
 <table>
     <thead>
     <tr class="row">
         <th>ID</th>
-        <th>Number</th>
         <th>Title</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="question: ${questions}">
         <td  th:text="${question.id}"></td>
-        <td><a th:href="${question.url}" th:text="${question.num}"></td>
         <td><a th:href="${question.url}" th:text="${question.title}"></td>
     </tr>
     </tbody>

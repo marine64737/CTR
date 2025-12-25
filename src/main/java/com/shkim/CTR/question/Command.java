@@ -8,7 +8,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class Command implements CommandLineRunner {
@@ -26,21 +28,75 @@ public class Command implements CommandLineRunner {
     public void run(String... strings) {
         log.info("Creating tables");
         //jdbcTemplate.execute("DROP TABLE IF EXISTS question");
-        Integer num = jdbcTemplate.queryForObject("SELECT EXISTS (SELECT * from question)", (rs, rowNum) -> rs.getInt(1));
-        if (num == 0){
-            jdbcTemplate.execute("CREATE TABLE question("+
-                    "id int NOT NULL AUTO_INCREMENT KEY, number VARCHAR(255), title VARCHAR(255), level int)");
-            for (int t=0; t<340; t++){
-                //List<Problem> apis = webClientService.get(t);
-                List<Object[]> apis = webClientService.getObject(t);
-                jdbcTemplate.batchUpdate("INSERT INTO question(number, title, level) VALUES (?,?,?)", apis);
-                log.info("inserting data: t="+(t+1)+"/340");
-            }
+//        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS problem("+
+//                "problemId int NOT NULL KEY, " +
+//                "titleKo VARCHAR(255)," +
+//                "isSolvable boolean," +
+//                "isPartial boolean," +
+//                "acceptedUserCount int," +
+//                "level int," +
+//                "votedUserCount int," +
+//                "sprout boolean," +
+//                "givesNoRating boolean," +
+//                "isLevelLocked boolean," +
+//                "averageTries double," +
+//                "official boolean)");
+//        for (int t=0; t<340; t++){
+//            //List<Problem> apis = webClientService.get(t);
+//            List<Object[]> apis = webClientService.get(t).stream().map(problem -> new Object[]{
+//                    problem.problemId(),
+//                    problem.titleKo(),
+//                    problem.isSolvable(),
+//                    problem.isPartial(),
+//                    problem.acceptedUserCount(),
+//                    problem.level(),
+//                    problem.votedUserCount(),
+//                    problem.sprout(),
+//                    problem.givesNoRating(),
+//                    problem.isLevelLocked(),
+//                    problem.averageTries(),
+//                    problem.official()}).toList();
+//            jdbcTemplate.batchUpdate("INSERT INTO problem VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", apis);
+//            log.info("inserting data: t="+(t+1)+"/340");
+//        }
+
+        List<Object[]> user = new ArrayList<>();
+        for (int i = 0; i < 100 ; i++) {
+            user.add(new Object[]{i+1});
         }
 
+        jdbcTemplate.execute("DROP TABLE IF EXISTS my");
+
+        jdbcTemplate.execute("DROP TABLE IF EXISTS user");
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS user(id int not null AUTO_INCREMENT, name VARCHAR(255), PRIMARY KEY(id))");
+        jdbcTemplate.batchUpdate("INSERT INTO user(name) VALUE (?)", user);
+
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS my("+
-                "id int NOT NULL AUTO_INCREMENT KEY, userid int, questionid int)" +
-                "IF NOT EXISTS my");
+                "id int NOT NULL AUTO_INCREMENT," +
+                "userid int not null," +
+                "problemid int not null," +
+                "primary key(id), " +
+                "foreign key(userid) references user(id), " +
+                "foreign key(problemid) references problem(problemid))");
+
+        List<Object[]> arr = new ArrayList<>();
+        List<Integer> problemNum = jdbcTemplate.queryForList("select problemid from problem", Integer.class);
+        for(int i=0; i<10000; i++){
+            Collections.shuffle(problemNum);
+            List<Integer> problemShuffled = problemNum.subList(0, 1000);
+            Random ran = new Random();
+            List<Integer> intsList = ran.ints(1000, 1, 101)
+                    .boxed().toList();
+            for (int j=0; j<1000; j++){
+                int u = intsList.get(j);
+                int p = problemShuffled.get(j);
+                arr.add(new Object[]{u,p});
+            }
+        //    jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid) VALUES (?,?)", arr);
+        }
+
+        // Use JdbcTemplate's batchUpdate operation to bulk load data
+        jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid) VALUES (?,?)", arr);
 
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS temp("+
                     "id int NOT NULL AUTO_INCREMENT KEY, today_time VARCHAR(255))");

@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <title>Coding Test Records</title>
 </head>
 <body>
 <table>
@@ -15,7 +15,7 @@
     </thead>
     <tbody>
     <tr th:each="question: ${my}">
-        <td th:text="${question.num}"></td>
+        <td th:text="${question.id}"></td>
         <td th:text="${question.title}"></td>
         <td><a th:href="${question.url}" th:text="이동"></a></td>
     </tr>
