@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Coding Test Records</title>
+    <p id="un" class="navbar-text pull-right" th:text="${currentUserName}">
+        sample_user
+    </p>
+    <form class="navbar-form pull-right" th:action="@{/logout}" method="post">
+        <input type="submit" value="Log out" />
+    </form>
 </head>
 <body>
 <table>

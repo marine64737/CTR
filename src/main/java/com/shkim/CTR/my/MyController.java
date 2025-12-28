@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +25,7 @@ public class MyController {
     }
 
     @GetMapping("/home")
-    public String home(Model model){
+    public String home(Model model, Principal principal){
         List<Integer> my = jdbcTemplate.query("SELECT problemid FROM my where userid = 1 order by id desc", (rs, rowNum) -> rs.getInt("problemid"));
         List<ProblemDTO> questions = new ArrayList<>();
         for (int i=my.size()-1; i >= 0; i--) questions.addAll(jdbcTemplate.query("SELECT problemId, titleKo FROM problem where problemId = ?",
@@ -57,11 +58,11 @@ public class MyController {
     }
 
     @PostMapping("/added")
-    public String add(@RequestParam(name = "id") int id, Model model){
+    public String add(@RequestParam(name = "id") int id, Model model, Principal principal){
         ProblemDTO problem = jdbcTemplate.queryForObject("SELECT problemId, titleKo FROM problem WHERE problemId = ?",
                 (rs, rowNum) -> new ProblemDTO(rs.getInt("problemId"), rs.getString("titleKo"), "https://www.acmicpc.net/problem/"+rs.getInt("problemId")), id);
-        jdbcTemplate.execute("INSERT INTO my(userid, questionid) VALUES(1, " + problem.getId()+ ")");
-        home(model);
+        jdbcTemplate.execute("INSERT INTO my(userid, problemid) VALUES(1, " + problem.getId()+ ")");
+        home(model, principal);
         return "redirect:/home";
     }
     @PostMapping("/time")

@@ -27,7 +27,19 @@ public class Command implements CommandLineRunner {
     @Override
     public void run(String... strings) {
         log.info("Creating tables");
-        //jdbcTemplate.execute("DROP TABLE IF EXISTS question");
+
+//        jdbcTemplate.execute("drop table if exists authorities");
+//        jdbcTemplate.execute("drop table if exists users");
+//
+//        jdbcTemplate.execute("create table if not exists users(username varchar(50) not null primary key,password varchar(500) not null,enabled boolean not null)");
+//        jdbcTemplate.execute("create table if not exists authorities (username varchar(50) not null,authority varchar(50) not null,constraint fk_authorities_users foreign key(username) references users(username))");
+//        jdbcTemplate.execute("create unique index ix_auth_username on authorities (username,authority)");
+
+//        jdbcTemplate.execute("ALTER table my DROP FOREIGN KEY my_ibfk_1");
+//        jdbcTemplate.execute("ALTER table my DROP FOREIGN KEY my_ibfk_2");
+//        jdbcTemplate.execute("DROP FOREIGN KEY my_ibfk_2 from my");
+
+//        jdbcTemplate.execute("DROP TABLE IF EXISTS problem");
 //        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS problem("+
 //                "problemId int NOT NULL KEY, " +
 //                "titleKo VARCHAR(255)," +
@@ -41,7 +53,8 @@ public class Command implements CommandLineRunner {
 //                "isLevelLocked boolean," +
 //                "averageTries double," +
 //                "official boolean)");
-//        for (int t=0; t<340; t++){
+//        int list_num = 350;
+//        for (int t=0; t<list_num; t++){
 //            //List<Problem> apis = webClientService.get(t);
 //            List<Object[]> apis = webClientService.get(t).stream().map(problem -> new Object[]{
 //                    problem.problemId(),
@@ -57,51 +70,174 @@ public class Command implements CommandLineRunner {
 //                    problem.averageTries(),
 //                    problem.official()}).toList();
 //            jdbcTemplate.batchUpdate("INSERT INTO problem VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", apis);
-//            log.info("inserting data: t="+(t+1)+"/340");
+//            log.info("inserting data: t="+(t+1)+"/"+list_num+")");
 //        }
 
-        List<Object[]> user = new ArrayList<>();
-        for (int i = 0; i < 100 ; i++) {
-            user.add(new Object[]{i+1});
-        }
+//        List<Object[]> user = new ArrayList<>();
+//        for (int i = 0; i < 100 ; i++) {
+//            user.add(new Object[]{i+1});
+////        }
+//
 
-        jdbcTemplate.execute("DROP TABLE IF EXISTS my");
+//        jdbcTemplate.execute("DROP TABLE IF EXISTS my");
+//
+//        jdbcTemplate.execute("DROP TABLE IF EXISTS user");
+//        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS user(id int not null AUTO_INCREMENT, name VARCHAR(255), PRIMARY KEY(id))");
 
-        jdbcTemplate.execute("DROP TABLE IF EXISTS user");
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS user(id int not null AUTO_INCREMENT, name VARCHAR(255), PRIMARY KEY(id))");
-        jdbcTemplate.batchUpdate("INSERT INTO user(name) VALUE (?)", user);
+//        String[] name = {
+//                "Parker",
+//                "Gutierrez",
+//                "Allen",
+//                "Kim",
+//                "Campbell",
+//                "Green",
+//                "Howard",
+//                "Rodriguez",
+//                "Moore",
+//                "Carter",
+//                "Scott",
+//                "Turner",
+//                "King",
+//                "Rodriguez",
+//                "Mendoza",
+//                "Edwards",
+//                "Sanchez",
+//                "Moore",
+//                "Morales",
+//                "Kelly",
+//                "Rogers",
+//                "Lopez",
+//                "Mitchell",
+//                "Ward",
+//                "Alvarez",
+//                "Ortiz",
+//                "Anderson",
+//                "Smith",
+//                "Stewart",
+//                "Adams",
+//                "Garcia",
+//                "Baker",
+//                "Lopez",
+//                "Evans",
+//                "Flores",
+//                "Rogers",
+//                "Sanchez",
+//                "Rodriguez",
+//                "Lewis",
+//                "Rodriguez",
+//                "Gonzalez",
+//                "Watson",
+//                "Reyes",
+//                "Nelson",
+//                "Mitchell",
+//                "Hall",
+//                "Mendoza",
+//                "Ramos",
+//                "Reed",
+//                "Moore",
+//                "Jackson",
+//                "Thompson",
+//                "Sanchez",
+//                "Anderson",
+//                "Thompson",
+//                "Jones",
+//                "Brown",
+//                "Turner",
+//                "Wilson",
+//                "Rivera",
+//                "Ross",
+//                "Gutierrez",
+//                "Myers",
+//                "Edwards",
+//                "Stewart",
+//                "Reyes",
+//                "Gomez",
+//                "Patel",
+//                "Cook",
+//                "Robinson",
+//                "Ross",
+//                "Davis",
+//                "Smith",
+//                "Rodriguez",
+//                "Hernandez",
+//                "Mendoza",
+//                "White",
+//                "Ortiz",
+//                "Sanchez",
+//                "Alvarez",
+//                "Lopez",
+//                "Walker",
+//                "Edwards",
+//                "Jackson",
+//                "Ramos",
+//                "Moore",
+//                "Howard",
+//                "Morales",
+//                "Hall",
+//                "Lopez",
+//                "Morgan",
+//                "Turner",
+//                "Smith",
+//                "Smith",
+//                "Hill",
+//                "Cox",
+//                "Myers",
+//                "Hughes",
+//                "Morgan",
+//                "Reyes"
+//        };
+//
+//        for (int i=0; i< name.length; i++){
+//            jdbcTemplate.execute("UPDATE user SET name=\""+name[i]+"\", password=1 WHERE id="+(i+1));
+//        }
 
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS my("+
-                "id int NOT NULL AUTO_INCREMENT," +
-                "userid int not null," +
-                "problemid int not null," +
-                "primary key(id), " +
-                "foreign key(userid) references user(id), " +
-                "foreign key(problemid) references problem(problemid))");
 
-        List<Object[]> arr = new ArrayList<>();
-        List<Integer> problemNum = jdbcTemplate.queryForList("select problemid from problem", Integer.class);
-        for(int i=0; i<10000; i++){
-            Collections.shuffle(problemNum);
-            List<Integer> problemShuffled = problemNum.subList(0, 1000);
-            Random ran = new Random();
-            List<Integer> intsList = ran.ints(1000, 1, 101)
-                    .boxed().toList();
-            for (int j=0; j<1000; j++){
-                int u = intsList.get(j);
-                int p = problemShuffled.get(j);
-                arr.add(new Object[]{u,p});
-            }
-        //    jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid) VALUES (?,?)", arr);
-        }
+//        jdbcTemplate.batchUpdate("INSERT INTO user(name) VALUE (?)", user);
+////
+//        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS my("+
+//                "id int NOT NULL AUTO_INCREMENT," +
+//                "userid int not null," +
+//                "problemid int not null," +
+//                "primary key(id))");
+//                "foreign key(userid) references user(id), " +
+//                "foreign key(problemid) references problem(problemid))");
+//
+//                jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS my("+
+//                "id int NOT NULL AUTO_INCREMENT," +
+//                "userid int not null," +
+//                "problemid int not null," +
+//                "primary key(id),"+
+//                "foreign key(userid) references user(id), " +
+//                "foreign key(problemid) references problem(problemid))");
+//        List<Object[]> arr = new ArrayList<>();
+//        List<Integer> problemNum = jdbcTemplate.queryForList("select problemid from problem", Integer.class);
+//        for(int i=0; i<10000; i++){
+//            Collections.shuffle(problemNum);
+//            List<Integer> problemShuffled = problemNum.subList(0, 1000);
+//            Random ran = new Random();
+//            List<Integer> intsList = ran.ints(1000, 1, 101)
+//                    .boxed().toList();
+//            for (int j=0; j<1000; j++){
+//                int u = intsList.get(j);
+//                int p = problemShuffled.get(j);
+//                arr.add(new Object[]{u,p});
+//            }
+//            if (i%10==9){
+//                jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid) VALUES (?,?)", arr);
+//                arr = new ArrayList<>();
+//            }
+//        }
+//
+//        jdbcTemplate.execute("alter table my add foreign key(userid) references user(id)");
+//        jdbcTemplate.execute("alter table my add foreign key(problemid) references problem(problemid)");
 
         // Use JdbcTemplate's batchUpdate operation to bulk load data
-        jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid) VALUES (?,?)", arr);
-
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS temp("+
-                    "id int NOT NULL AUTO_INCREMENT KEY, today_time VARCHAR(255))");
-
-        log.info("Created tables");
+//        jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid) VALUES (?,?)", arr);
+//
+//        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS temp("+
+//                    "id int NOT NULL AUTO_INCREMENT KEY, today_time VARCHAR(255))");
+//
+//        log.info("Created tables");
 //        String[] arr = {"A+B", "A-B", "터렛", "피보나치 함수", "어린 왕자", "ACM Craft", "습격자 초라기", "벡터 매칭", "A/B",
 //                "분산처리", "다리 놓기", "Fly me to the Alpha Centauri", "유기농 배추", "Contact"};
 //        for (int i=0; i<arr.length; i++){
@@ -109,7 +245,7 @@ public class Command implements CommandLineRunner {
 //                    "'https://www.acmicpc.net/problem/"+(1000+i)+"')");
 //        }
 
-//        log.info("Creating tables");
+        log.info("Created tables");
 //
 //        jdbcTemplate.execute("DROP TABLE IF EXISTS customers");
 //        jdbcTemplate.execute("CREATE TABLE customers(" +
