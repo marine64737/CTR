@@ -24,19 +24,31 @@ public class MyController {
         MyController.jdbcTemplate = jdbcTemplate;
     }
 
+    @GetMapping("/login")
+    public String login(Model model){
+        model.addAttribute("username", null);
+        model.addAttribute("password", null);
+        return "login";
+    }
+//    @PostMapping("/logout")
+//    public String logout(Model model){
+//        model.addAttribute("logout", true);
+//        return "login";
+//    }
     @GetMapping("/home")
     public String home(Model model, Principal principal){
-        List<Integer> my = jdbcTemplate.query("SELECT problemid FROM my where userid = 1 order by id desc", (rs, rowNum) -> rs.getInt("problemid"));
-        List<ProblemDTO> questions = new ArrayList<>();
-        for (int i=my.size()-1; i >= 0; i--) questions.addAll(jdbcTemplate.query("SELECT problemId, titleKo FROM problem where problemId = ?",
-                (rs, rowNum) -> new ProblemDTO(
-                        rs.getInt("problemId"),
-                        rs.getString("titleKo"),
-                        "https://www.acmicpc.net/problem/"+rs.getInt("problemId")
-                ), my.get(i)));
+        List<ProblemDTO> my = jdbcTemplate.query("SELECT m.problemid, p.titleKo FROM my as m join problem as p on m.problemid = p.problemid where userid = 1 group by m.problemid order by m.problemid asc", (rs, rowNum) ->
+            new ProblemDTO(rs.getInt("problemid"), rs.getString("titleKo"), "https://www.acmicpc.net/problem/"+rs.getInt("problemid")));
+        //List<ProblemDTO> questions = new ArrayList<>();
+//        for (int i=my.size()-1; i >= 0; i--) questions.addAll(jdbcTemplate.query("SELECT problemId, titleKo FROM problem where problemId = ?",
+//                (rs, rowNum) -> new ProblemDTO(
+//                        rs.getInt("problemId"),
+//                        rs.getString("titleKo"),
+//                        "https://www.acmicpc.net/problem/"+rs.getInt("problemId")
+//                ), my.get(i)));
         List<String> times = jdbcTemplate.query("SELECT today_time FROM temp",
                 (rs, rowNum) -> rs.getString("today_time"));
-        model.addAttribute("my", questions);
+        model.addAttribute("my", my);
         model.addAttribute("times", times);
         return "home";
     }

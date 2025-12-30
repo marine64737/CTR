@@ -16,19 +16,19 @@
 
 package com.shkim.CTR.config;
 
-import org.jspecify.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.connection.RedisClusterConnection;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisSentinelConnection;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+
+import java.util.List;
 
 /**
  * Spring Security configuration.
@@ -36,9 +36,15 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
  * @author Rob Winch
  * @author Vedran Pavic
  */
-@Configuration(proxyBeanMethods = false)
-@EnableRedisHttpSession
+@Configuration
 public class SecurityConfig {
+
+	@Autowired
+	public static JdbcTemplate jdbcTemplate;
+
+	public SecurityConfig(JdbcTemplate jdbcTemplate){
+		SecurityConfig.jdbcTemplate = jdbcTemplate;
+	}
 
 	// @formatter:off
 	// tag::config[]
@@ -50,40 +56,33 @@ public class SecurityConfig {
 				.anyRequest().authenticated()
 			)
 			.formLogin((formLogin) -> formLogin
-				.permitAll()
+					.loginPage("/login")
+					.loginProcessingUrl("/login")
+					.failureUrl("/login?error")
+					.permitAll()
+			)
+			.logout((logout) -> logout
+					.logoutUrl("/logout")
+					.logoutSuccessUrl("/login?logout")
+					.permitAll()
 			)
 			.build();
 	}
 	// end::config[]
 	// @formatter:on
 	@Bean
-	public RedisConnectionFactory connectionFactory() {
-		return new RedisConnectionFactory() {
-			@Override
-			public boolean getConvertPipelineAndTxResults() {
-				return false;
-			}
-
-			@Override
-			public RedisConnection getConnection() {
-				return this.getConnection();
-			}
-
-			@Override
-			public RedisClusterConnection getClusterConnection() {
-				return this.getClusterConnection();
-			}
-
-			@Override
-			public RedisSentinelConnection getSentinelConnection() {
-				return this.getSentinelConnection();
-			}
-
-			@Override
-			public @Nullable DataAccessException translateExceptionIfPossible(RuntimeException ex) {
-				return null;
-			}
-		};
+	public UserDetailsService userDetailsService() {
+		UserDetails user = User.builder()
+				.username("user")
+				.password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
+				.roles("USER")
+				.build();
+		UserDetails admin = User.builder()
+				.username("admin")
+				.password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
+				.roles("USER", "ADMIN")
+				.build();
+		return new InMemoryUserDetailsManager(user, admin);
 	}
 
 }

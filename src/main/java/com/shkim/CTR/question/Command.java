@@ -28,17 +28,6 @@ public class Command implements CommandLineRunner {
     public void run(String... strings) {
         log.info("Creating tables");
 
-//        jdbcTemplate.execute("drop table if exists authorities");
-//        jdbcTemplate.execute("drop table if exists users");
-//
-//        jdbcTemplate.execute("create table if not exists users(username varchar(50) not null primary key,password varchar(500) not null,enabled boolean not null)");
-//        jdbcTemplate.execute("create table if not exists authorities (username varchar(50) not null,authority varchar(50) not null,constraint fk_authorities_users foreign key(username) references users(username))");
-//        jdbcTemplate.execute("create unique index ix_auth_username on authorities (username,authority)");
-
-//        jdbcTemplate.execute("ALTER table my DROP FOREIGN KEY my_ibfk_1");
-//        jdbcTemplate.execute("ALTER table my DROP FOREIGN KEY my_ibfk_2");
-//        jdbcTemplate.execute("DROP FOREIGN KEY my_ibfk_2 from my");
-
 //        jdbcTemplate.execute("DROP TABLE IF EXISTS problem");
 //        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS problem("+
 //                "problemId int NOT NULL KEY, " +
@@ -80,11 +69,14 @@ public class Command implements CommandLineRunner {
 //
 
 //        jdbcTemplate.execute("DROP TABLE IF EXISTS my");
+
+//        jdbcTemplate.execute("alter table my drop foreign key my_ibfk_1");
+//        jdbcTemplate.execute("alter table my drop foreign key my_ibfk_2");
 //
 //        jdbcTemplate.execute("DROP TABLE IF EXISTS user");
-//        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS user(id int not null AUTO_INCREMENT, name VARCHAR(255), PRIMARY KEY(id))");
-
-//        String[] name = {
+//        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS user(id int not null AUTO_INCREMENT, name VARCHAR(255), password VARCHAR(255), PRIMARY KEY(id))");
+//
+//        String[] names = {
 //                "Parker",
 //                "Gutierrez",
 //                "Allen",
@@ -186,14 +178,16 @@ public class Command implements CommandLineRunner {
 //                "Morgan",
 //                "Reyes"
 //        };
+//        List<Object[]> list = new ArrayList<>();
 //
-//        for (int i=0; i< name.length; i++){
-//            jdbcTemplate.execute("UPDATE user SET name=\""+name[i]+"\", password=1 WHERE id="+(i+1));
+//
+//        for (int i=0; i< names.length; i++){
+//           list.add(new Object[]{names[i], "1"});
 //        }
-
-
-//        jdbcTemplate.batchUpdate("INSERT INTO user(name) VALUE (?)", user);
-////
+//
+//
+//        jdbcTemplate.batchUpdate("INSERT INTO user(name, password) VALUE (?, ?)", list);
+//
 //        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS my("+
 //                "id int NOT NULL AUTO_INCREMENT," +
 //                "userid int not null," +
@@ -211,13 +205,13 @@ public class Command implements CommandLineRunner {
 //                "foreign key(problemid) references problem(problemid))");
 //        List<Object[]> arr = new ArrayList<>();
 //        List<Integer> problemNum = jdbcTemplate.queryForList("select problemid from problem", Integer.class);
-//        for(int i=0; i<10000; i++){
+//        for(int i=0; i<100; i++){
 //            Collections.shuffle(problemNum);
-//            List<Integer> problemShuffled = problemNum.subList(0, 1000);
+//            List<Integer> problemShuffled = problemNum.subList(0, 100);
 //            Random ran = new Random();
-//            List<Integer> intsList = ran.ints(1000, 1, 101)
+//            List<Integer> intsList = ran.ints(100, 1, 101)
 //                    .boxed().toList();
-//            for (int j=0; j<1000; j++){
+//            for (int j=0; j<100; j++){
 //                int u = intsList.get(j);
 //                int p = problemShuffled.get(j);
 //                arr.add(new Object[]{u,p});

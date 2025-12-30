@@ -7,6 +7,7 @@
         sample_user
     </p>
     <form class="navbar-form pull-right" th:action="@{/logout}" method="post">
+        <input type="hidden" name="logout" value="logout" />
         <input type="submit" value="Log out" />
     </form>
 </head>
