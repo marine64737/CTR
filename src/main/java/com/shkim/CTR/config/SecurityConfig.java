@@ -27,6 +27,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -42,6 +44,9 @@ public class SecurityConfig {
 	@Autowired
 	public static JdbcTemplate jdbcTemplate;
 
+	@Autowired
+	public static UserDetailsService userDetailsService;
+
 	public SecurityConfig(JdbcTemplate jdbcTemplate){
 		SecurityConfig.jdbcTemplate = jdbcTemplate;
 	}
@@ -53,12 +58,14 @@ public class SecurityConfig {
 		return http
 			.authorizeHttpRequests((authorize) -> authorize
 				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+					.requestMatchers("/signup", "/signupComplete").permitAll()
 				.anyRequest().authenticated()
 			)
 			.formLogin((formLogin) -> formLogin
 					.loginPage("/login")
 					.loginProcessingUrl("/login")
 					.failureUrl("/login?error")
+					.defaultSuccessUrl("/home", true)
 					.permitAll()
 			)
 			.logout((logout) -> logout
@@ -70,19 +77,19 @@ public class SecurityConfig {
 	}
 	// end::config[]
 	// @formatter:on
-	@Bean
-	public UserDetailsService userDetailsService() {
-		UserDetails user = User.builder()
-				.username("user")
-				.password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
-				.roles("USER")
-				.build();
-		UserDetails admin = User.builder()
-				.username("admin")
-				.password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
-				.roles("USER", "ADMIN")
-				.build();
-		return new InMemoryUserDetailsManager(user, admin);
-	}
+//	@Bean
+//	public UserDetailsService userDetailsService() {
+//		UserDetails user = User.builder()
+//				.username("user")
+//				.password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
+//				.roles("USER")
+//				.build();
+//		UserDetails admin = User.builder()
+//				.username("admin")
+//				.password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
+//				.roles("USER", "ADMIN")
+//				.build();
+//		return new InMemoryUserDetailsManager(user, admin);
+//	}
 
 }

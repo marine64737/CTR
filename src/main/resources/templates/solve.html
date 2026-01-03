@@ -2,29 +2,61 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Solving Problems</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
 <body>
-<table>
+<div class="container-fluid">
+    <h3 th:text="${myProblem}">problem id. title</h3>
+<table class="table border-dark">
     <thead>
     <tr >
-        <th >ID</th>
-        <th >Title</th>
-        <th >Link</th>
+        <th class="col-1 text-center p-2">No.</th>
+        <th class="col-3 text-center p-2">풀이 시작</th>
+        <th class="col-3 text-center p-2">풀이 종료</th>
+        <th class="col-1 text-center p-2">풀이 시간</th>
+        <th class="col-1 text-center p-2">풀이 현황</th>
+        <th class="col-1 text-center p-2"></th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="question: ${my}">
-        <td th:text="${question.num}"></td>
-        <td th:text="${question.title}"></td>
+    <tr th:each="my, stat: ${my}">
+        <th class="col-1 text-center p-3 align-middle"><a th:href="@{'/solve/'+${my.pid}+'/'+${my.id}}" th:text="${stat.count}">1</th>
+        <td class="col-3 text-center p-3 align-middle" th:text="${my.st}">-</td>
+        <td class="col-3 text-center p-3 align-middle" th:text="${my.end}">-</td>
+        <td class="col-3 text-center p-3 align-middle" th:text="${my.duration}">-</td>
+        <div th:switch="${my.status}">
+            <td class="col-1 text-center p-3 align-middle" th:case="0">풀이 전</td>
+            <td class="col-1 text-center p-3 align-middle" th:case="1">풀이 중</td>
+            <td class="col-1 text-center p-3 align-middle" th:case="2">풀이 완료</td>
+            <td class="col-1 text-center p-3 align-middle" th:case="3">미해결</td>
+        </div>
+        <form action="#" th:action="@{/solve/timelap}" method="post">
+            <input type="hidden" name = "pid" th:value="${my.pid}"/>
+            <input type="hidden" name = "status" th:value="${my.status}"/>
+            <div th:switch="${my.status}">
+                <input type="hidden" name="id" th:value="${my.id}">
+                <td class="col-1 text-center" th:case="0">
+                    <button type="submit" value="풀이 시작" class="btn btn-primary">풀이 시작</button>
+                <td class="col-1 text-center" th:case="1">
+                    <button type="submit" name="complete" value="true" class="btn btn-success">풀이 성공</button>
+                    <button type="submit" name="complete" value="false" class="btn btn-danger">미해결</button>
+                <td class="col-1 text-center" th:case="*"></td>
+            </div>
+        </form>
     </tr>
     </tbody>
 </table>
-<a href="/search"><input type="button" value="문제 추가" />
-<p><a href="/list"><input type="button" value="전체 문제"/></a></p>
-    <form action="#" th:action="@{/time}" method="post">
-        <li th:each="times: ${times}" th:text="${times}"></li>
-        <input type="submit" value="시간 추가" />
+
+    <form action="#" th:action="@{/solve/add}" method="post">
+        <input type="hidden" name="pid" th:value="${pid}">
+        <input type="hidden" name="user" th:value="${name}">
+        <input type="submit" value="풀이 추가" />
     </form>
+<a href="/home"><input type="button" value="뒤로 가기" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</a>
+</div>
 </body>
 </html>

@@ -1,13 +1,19 @@
 package com.shkim.CTR.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -25,17 +31,27 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
-        List<User> user = jdbcTemplate.query("select * from user where username = ?", (rs, rowNum) ->
-                new User(rs.getInt("id"), rs.getString("username"), rs.getString("password")), username);
-        if (user.isEmpty()){
-            throw new UsernameNotFoundException("Username "+username+" is not found.");
+        try {
+            User user = jdbcTemplate.queryForObject(
+                    "SELECT * FROM user WHERE name = ?",
+                    (rs, rowNum) -> new User(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            "{bcrypt}"+rs.getString("password")
+                    ),
+                    username
+            );
+
+            return new CustomUserDetails(user);
+
+        } catch (EmptyResultDataAccessException e) {
+            throw new UsernameNotFoundException("유저가 없습니다: " + username);
         }
-        return new CustomUserDetails(user.get(0));
     }
 
     static class CustomUserDetails extends User implements UserDetails{
         CustomUserDetails(User user){
-            super(user.getId(), user.getUsername(), user.getPassword());
+            super(user.getId(), user.getName(), user.getPassword());
         }
         private static final List<GrantedAuthority> ROLE_USER = Collections
                 .unmodifiableList(AuthorityUtils.createAuthorityList("ROLE_USER"));
@@ -47,7 +63,7 @@ public class UserService implements UserDetailsService {
 
         @Override
         public String getUsername() {
-            return getUsername();
+            return getName();
         }
 
         @Override

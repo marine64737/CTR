@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.List;
 
 @Controller
-public class QuestionController {
+public class ProblemController {
 
     public static JdbcTemplate jdbcTemplate;
 
-    public QuestionController(JdbcTemplate jdbcTemplate){
-        QuestionController.jdbcTemplate = jdbcTemplate;
+    public ProblemController(JdbcTemplate jdbcTemplate){
+        ProblemController.jdbcTemplate = jdbcTemplate;
     }
 
     @GetMapping("/list")

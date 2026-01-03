@@ -2,7 +2,9 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Coding Test Records</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <p id="un" class="navbar-text pull-right" th:text="${currentUserName}">
         sample_user
     </p>
@@ -12,19 +14,18 @@
     </form>
 </head>
 <body>
-<table>
+<div class="container-fluid">
+<table class="table border-dark">
     <thead>
-    <tr >
-        <th >ID</th>
-        <th >Title</th>
-        <th >Link</th>
+    <tr>
+        <th class="col-1 text-center p-2">ID</th>
+        <th class="col-9 p-2">Title</th>
     </tr>
     </thead>
-    <tbody>
-    <tr th:each="question: ${my}">
-        <td th:text="${question.id}"></td>
-        <td th:text="${question.title}"></td>
-        <td><a th:href="${question.url}" th:text="이동"></a></td>
+    <tbody class="table-group-divider">
+    <tr th:each="problem: ${my}">
+        <th class="text-center p-2"><a th:href="@{'/solve/'+${problem.pid}}" th:text="${problem.pid}"></th>
+        <td class="p-2"><a th:href="@{'/solve/'+${problem.pid}}" th:text="${problem.title}"></td>
     </tr>
     </tbody>
 </table>
@@ -34,5 +35,7 @@
         <li th:each="times: ${times}" th:text="${times}"></li>
         <input type="submit" value="시간 추가" />
     </form>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</div>
 </body>
 </html>

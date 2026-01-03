@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -28,6 +30,8 @@ public class Command implements CommandLineRunner {
     public void run(String... strings) {
         log.info("Creating tables");
 
+//        jdbcTemplate.execute("ALTER TABLE my DROP foreign key my_ibfk_1");
+//        jdbcTemplate.execute("ALTER TABLE my DROP foreign key my_ibfk_2");
 //        jdbcTemplate.execute("DROP TABLE IF EXISTS problem");
 //        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS problem("+
 //                "problemId int NOT NULL KEY, " +
@@ -61,128 +65,38 @@ public class Command implements CommandLineRunner {
 //            jdbcTemplate.batchUpdate("INSERT INTO problem VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", apis);
 //            log.info("inserting data: t="+(t+1)+"/"+list_num+")");
 //        }
-
+//
 //        List<Object[]> user = new ArrayList<>();
 //        for (int i = 0; i < 100 ; i++) {
 //            user.add(new Object[]{i+1});
-////        }
+//        }
 //
-
+//
 //        jdbcTemplate.execute("DROP TABLE IF EXISTS my");
-
-//        jdbcTemplate.execute("alter table my drop foreign key my_ibfk_1");
-//        jdbcTemplate.execute("alter table my drop foreign key my_ibfk_2");
 //
+
 //        jdbcTemplate.execute("DROP TABLE IF EXISTS user");
 //        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS user(id int not null AUTO_INCREMENT, name VARCHAR(255), password VARCHAR(255), PRIMARY KEY(id))");
 //
 //        String[] names = {
-//                "Parker",
-//                "Gutierrez",
-//                "Allen",
-//                "Kim",
-//                "Campbell",
-//                "Green",
-//                "Howard",
-//                "Rodriguez",
-//                "Moore",
-//                "Carter",
-//                "Scott",
-//                "Turner",
-//                "King",
-//                "Rodriguez",
-//                "Mendoza",
-//                "Edwards",
-//                "Sanchez",
-//                "Moore",
-//                "Morales",
-//                "Kelly",
-//                "Rogers",
-//                "Lopez",
-//                "Mitchell",
-//                "Ward",
-//                "Alvarez",
-//                "Ortiz",
-//                "Anderson",
-//                "Smith",
-//                "Stewart",
-//                "Adams",
-//                "Garcia",
-//                "Baker",
-//                "Lopez",
-//                "Evans",
-//                "Flores",
-//                "Rogers",
-//                "Sanchez",
-//                "Rodriguez",
-//                "Lewis",
-//                "Rodriguez",
-//                "Gonzalez",
-//                "Watson",
-//                "Reyes",
-//                "Nelson",
-//                "Mitchell",
-//                "Hall",
-//                "Mendoza",
-//                "Ramos",
-//                "Reed",
-//                "Moore",
-//                "Jackson",
-//                "Thompson",
-//                "Sanchez",
-//                "Anderson",
-//                "Thompson",
-//                "Jones",
-//                "Brown",
-//                "Turner",
-//                "Wilson",
-//                "Rivera",
-//                "Ross",
-//                "Gutierrez",
-//                "Myers",
-//                "Edwards",
-//                "Stewart",
-//                "Reyes",
-//                "Gomez",
-//                "Patel",
-//                "Cook",
-//                "Robinson",
-//                "Ross",
-//                "Davis",
-//                "Smith",
-//                "Rodriguez",
-//                "Hernandez",
-//                "Mendoza",
-//                "White",
-//                "Ortiz",
-//                "Sanchez",
-//                "Alvarez",
-//                "Lopez",
-//                "Walker",
-//                "Edwards",
-//                "Jackson",
-//                "Ramos",
-//                "Moore",
-//                "Howard",
-//                "Morales",
-//                "Hall",
-//                "Lopez",
-//                "Morgan",
-//                "Turner",
-//                "Smith",
-//                "Smith",
-//                "Hill",
-//                "Cox",
-//                "Myers",
-//                "Hughes",
-//                "Morgan",
-//                "Reyes"
+//                "Perez","Adams","Collins","Morgan","Ramirez","Price","Morales","Flores","Ramos","Parker","Myers",
+//                "Allen","Edwards","Jones","Gonzalez","Cruz","Hill","Kim","Rodriguez","Castillo","Reed","Jimenez",
+//                "Moore","Nguyen","Martinez","Richardson","Watson","Cox","King","Green","Ruiz","James","Murphy","Turner",
+//                "Peterson","Baker","Anderson","Scott","Ross","Phillips","Bailey","Garcia","Hernandez","Evans","Morris",
+//                "Harris","Ward","Clark","Patel","Brown","Lee","Wood","Howard","Walker","Ortiz","Sanders","Taylor",
+//                "Nelson","Robinson","Long","Martin","Smith","Alvarez","Cook","Rogers","Johnson","Williams","Lewis",
+//                "Lopez","Foster","Carter","Hall","Gray","Davis","White","Hughes","Brooks","Sanchez","Thompson",
+//                "Wright","Miller","Mendoza","Bennett","Chavez","Reyes","Kelly",	"Torres","Mitchell","Thomas",
+//                "Gutierrez","Rivera","Gomez","Cooper","Young","Campbell","Stewart","Diaz","Roberts","Wilson"
+//
 //        };
 //        List<Object[]> list = new ArrayList<>();
+//        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+//        String password = passwordEncoder.encode("1");
 //
 //
 //        for (int i=0; i< names.length; i++){
-//           list.add(new Object[]{names[i], "1"});
+//           list.add(new Object[]{names[i], password});
 //        }
 //
 //
@@ -192,6 +106,9 @@ public class Command implements CommandLineRunner {
 //                "id int NOT NULL AUTO_INCREMENT," +
 //                "userid int not null," +
 //                "problemid int not null," +
+//                "start_time datetime, " +
+//                "end_time datetime, " +
+//                "status int not null, " +
 //                "primary key(id))");
 //                "foreign key(userid) references user(id), " +
 //                "foreign key(problemid) references problem(problemid))");
@@ -205,40 +122,40 @@ public class Command implements CommandLineRunner {
 //                "foreign key(problemid) references problem(problemid))");
 //        List<Object[]> arr = new ArrayList<>();
 //        List<Integer> problemNum = jdbcTemplate.queryForList("select problemid from problem", Integer.class);
-//        for(int i=0; i<100; i++){
+//        for(int i=0; i<10000; i++){
 //            Collections.shuffle(problemNum);
-//            List<Integer> problemShuffled = problemNum.subList(0, 100);
+//            List<Integer> problemShuffled = problemNum.subList(0, 10);
 //            Random ran = new Random();
-//            List<Integer> intsList = ran.ints(100, 1, 101)
+//            List<Integer> intsList = ran.ints(10, 1, 100)
 //                    .boxed().toList();
-//            for (int j=0; j<100; j++){
+//            for (int j=0; j<9; j++){
 //                int u = intsList.get(j);
 //                int p = problemShuffled.get(j);
-//                arr.add(new Object[]{u,p});
+//                arr.add(new Object[]{u,p,0});
 //            }
 //            if (i%10==9){
-//                jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid) VALUES (?,?)", arr);
+//                jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid, status) VALUES (?,?,?)", arr);
 //                arr = new ArrayList<>();
 //            }
 //        }
 //
 //        jdbcTemplate.execute("alter table my add foreign key(userid) references user(id)");
 //        jdbcTemplate.execute("alter table my add foreign key(problemid) references problem(problemid)");
-
-        // Use JdbcTemplate's batchUpdate operation to bulk load data
-//        jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid) VALUES (?,?)", arr);
+//
+//        // Use JdbcTemplate's batchUpdate operation to bulk load data
+//        //jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid) VALUES (?,?)", arr);
 //
 //        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS temp("+
 //                    "id int NOT NULL AUTO_INCREMENT KEY, today_time VARCHAR(255))");
 //
-//        log.info("Created tables");
-//        String[] arr = {"A+B", "A-B", "터렛", "피보나치 함수", "어린 왕자", "ACM Craft", "습격자 초라기", "벡터 매칭", "A/B",
-//                "분산처리", "다리 놓기", "Fly me to the Alpha Centauri", "유기농 배추", "Contact"};
-//        for (int i=0; i<arr.length; i++){
-//            jdbcTemplate.execute("INSERT INTO question (number, title, url) values ('"+(1000+i)+"', '"+arr[i]+"',"+
-//                    "'https://www.acmicpc.net/problem/"+(1000+i)+"')");
-//        }
-
+////        log.info("Created tables");
+////        String[] arr = {"A+B", "A-B", "터렛", "피보나치 함수", "어린 왕자", "ACM Craft", "습격자 초라기", "벡터 매칭", "A/B",
+////                "분산처리", "다리 놓기", "Fly me to the Alpha Centauri", "유기농 배추", "Contact"};
+////        for (int i=0; i<arr.length; i++){
+////            jdbcTemplate.execute("INSERT INTO question (number, title, url) values ('"+(1000+i)+"', '"+arr[i]+"',"+
+////                    "'https://www.acmicpc.net/problem/"+(1000+i)+"')");
+////        }
+//
         log.info("Created tables");
 //
 //        jdbcTemplate.execute("DROP TABLE IF EXISTS customers");

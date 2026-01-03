@@ -1,52 +1,58 @@
 package com.shkim.CTR.my;
 
-import jakarta.validation.constraints.NotNull;
+public record My(int id, int userId, int problemId, String code, String memo, String tag, String startTime, String endTime, int status) {
 
-public class My {
-
-    private int id;
-
-    private int userId;
-
-    private int questionId;
-
-    private String language;
-
-    private String code;
-
-    private String startDate;
-
-    private String endDate;
-
-    public My(int id, int userId, int questionId, String startDate, String endDate){
-        this.id=id;
-        this.userId= userId;
-        this.questionId= questionId;
-        this.startDate= startDate;
-        this.endDate = endDate;
-    }
-    public int getId(){
-        return this.id;
-    }
-
-    public void setId(int id){
-        this.id = id;
-    }
-
-    public int getUserId(){
-        return this.userId;
-    }
-
-    public void setUserId(int userId){
-        this.userId=userId;
-    }
-
-    public int getQuestionId() {
-        return this.questionId;
-    }
-
-    public void setQuestionId(int questionId){
-        this.questionId = questionId;
-    }
+//    private int id;
+//
+//    private int userId;
+//
+//    private int problemId;
+//
+//    private String code;
+//
+//    private String memo;
+//
+//    private String tag;
+//
+//    private String startTime;
+//
+//    private String endTime;
+//
+//    private int status;
+//
+//    public My(int id, int userId, int problemId, String code, String memo, String tag, String startTime, String endTime, int status){
+//        this.id=id;
+//        this.userId= userId;
+//        this.problemId= problemId;
+//        this.code= code;
+//        this.memo= memo;
+//        this.tag= tag;
+//        this.startTime= startTime;
+//        this.endTime = endTime;
+//        this.status = status;
+//    }
+//    public int getId(){
+//        return this.id;
+//    }
+//
+//    public void setId(int id){
+//        this.id = id;
+//    }
+//
+//    public int getUserId(){
+//        return this.userId;
+//    }
+//
+//    public void setUserId(int userId){
+//        this.userId=userId;
+//    }
+//
+//    public int getProblemId() {
+//        return this.problemId;
+//    }
+//
+//    public void setProblemId(int problemId){
+//        this.problemId = problemId;
+//    }
 
 }
