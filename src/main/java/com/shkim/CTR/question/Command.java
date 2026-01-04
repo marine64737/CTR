@@ -72,7 +72,7 @@ public class Command implements CommandLineRunner {
 //        }
 //
 //
-//        jdbcTemplate.execute("DROP TABLE IF EXISTS my");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS my");
 //
 
 //        jdbcTemplate.execute("DROP TABLE IF EXISTS user");
@@ -102,14 +102,16 @@ public class Command implements CommandLineRunner {
 //
 //        jdbcTemplate.batchUpdate("INSERT INTO user(name, password) VALUE (?, ?)", list);
 //
-//        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS my("+
-//                "id int NOT NULL AUTO_INCREMENT," +
-//                "userid int not null," +
-//                "problemid int not null," +
-//                "start_time datetime, " +
-//                "end_time datetime, " +
-//                "status int not null, " +
-//                "primary key(id))");
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS my("+
+                "id int NOT NULL AUTO_INCREMENT," +
+                "userid int not null," +
+                "problemid int not null," +
+                "start_time datetime, " +
+                "end_time datetime, " +
+                "status int not null, " +
+                "code text, " +
+                "memo text, " +
+                "primary key(id))");
 //                "foreign key(userid) references user(id), " +
 //                "foreign key(problemid) references problem(problemid))");
 //
@@ -120,27 +122,32 @@ public class Command implements CommandLineRunner {
 //                "primary key(id),"+
 //                "foreign key(userid) references user(id), " +
 //                "foreign key(problemid) references problem(problemid))");
-//        List<Object[]> arr = new ArrayList<>();
-//        List<Integer> problemNum = jdbcTemplate.queryForList("select problemid from problem", Integer.class);
-//        for(int i=0; i<10000; i++){
-//            Collections.shuffle(problemNum);
-//            List<Integer> problemShuffled = problemNum.subList(0, 10);
-//            Random ran = new Random();
-//            List<Integer> intsList = ran.ints(10, 1, 100)
-//                    .boxed().toList();
-//            for (int j=0; j<9; j++){
-//                int u = intsList.get(j);
-//                int p = problemShuffled.get(j);
-//                arr.add(new Object[]{u,p,0});
-//            }
-//            if (i%10==9){
-//                jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid, status) VALUES (?,?,?)", arr);
-//                arr = new ArrayList<>();
-//            }
-//        }
-//
-//        jdbcTemplate.execute("alter table my add foreign key(userid) references user(id)");
-//        jdbcTemplate.execute("alter table my add foreign key(problemid) references problem(problemid)");
+        List<Object[]> arr = new ArrayList<>();
+        List<Integer> problemNum = jdbcTemplate.queryForList("select problemid from problem", Integer.class);
+        for(int i=0; i<1000000; i++){
+            Collections.shuffle(problemNum);
+            List<Integer> problemShuffled = problemNum.subList(0, 100);
+            Random ran = new Random();
+            List<Integer> intsList = ran.ints(100, 1, 100)
+                    .boxed().toList();
+            List<Integer> intsList2 = ran.ints(100, 2, 4)
+                    .boxed().toList();
+            for (int j=0; j<100; j++){
+                int u = intsList.get(j);
+                int p = problemShuffled.get(j);
+                int s = intsList2.get(j);
+                arr.add(new Object[]{u,p,s});
+            }
+            if (i%50==49){
+                jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid, start_time, end_time, status) VALUES (?,?, now(), now()+INTERVAL 8 HOUR, ?)", arr);
+                arr = new ArrayList<>();
+            }
+        }
+
+        jdbcTemplate.execute("alter table my add foreign key(userid) references user(id)");
+        jdbcTemplate.execute("alter table my add foreign key(problemid) references problem(problemid)");
+        jdbcTemplate.execute("create index u_p on my (userid, problemid)");
+        jdbcTemplate.execute("create index p_u on my (problemid, userid)");
 //
 //        // Use JdbcTemplate's batchUpdate operation to bulk load data
 //        //jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid) VALUES (?,?)", arr);
@@ -148,7 +155,7 @@ public class Command implements CommandLineRunner {
 //        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS temp("+
 //                    "id int NOT NULL AUTO_INCREMENT KEY, today_time VARCHAR(255))");
 //
-////        log.info("Created tables");
+//        log.info("Created tables");
 ////        String[] arr = {"A+B", "A-B", "터렛", "피보나치 함수", "어린 왕자", "ACM Craft", "습격자 초라기", "벡터 매칭", "A/B",
 ////                "분산처리", "다리 놓기", "Fly me to the Alpha Centauri", "유기농 배추", "Contact"};
 ////        for (int i=0; i<arr.length; i++){

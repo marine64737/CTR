@@ -40,7 +40,7 @@ public class MyController {
 //    }
     @GetMapping("/home")
     public String home(Model model, Principal principal){
-        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title FROM my as m join problem as p on m.problemid = p.problemid join user as u on m.userid = u.id where u.name = ? group by m.problemid order by m.problemid asc",
+        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, count(*) as count FROM my as m join problem as p on m.problemid = p.problemid join user as u on m.userid = u.id where u.name = ? and status = 2 group by m.problemid order by m.problemid asc",
                 principal.getName());
         List<String> times = jdbcTemplate.query("SELECT today_time FROM temp",
                 (rs, rowNum) -> rs.getString("today_time"));

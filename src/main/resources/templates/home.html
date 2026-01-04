@@ -18,14 +18,16 @@
 <table class="table border-dark">
     <thead>
     <tr>
-        <th class="col-1 text-center p-2">ID</th>
-        <th class="col-9 p-2">Title</th>
+        <th class="col-1 text-center p-2">No.</th>
+        <th class="col-9 p-2">제목</th>
+        <th class="col-9 p-2">풀이 횟수</th>
     </tr>
     </thead>
     <tbody class="table-group-divider">
     <tr th:each="problem: ${my}">
         <th class="text-center p-2"><a th:href="@{'/solve/'+${problem.pid}}" th:text="${problem.pid}"></th>
         <td class="p-2"><a th:href="@{'/solve/'+${problem.pid}}" th:text="${problem.title}"></td>
+        <td class="p-2" th:text="${problem.count}"></td>
     </tr>
     </tbody>
 </table>
