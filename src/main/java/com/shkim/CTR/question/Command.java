@@ -145,10 +145,8 @@ public class Command implements CommandLineRunner {
 //
 //        jdbcTemplate.execute("alter table my add foreign key(userid) references user(id)");
 //        jdbcTemplate.execute("alter table my add foreign key(problemid) references problem(problemid)");
-//        jdbcTemplate.execute("create index u_p on my (userid, problemid)");
-//        jdbcTemplate.execute("create index p_u on my (problemid, userid)");
-//        jdbcTemplate.execute("create index status on my (status)");
-//        jdbcTemplate.execute("create index n_s on my (userid, status)");
+//        jdbcTemplate.execute("alter table my add index u_s_p (userid, status, problemid)");
+
 //
 //        // Use JdbcTemplate's batchUpdate operation to bulk load data
 //        //jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid) VALUES (?,?)", arr);
