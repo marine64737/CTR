@@ -1,12 +1,9 @@
 package com.shkim.CTR.my;
 
-import com.shkim.CTR.question.Problem;
-import com.shkim.CTR.question.ProblemController;
 import com.shkim.CTR.question.ProblemDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -101,19 +97,21 @@ public class MyController {
         solve(pid, model, principal);
         return "redirect:/solve/"+pid;
     }
-    @PostMapping("/solve/add")
-    public String update(@RequestParam String pid, @RequestParam String user, Model model, Principal principal){
-        int id = Integer.parseInt(pid);
-        int uid = jdbcTemplate.queryForObject("select id from user where name=?", (rs, rowNum) -> rs.getInt("id"), user);
-        jdbcTemplate.execute("insert into my(userid, problemid, status) values("+uid+", "+id+", 0)");
-        solve(pid, model, principal);
-        return "redirect:/solve/"+pid;
-    }
+//    @PostMapping("/solve/add")
+//    public String update(@RequestParam String pid, Model model, Principal principal){
+//        int id = Integer.parseInt(pid);
+//        int uid = jdbcTemplate.queryForObject("select id from user where name=?", (rs, rowNum) -> rs.getInt("id"), principal.getName());
+//        jdbcTemplate.execute("insert into my(userid, problemid, status) values("+uid+", "+id+", 0)");
+//        solve(pid, model, principal);
+//        return "redirect:/solve/"+pid;
+//    }
 
     @PostMapping("/solve/timelap")
     public String timelap(@RequestParam String id, @RequestParam String pid, @RequestParam String status, @RequestParam(defaultValue = "true") boolean complete,
                           Model model, Principal principal){
+        int probid = Integer.parseInt(pid);
         int mid = Integer.parseInt(id);
+        int uid = jdbcTemplate.queryForObject("select id from user where name=?", (rs, rowNum) -> rs.getInt("id"), principal.getName());
         int mstatus = Integer.parseInt(status);
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -121,7 +119,8 @@ public class MyController {
         if (mstatus == 0) jdbcTemplate.execute("update my set start_time=now() + INTERVAL 9 HOUR, status=1 where id="+mid);
         else if (mstatus == 1) {
             if (complete) jdbcTemplate.execute("update my set end_time=now() + INTERVAL 9 HOUR, status=2 where id="+mid);
-            else jdbcTemplate.execute("update my set end_time=now(), status=3 where id="+mid);
+            else jdbcTemplate.execute("update my set end_time=now() + INTERVAL 9 HOUR, status=3 where id="+mid);
+            jdbcTemplate.execute("insert into my(userid, problemid, status) values("+uid+", "+probid+", 0)");
         }
         solve(pid, model, principal);
         return "redirect:/solve/"+pid;
