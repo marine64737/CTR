@@ -1,5 +1,6 @@
 package com.shkim.CTR.question;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -8,6 +9,7 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class WebClientServiceImpl {
@@ -65,7 +67,7 @@ public class WebClientServiceImpl {
                         .retrieve()
                         .onStatus(HttpStatus.TOO_MANY_REQUESTS::equals, clientResponse -> Mono.error(new RuntimeException("429 Too Many Requests")))
                         .bodyToFlux(Problem.class).collectList()
-                        .delaySubscription(Duration.ofMillis(1000)) // 요청 간 기본 1초 딜레이
+                        .delaySubscription(Duration.ofMillis(500)) // 요청 간 기본 1초 딜레이
                         .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2)) // 429 시 최대 3번, 2초 간격 재시도
                                 .filter(throwable -> throwable instanceof RuntimeException &&
                                         throwable.getMessage().contains("429"))).block();
@@ -86,5 +88,25 @@ public class WebClientServiceImpl {
         //        Integer.parseInt(response.get("level").toString()), 0, false, false, false, 0, false, null))
         //return response;
         //log.info(response.get("titleKo").toString());
+    }
+
+    public Tag getTag(int num) {
+        return WebClient
+                .builder()
+                .baseUrl("https://solved.ac/api/v3")
+                .build()
+                .get()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .path("/tag/list")
+                                .queryParam("page", num)
+                                .build())
+                .retrieve()
+                .onStatus(HttpStatus.TOO_MANY_REQUESTS::equals, clientResponse -> Mono.error(new RuntimeException("429 Too Many Requests")))
+                .bodyToMono(Tag.class)
+                .delaySubscription(Duration.ofMillis(1000)) // 요청 간 기본 1초 딜레이
+                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2)) // 429 시 최대 3번, 2초 간격 재시도
+                        .filter(throwable -> throwable instanceof RuntimeException &&
+                                throwable.getMessage().contains("429"))).block();
     }
 }

@@ -46,25 +46,65 @@ public class Command implements CommandLineRunner {
 //                "isLevelLocked boolean," +
 //                "averageTries double," +
 //                "official boolean)");
-//        int list_num = 350;
-//        for (int t=0; t<list_num; t++){
-//            //List<Problem> apis = webClientService.get(t);
-//            List<Object[]> apis = webClientService.get(t).stream().map(problem -> new Object[]{
-//                    problem.problemId(),
-//                    problem.titleKo(),
-//                    problem.isSolvable(),
-//                    problem.isPartial(),
-//                    problem.acceptedUserCount(),
-//                    problem.level(),
-//                    problem.votedUserCount(),
-//                    problem.sprout(),
-//                    problem.givesNoRating(),
-//                    problem.isLevelLocked(),
-//                    problem.averageTries(),
-//                    problem.official()}).toList();
-//            jdbcTemplate.batchUpdate("INSERT INTO problem VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", apis);
-//            log.info("inserting data: t="+(t+1)+"/"+list_num+")");
+//        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS tag("+
+//                "tagkey VARCHAR(255), " +
+//                "bojtagid int not null," +
+//                "problemcount int," +
+//                "name VARCHAR(255)," +
+//                "primary key(bojtagid))");
+//        log.info("tag table completed");
+
+        jdbcTemplate.execute("DROP TABLE IF EXISTS problem_tag");
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS problem_tag("+
+                "id int NOT NULL AUTO_INCREMENT, " +
+                "problemid int not null," +
+                "tagid int not null," +
+                "primary key(id),"+
+                "foreign key(problemid) references problem(problemid)," +
+                "foreign key(tagid) references tag(bojtagid))");
+//        for (int t=1; t<9; t++){
+//            List<Object[]> apis = webClientService.getTag(t).items().stream().map(tag -> new Object[]{
+//                    tag.key(),
+//                    tag.bojTagId(),
+//                    tag.problemCount(),
+//                    tag.displayNames().get(0).name()}).toList();
+//            log.info("Before inserting");
+//            jdbcTemplate.batchUpdate("INSERT INTO tag(tagkey, bojtagid, problemcount, name) VALUES (?,?,?,?)", apis);
+//            log.info("inserting data: t="+(t)+"/"+9+")");
 //        }
+
+        int list_num = 370;
+        for (int t=0; t<list_num; t++){
+            List<Object[]> apis = webClientService.get(t).stream().map(problem -> new Object[]{
+                    problem.problemId(),
+                    problem.titleKo(),
+                    problem.isSolvable(),
+                    problem.isPartial(),
+                    problem.acceptedUserCount(),
+                    problem.level(),
+                    problem.votedUserCount(),
+                    problem.sprout(),
+                    problem.givesNoRating(),
+                    problem.isLevelLocked(),
+                    problem.averageTries(),
+                    problem.official()}).toList();
+            jdbcTemplate.batchUpdate("INSERT INTO problem VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE titleKo = titleKo", apis);
+            log.info("inserting data: t="+(t+1)+"/"+list_num+")");
+        }
+        for (int t=0; t<list_num; t++){
+            List<Object[]> obj = new ArrayList<>();
+            List<Problem> apis = webClientService.get(t);
+            for (int i=0; i<apis.size(); i++){
+                List<ProblemTag> tags = apis.get(i).tags();
+                for (int j=0; j<tags.size(); j++){
+                    int pid = apis.get(i).problemId();
+                    int tid = tags.get(j).bojTagId();
+                    obj.add(new Object[]{pid, tid});
+                }
+            }
+            jdbcTemplate.batchUpdate("INSERT INTO problem_tag(problemid, tagid) VALUES (?,?)", obj);
+            log.info("inserting data: t="+(t+1)+"/"+list_num+")");
+        }
 //
 //        List<Object[]> user = new ArrayList<>();
 //        for (int i = 0; i < 100 ; i++) {
@@ -123,7 +163,7 @@ public class Command implements CommandLineRunner {
 //                "foreign key(problemid) references problem(problemid))");
 //        List<Object[]> arr = new ArrayList<>();
 //        List<Integer> problemNum = jdbcTemplate.queryForList("select problemid from problem", Integer.class);
-//        for(int i=0; i<100000; i++){
+//        for(int i=0; i<1000000; i++){
 //            Collections.shuffle(problemNum);
 //            List<Integer> problemShuffled = problemNum.subList(0, 100);
 //            Random ran = new Random();
@@ -143,8 +183,8 @@ public class Command implements CommandLineRunner {
 //            }
 //        }
 //
-//        jdbcTemplate.execute("alter table my add foreign key(userid) references user(id)");
-//        jdbcTemplate.execute("alter table my add foreign key(problemid) references problem(problemid)");
+//        jdbcTemplate.execute("alter table my add foreign key u_fk(userid) references user(id)");
+//        jdbcTemplate.execute("alter table my add foreign key p_fk(problemid) references problem(problemid)");
 //        jdbcTemplate.execute("alter table my add index u_s_p (userid, status, problemid)");
 
 //
@@ -154,7 +194,6 @@ public class Command implements CommandLineRunner {
 //        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS temp("+
 //                    "id int NOT NULL AUTO_INCREMENT KEY, today_time VARCHAR(255))");
 //
-//        log.info("Created tables");
 //        String[] arr = {"A+B", "A-B", "터렛", "피보나치 함수", "어린 왕자", "ACM Craft", "습격자 초라기", "벡터 매칭", "A/B",
 //                "분산처리", "다리 놓기", "Fly me to the Alpha Centauri", "유기농 배추", "Contact"};
 //        for (int i=0; i<arr.length; i++){
@@ -169,8 +208,8 @@ public class Command implements CommandLineRunner {
 //            for (Integer p : problemNum) arr.add(new Object[]{i,p});
 //        }
 //        jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid, start_time, end_time, status) VALUES (?, ?, null, null, 0)", arr);
-
-        log.info("Created tables");
+//
+//        log.info("Created tables");
 //
 //        jdbcTemplate.execute("DROP TABLE IF EXISTS customers");
 //        jdbcTemplate.execute("CREATE TABLE customers(" +
@@ -194,5 +233,7 @@ public class Command implements CommandLineRunner {
 //                                new Customer(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name")),
 //                        "Josh")
 //                .forEach(customer -> log.info(customer.toString()));
+        log.info("Created tables");
+
     }
 }
