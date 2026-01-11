@@ -4,17 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Coding Test Records</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <p id="un" class="navbar-text pull-right" th:text="${currentUserName}">
-        sample_user
-    </p>
+    <h1><a href="/home">Coding Test Records</a></h1>
+
     <form class="navbar-form pull-right" th:action="@{/logout}" method="post">
+        <p id="un" class="navbar-text pull-right" th:text="${currentUserName}">
+            sample_user
         <input type="hidden" name="logout" value="logout" />
         <input type="submit" value="Log out" />
+        </p>
     </form>
+    </p>
 </head>
 <body>
-<div class="container-fluid">
+<div class="container-lg">
 <table class="table border-dark">
     <thead>
     <tr>
@@ -27,17 +29,20 @@
     <tr th:each="problem: ${my}">
         <th class="text-center p-2"><a th:href="@{'/solve/'+${problem.pid}}" th:text="${problem.pid}"></th>
         <td class="p-2"><a th:href="@{'/solve/'+${problem.pid}}" th:text="${problem.title}"></td>
-        <td class="p-2" th:text="${problem.count}"></td>
+        <div th:switch="${problem.status}">
+            <td class="p-2" th:case="0">풀이 전</td>
+            <td class="p-2" th:case="1">풀이 중</td>
+            <td class="p-2" th:case="2">풀이 완료</td>
+            <td class="p-2" th:case="3">미해결</td>
+        </div>
     </tr>
     </tbody>
 </table>
 <a href="/search"><input type="button" value="문제 추가" />
 <p><a href="/list"><input type="button" value="전체 문제"/></a></p>
-    <form action="#" th:action="@{/time}" method="post">
-        <li th:each="times: ${times}" th:text="${times}"></li>
-        <input type="submit" value="시간 추가" />
-    </form>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </div>
 </body>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
 </html>

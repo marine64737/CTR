@@ -36,12 +36,9 @@ public class MyController {
 //    }
     @GetMapping("/home")
     public String home(Model model, Principal principal){
-        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, count(*) as count FROM my as m join problem as p on m.problemid = p.problemid join user as u on m.userid = u.id where u.name = ? and status = 2 group by m.problemid order by m.problemid asc",
+        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, status FROM my as m join user as u on m.userid = u.id join problem as p on m.problemid = p.problemid where u.name = ? order by m.id desc limit 100",
                 principal.getName());
-        List<String> times = jdbcTemplate.query("SELECT today_time FROM temp",
-                (rs, rowNum) -> rs.getString("today_time"));
         model.addAttribute("my", my);
-        model.addAttribute("times", times);
         return "home";
     }
 

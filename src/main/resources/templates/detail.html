@@ -8,7 +8,7 @@
 </head>
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
 <h3 th:text="${my.pid}+'. '+${my.titleKo}">problem id. title</h3>
-<div class="container-fluid">
+<div class="container-lg">
     <form action="#" th:action="@{/update}" method="post">
         <input type="hidden" name="id" th:value="${my.id}">
         <input type="hidden" name="pid" th:value="${my.pid}">

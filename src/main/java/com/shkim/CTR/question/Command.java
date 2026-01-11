@@ -46,12 +46,12 @@ public class Command implements CommandLineRunner {
 //                "isLevelLocked boolean," +
 //                "averageTries double," +
 //                "official boolean)");
-//        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS tag("+
-//                "tagkey VARCHAR(255), " +
-//                "bojtagid int not null," +
-//                "problemcount int," +
-//                "name VARCHAR(255)," +
-//                "primary key(bojtagid))");
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS tag("+
+                "tagkey VARCHAR(255), " +
+                "bojtagid int not null," +
+                "problemcount int," +
+                "name VARCHAR(255)," +
+                "primary key(bojtagid))");
 //        log.info("tag table completed");
 
         jdbcTemplate.execute("DROP TABLE IF EXISTS problem_tag");
@@ -59,38 +59,37 @@ public class Command implements CommandLineRunner {
                 "id int NOT NULL AUTO_INCREMENT, " +
                 "problemid int not null," +
                 "tagid int not null," +
-                "primary key(id),"+
-                "foreign key(problemid) references problem(problemid)," +
-                "foreign key(tagid) references tag(bojtagid))");
-//        for (int t=1; t<9; t++){
-//            List<Object[]> apis = webClientService.getTag(t).items().stream().map(tag -> new Object[]{
-//                    tag.key(),
-//                    tag.bojTagId(),
-//                    tag.problemCount(),
-//                    tag.displayNames().get(0).name()}).toList();
-//            log.info("Before inserting");
-//            jdbcTemplate.batchUpdate("INSERT INTO tag(tagkey, bojtagid, problemcount, name) VALUES (?,?,?,?)", apis);
-//            log.info("inserting data: t="+(t)+"/"+9+")");
-//        }
+                "primary key(id))");
+//                "foreign key(problemid) references problem(problemid)," +
+//                "foreign key(tagid) references tag(bojtagid))");
+        for (int t=1; t<9; t++){
+            List<Object[]> apis = webClientService.getTag(t).items().stream().map(tag -> new Object[]{
+                    tag.key(),
+                    tag.bojTagId(),
+                    tag.problemCount(),
+                    tag.displayNames().get(0).name()}).toList();
+            jdbcTemplate.batchUpdate("INSERT INTO tag(tagkey, bojtagid, problemcount, name) VALUES (?,?,?,?)", apis);
+            log.info("inserting data: t="+(t)+"/"+9+")");
+        }
 
         int list_num = 370;
-        for (int t=0; t<list_num; t++){
-            List<Object[]> apis = webClientService.get(t).stream().map(problem -> new Object[]{
-                    problem.problemId(),
-                    problem.titleKo(),
-                    problem.isSolvable(),
-                    problem.isPartial(),
-                    problem.acceptedUserCount(),
-                    problem.level(),
-                    problem.votedUserCount(),
-                    problem.sprout(),
-                    problem.givesNoRating(),
-                    problem.isLevelLocked(),
-                    problem.averageTries(),
-                    problem.official()}).toList();
-            jdbcTemplate.batchUpdate("INSERT INTO problem VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE titleKo = titleKo", apis);
-            log.info("inserting data: t="+(t+1)+"/"+list_num+")");
-        }
+//        for (int t=0; t<list_num; t++){
+//            List<Object[]> apis = webClientService.get(t).stream().map(problem -> new Object[]{
+//                    problem.problemId(),
+//                    problem.titleKo(),
+//                    problem.isSolvable(),
+//                    problem.isPartial(),
+//                    problem.acceptedUserCount(),
+//                    problem.level(),
+//                    problem.votedUserCount(),
+//                    problem.sprout(),
+//                    problem.givesNoRating(),
+//                    problem.isLevelLocked(),
+//                    problem.averageTries(),
+//                    problem.official()}).toList();
+//            jdbcTemplate.batchUpdate("INSERT INTO problem VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE titleKo = titleKo", apis);
+//            log.info("inserting data: t="+(t+1)+"/"+list_num+")");
+//        }
         for (int t=0; t<list_num; t++){
             List<Object[]> obj = new ArrayList<>();
             List<Problem> apis = webClientService.get(t);
@@ -163,29 +162,29 @@ public class Command implements CommandLineRunner {
 //                "foreign key(problemid) references problem(problemid))");
 //        List<Object[]> arr = new ArrayList<>();
 //        List<Integer> problemNum = jdbcTemplate.queryForList("select problemid from problem", Integer.class);
-//        for(int i=0; i<1000000; i++){
+//        for(int i=0; i<100000; i++){
 //            Collections.shuffle(problemNum);
-//            List<Integer> problemShuffled = problemNum.subList(0, 100);
+//            List<Integer> problemShuffled = problemNum.subList(0, 1000);
 //            Random ran = new Random();
-//            List<Integer> intsList = ran.ints(100, 1, 100)
+//            List<Integer> intsList = ran.ints(1000, 1, 100)
 //                    .boxed().toList();
-//            List<Integer> intsList2 = ran.ints(100, 2, 4)
+//            List<Integer> intsList2 = ran.ints(1000, 2, 4)
 //                    .boxed().toList();
-//            for (int j=0; j<100; j++){
+//            for (int j=0; j<1000; j++){
 //                int u = intsList.get(j);
 //                int p = problemShuffled.get(j);
 //                int s = intsList2.get(j);
 //                arr.add(new Object[]{u,p,s});
 //            }
-//            if (i%50==49){
+//            if (i%5==4){
 //                jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid, start_time, end_time, status) VALUES (?,?, now(), now()+INTERVAL 8 HOUR, ?)", arr);
 //                arr = new ArrayList<>();
 //            }
 //        }
-//
+
 //        jdbcTemplate.execute("alter table my add foreign key u_fk(userid) references user(id)");
 //        jdbcTemplate.execute("alter table my add foreign key p_fk(problemid) references problem(problemid)");
-//        jdbcTemplate.execute("alter table my add index u_s_p (userid, status, problemid)");
+//        jdbcTemplate.execute("alter table my add index u_p_s (userid, problemid, status)");
 
 //
 //        // Use JdbcTemplate's batchUpdate operation to bulk load data
