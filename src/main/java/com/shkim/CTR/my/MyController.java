@@ -36,7 +36,18 @@ public class MyController {
 //    }
     @GetMapping("/home")
     public String home(Model model, Principal principal){
-        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, status FROM my as m join user as u on m.userid = u.id join problem as p on m.problemid = p.problemid where u.name = ? order by m.id desc limit 100",
+//        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, status FROM my as m join user as u on m.userid = u.id join problem as p on m.problemid = p.problemid where u.name = ? order by m.id desc limit 100",
+//                principal.getName());
+        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, m.status " +
+                        "FROM (" +
+                        "    SELECT id, userid, problemid, status " +
+                        "    FROM my " +
+                        "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
+                        "    ORDER BY id DESC " +
+                        "    LIMIT 100" +
+                        ") AS m " +
+                        "JOIN user u ON m.userid = u.id " +
+                        "JOIN problem p ON m.problemid = p.problemId;",
                 principal.getName());
         model.addAttribute("my", my);
         return "home";
@@ -62,10 +73,22 @@ public class MyController {
     public String solve(@PathVariable String problemid, Model model, Principal principal){
         int pid = Integer.parseInt(problemid);
         String name = principal.getName();
+//        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, " +
+//                        "DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') as st, DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') as end," +
+//                        "TIMESTAMPDIFF(MINUTE, start_time, end_time) as duration, " +
+//                        "m.status FROM my as m join user as u on m.userid=u.id where u.name = ? and m.problemid = ? order by m.id asc",
+//                name, pid);
         List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, " +
-                        "DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') as st, DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') as end," +
-                        "TIMESTAMPDIFF(MINUTE, start_time, end_time) as duration, " +
-                        "m.status FROM my as m join user as u on m.userid=u.id where u.name = ? and m.problemid = ? order by m.id asc",
+                        "DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') as st, DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') as end, "+
+                        "TIMESTAMPDIFF(MINUTE, start_time, end_time) as duration, m.status "+
+                        "FROM (" +
+                        "    SELECT id, userid, problemid, start_time, end_time, status " +
+                        "    FROM my " +
+                        "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1) " +
+                        "    and problemid = ? " +
+                        "    ORDER BY id DESC " +
+                        ") AS m " +
+                        "JOIN user u ON m.userid = u.id ",
                 name, pid);
         String title = jdbcTemplate.queryForObject("SELECT titleKo from problem where problemid = ?",
                 (rs, rowNum) -> rs.getString("titleKo"), problemid);

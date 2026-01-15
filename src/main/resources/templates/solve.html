@@ -22,7 +22,7 @@
     </thead>
     <tbody>
     <tr th:each="my, stat: ${my}">
-        <th class="col-1 text-center p-3 align-middle"><a th:href="@{'/solve/'+${my.pid}+'/'+${my.id}}" th:text="${stat.count}">1</th>
+        <th class="col-1 text-center p-3 align-middle"><a th:href="@{'/solve/'+${my.pid}+'/'+${my.id}}" th:text="${stat.size-stat.count+1}">1</th>
         <td class="col-3 text-center p-3 align-middle" th:text="${my.st}">-</td>
         <td class="col-3 text-center p-3 align-middle" th:text="${my.end}">-</td>
         <td class="col-3 text-center p-3 align-middle" th:text="${my.duration}">-</td>

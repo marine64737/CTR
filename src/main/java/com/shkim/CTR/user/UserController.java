@@ -47,7 +47,7 @@ public class UserController {
             String encodedPassword = passwordEncoder.encode(password);
             jdbcTemplate.execute("INSERT INTO user(name, password) values('"+username+"', '"+encodedPassword+"')");
             log.info("Sign up Success!");
-            return "redirect:/home";
+            return "redirect:/login";
         }
     }
 }

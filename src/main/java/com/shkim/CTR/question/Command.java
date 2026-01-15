@@ -10,6 +10,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,9 +33,81 @@ public class Command implements CommandLineRunner {
         Command.jdbcTemplate = jdbcTemplate;
     }
     @Override
-    public void run(String... strings) {
+    public void run(String... strings) throws SQLException, IOException {
         log.info("Creating tables");
-
+        String URL = "jdbc:mysql://192.168.45.169:3306/ctr";
+        String USER = "root";
+        String PW = "1234";
+        int count = 0;
+//        try (Connection conn = DriverManager.getConnection(URL, USER, PW);
+//
+//             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("src/main/resources/backup.sql"), StandardCharsets.UTF_16LE))) {
+//
+//            Statement stmt = conn.createStatement();
+//            String line;
+//            StringBuilder sb = new StringBuilder();
+//
+//            while ((line = br.readLine()) != null) {
+//                count++;
+//                line = line.trim();
+//                if (line.startsWith("\uFEFF")) line = line.substring(1);
+//                //line = line.substring(1);
+//                if (line.isEmpty()) continue;
+//                if (line.startsWith("--") || line.startsWith("#") || line.startsWith("/*")) {
+//                    log.info(count+": Pass");
+//                    continue;
+//                }
+//                if (!line.endsWith(";")) {
+//                    sb.append(line);
+//                    log.info(count+": 더하는 중");
+//                }
+//                else {
+//                    sb.append(line);
+//                    stmt.execute(sb.toString());
+//                    sb = new StringBuilder();
+//                    log.info(count+" Clear");
+//                }
+//                count++;
+//                if (count % 10 == 0) log.info("이관 완료: "+count);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        Connection conn = DriverManager.getConnection(URL, USER, PW);
+//        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("src/main/resources/backup.sql")));
+//
+//        Statement stmt = conn.createStatement();
+//        String line;
+//        StringBuilder sb = new StringBuilder();
+//
+//        while ((line = br.readLine()) != null) {
+//            count++;
+//            try {
+//                line = line.trim();
+//                //if (line.startsWith("\uFEFF")) line = line.substring(1);
+//                //line = line.substring(1);
+//                if (line.isEmpty()) continue;
+//                if (line.startsWith("--") || line.startsWith("#") || line.startsWith("/*")) {
+//                    log.info(count + ": Pass");
+//                    continue;
+//                }
+//                if (!line.endsWith(";")) {
+//                    sb.append(line);
+//                    log.info(count + ": 더하는 중");
+//                } else {
+//                    sb.append(line);
+//                    stmt.execute(sb.toString());
+//                    sb = new StringBuilder();
+//                    log.info(count + ": Clear");
+//                }
+//            }
+//            catch (Exception e) {
+//                log.error(count + ": Failed");
+//                e.printStackTrace();
+//                sb = new StringBuilder();
+//            }
+//        }
 //        jdbcTemplate.execute("ALTER TABLE my DROP foreign key my_ibfk_1");
 //        jdbcTemplate.execute("ALTER TABLE my DROP foreign key my_ibfk_2");
 //        jdbcTemplate.execute("DROP TABLE IF EXISTS problem");
@@ -46,33 +124,34 @@ public class Command implements CommandLineRunner {
 //                "isLevelLocked boolean," +
 //                "averageTries double," +
 //                "official boolean)");
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS tag("+
-                "tagkey VARCHAR(255), " +
-                "bojtagid int not null," +
-                "problemcount int," +
-                "name VARCHAR(255)," +
-                "primary key(bojtagid))");
+//        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS tag("+
+//                "tagkey VARCHAR(255), " +
+//                "bojtagid int not null," +
+//                "problemcount int," +
+//                "name VARCHAR(255)," +
+//                "primary key(bojtagid))");
 //        log.info("tag table completed");
-
-        jdbcTemplate.execute("DROP TABLE IF EXISTS problem_tag");
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS problem_tag("+
-                "id int NOT NULL AUTO_INCREMENT, " +
-                "problemid int not null," +
-                "tagid int not null," +
-                "primary key(id))");
+//
+//        jdbcTemplate.execute("DROP TABLE IF EXISTS problem_tag");
+//        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS problem_tag("+
+//                "id int NOT NULL AUTO_INCREMENT, " +
+//                "problemid int not null," +
+//                "tagid int not null," +
+//                "primary key(id))");
 //                "foreign key(problemid) references problem(problemid)," +
 //                "foreign key(tagid) references tag(bojtagid))");
-        for (int t=1; t<9; t++){
-            List<Object[]> apis = webClientService.getTag(t).items().stream().map(tag -> new Object[]{
-                    tag.key(),
-                    tag.bojTagId(),
-                    tag.problemCount(),
-                    tag.displayNames().get(0).name()}).toList();
-            jdbcTemplate.batchUpdate("INSERT INTO tag(tagkey, bojtagid, problemcount, name) VALUES (?,?,?,?)", apis);
-            log.info("inserting data: t="+(t)+"/"+9+")");
-        }
-
-        int list_num = 370;
+//        for (int t=1; t<9; t++){
+//            List<Object[]> apis = webClientService.getTag(t).items().stream().map(tag -> new Object[]{
+//                    tag.key(),
+//                    tag.bojTagId(),
+//                    tag.problemCount(),
+//                    tag.displayNames().get(0).name()}).toList();
+//            jdbcTemplate.batchUpdate("INSERT INTO tag(tagkey, bojtagid, problemcount, name) VALUES (?,?,?,?) " +
+//                    "ON DUPLICATE KEY UPDATE name = values(name)", apis);
+//            log.info("inserting data: t="+(t)+"/"+9+")");
+//        }
+//
+//        int list_num = 370;
 //        for (int t=0; t<list_num; t++){
 //            List<Object[]> apis = webClientService.get(t).stream().map(problem -> new Object[]{
 //                    problem.problemId(),
@@ -87,23 +166,23 @@ public class Command implements CommandLineRunner {
 //                    problem.isLevelLocked(),
 //                    problem.averageTries(),
 //                    problem.official()}).toList();
-//            jdbcTemplate.batchUpdate("INSERT INTO problem VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE titleKo = titleKo", apis);
+//            jdbcTemplate.batchUpdate("INSERT INTO problem VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE titleKo = values(titleKo)", apis);
 //            log.info("inserting data: t="+(t+1)+"/"+list_num+")");
 //        }
-        for (int t=0; t<list_num; t++){
-            List<Object[]> obj = new ArrayList<>();
-            List<Problem> apis = webClientService.get(t);
-            for (int i=0; i<apis.size(); i++){
-                List<ProblemTag> tags = apis.get(i).tags();
-                for (int j=0; j<tags.size(); j++){
-                    int pid = apis.get(i).problemId();
-                    int tid = tags.get(j).bojTagId();
-                    obj.add(new Object[]{pid, tid});
-                }
-            }
-            jdbcTemplate.batchUpdate("INSERT INTO problem_tag(problemid, tagid) VALUES (?,?)", obj);
-            log.info("inserting data: t="+(t+1)+"/"+list_num+")");
-        }
+//        for (int t=0; t<list_num; t++){
+//            List<Object[]> obj = new ArrayList<>();
+//            List<Problem> apis = webClientService.get(t);
+//            for (int i=0; i<apis.size(); i++){
+//                List<ProblemTag> tags = apis.get(i).tags();
+//                for (int j=0; j<tags.size(); j++){
+//                    int pid = apis.get(i).problemId();
+//                    int tid = tags.get(j).bojTagId();
+//                    obj.add(new Object[]{pid, tid});
+//                }
+//            }
+//            jdbcTemplate.batchUpdate("INSERT INTO problem_tag(problemid, tagid) VALUES (?,?)", obj);
+//            log.info("inserting data: t="+(t+1)+"/"+list_num+")");
+//        }
 //
 //        List<Object[]> user = new ArrayList<>();
 //        for (int i = 0; i < 100 ; i++) {
@@ -189,10 +268,7 @@ public class Command implements CommandLineRunner {
 //
 //        // Use JdbcTemplate's batchUpdate operation to bulk load data
 //        //jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid) VALUES (?,?)", arr);
-//
-//        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS temp("+
-//                    "id int NOT NULL AUTO_INCREMENT KEY, today_time VARCHAR(255))");
-//
+
 //        String[] arr = {"A+B", "A-B", "터렛", "피보나치 함수", "어린 왕자", "ACM Craft", "습격자 초라기", "벡터 매칭", "A/B",
 //                "분산처리", "다리 놓기", "Fly me to the Alpha Centauri", "유기농 배추", "Contact"};
 //        for (int i=0; i<arr.length; i++){
@@ -210,6 +286,10 @@ public class Command implements CommandLineRunner {
 //
 //        log.info("Created tables");
 //
+
+
+
+
 //        jdbcTemplate.execute("DROP TABLE IF EXISTS customers");
 //        jdbcTemplate.execute("CREATE TABLE customers(" +
 //                "id SERIAL, first_name VARCHAR(255), last_name VARCHAR(255))");
