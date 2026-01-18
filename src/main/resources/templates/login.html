@@ -1,11 +1,51 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
-<head>
-    <title>Please Log In</title>
+<!--<head>-->
+<!--    <header class="p-3 text-bg-dark">-->
+<!--        <div class="container">-->
+<!--            <div-->
+<!--                    class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"-->
+<!--            >-->
+<!--                <a-->
+<!--                        href="/home"-->
+<!--                        class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none"-->
+<!--                >-->
+<!--                    <img src="/image/CTR_logo.png" alt="CTR_logo" style="width: 100px; height: auto;" class="me-2">-->
+<!--                </a>-->
+<!--                <ul-->
+<!--                        class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"-->
+<!--                >-->
+<!--&lt;!&ndash;                    <li><a href="#" class="nav-link px-2 text-secondary">Home</a></li>&ndash;&gt;-->
+<!--                    <li><a href="#" class="nav-link px-2 text-white">Features</a></li>-->
+<!--                    <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>-->
+<!--                    <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>-->
+<!--                    <li><a href="#" class="nav-link px-2 text-white">About</a></li>-->
+<!--                </ul>-->
+<!--                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">-->
+<!--                    <input-->
+<!--                            type="search"-->
+<!--                            class="form-control form-control-dark text-bg-dark"-->
+<!--                            placeholder="Search..."-->
+<!--                            aria-label="Search"-->
+<!--                    />-->
+<!--                </form>-->
+<!--                <div class="text-end">-->
+<!--                    <button type="button" class="btn btn-outline-light me-2">-->
+<!--                        Login-->
+<!--                    </button>-->
+<!--                    <button type="button" class="btn btn-warning">Sign-up</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </header>-->
+<div th:insert="~{header}"></div>
+    <title>
+        Please Log In
+    </title>
 </head>
 <body>
 <div class="container">
-<h1>Please Log In</h1>
+    <h1 class="mb-0 fw-bold text-dark">Please Log In</h1><br>
 <div th:if="${param.error}">
     Invalid username and password.</div>
 <div th:if="${param.logout}">
@@ -19,9 +59,9 @@
         <label for="password" class="form-label">Password</label><br>
         <input type="password" id="password" name="password" placeholder="Password"/>
     </div>
-    <input type="submit" value="Log in" />
-</form>
-<div><a href="/signup"><input type="button" value="회원가입" />
+    <button type="submit" class="btn btn-primary">Log in</button><br>
+</form><br>
+    <div><a href="/signup" ><button type="button" class="btn btn-warning">회원가입</button></a>
 </div>
 </body>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">

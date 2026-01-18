@@ -1,39 +1,27 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<div th:insert="~{header}"></div>
     <title>Coding Test Records</title>
-    <h1><a href="/home">Coding Test Records</a></h1>
-
-    <form class="navbar-form pull-right" th:action="@{/logout}" method="post">
-        <p id="un" class="navbar-text pull-right" th:text="${currentUserName}">
-            sample_user
-        <input type="hidden" name="logout" value="logout" />
-        <input type="submit" value="Log out" />
-        </p>
-    </form>
-    </p>
 </head>
 <body>
-<div class="container-lg">
+<div class="container-xl">
 <table class="table border-dark">
     <thead>
     <tr>
         <th class="col-1 text-center p-2">No.</th>
-        <th class="col-9 p-2">제목</th>
-        <th class="col-9 p-2">풀이 횟수</th>
+        <th class="col-9 text-center p-2">제목</th>
+        <th class="col-9 text-center p-2">풀이 현황</th>
     </tr>
     </thead>
     <tbody class="table-group-divider">
     <tr th:each="problem: ${my}">
-        <th class="text-center p-2"><a th:href="@{'/solve/'+${problem.pid}}" th:text="${problem.pid}"></th>
-        <td class="p-2"><a th:href="@{'/solve/'+${problem.pid}}" th:text="${problem.title}"></td>
+        <th class="text-center p-2"><a th:href="@{'/solve/'+${problem.pid}}"><button type="button" class="btn btn-link" th:text="${problem.pid}">problemid</button></a></th>
+        <td class="p-2"><a th:href="@{'/solve/'+${problem.pid}}"><button type="button" class="btn btn-link" th:text="${problem.title}">title</button></a></td>
         <div th:switch="${problem.status}">
-            <td class="p-2" th:case="0">풀이 전</td>
-            <td class="p-2" th:case="1">풀이 중</td>
-            <td class="p-2" th:case="2">풀이 완료</td>
-            <td class="p-2" th:case="3">미해결</td>
+            <td class="p-2 text-center align-middle" th:case="0"><span class="badge text-bg-primary fs-6">풀이 전</span></td>
+            <td class="p-2 text-center align-middle" th:case="1"><span class="badge text-bg-secondary fs-6">풀이 중</span></td>
+            <td class="p-2 text-center align-middle" th:case="2"><span class="badge text-bg-success fs-6">풀이 완료</span></td>
+            <td class="p-2 text-center align-middle" th:case="3"><span class="badge text-bg-danger fs-6">미해결</span></td>
         </div>
     </tr>
     </tbody>

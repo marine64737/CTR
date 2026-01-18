@@ -1,0 +1,7 @@
+.CodeMirror {
+        height: 700px; /* 사령관님 취향껏 조절하세요 (예: 500px, 800px) */
+        font-family: 'JetBrains Mono', 'Consolas', monospace; /* 코딩용 폰트 */
+        font-size: 15px;
+        border-radius: 8px; /* 모서리를 살짝 둥글게 하면 더 세련돼 보입니다 */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* 살짝 입체감 주기 */
+   }

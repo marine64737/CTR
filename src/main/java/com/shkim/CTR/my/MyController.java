@@ -55,7 +55,7 @@ public class MyController {
 
     @GetMapping("/search")
     public String search(Model model){
-        model.addAttribute("word", null);
+//        model.addAttribute("word", null);
         return "search";
     }
 
@@ -91,8 +91,9 @@ public class MyController {
                         "JOIN user u ON m.userid = u.id ",
                 name, pid);
         String title = jdbcTemplate.queryForObject("SELECT titleKo from problem where problemid = ?",
-                (rs, rowNum) -> rs.getString("titleKo"), problemid);
-        model.addAttribute("myProblem", problemid+". "+title);
+                (rs, rowNum) -> rs.getString("titleKo"), pid);
+        model.addAttribute("problemid", pid);
+        model.addAttribute("problemtitle", title);
         model.addAttribute("my", my);
         model.addAttribute("pid", pid);
         model.addAttribute("name", name);
@@ -103,7 +104,7 @@ public class MyController {
     public String detail(@PathVariable String problemid, @PathVariable String id, Model model, Principal principal){
         int pid = Integer.parseInt(problemid);
         int mid = Integer.parseInt(id);
-        Map<String, Object> my = jdbcTemplate.queryForMap("SELECT m.id as id, m.problemid as pid, p.titleKo, m.start_time, m.end_time, m.status,m.code, m.memo FROM my as m join user as u on m.userid=u.id join problem as p on m.problemid=p.problemid where m.id=?",
+        Map<String, Object> my = jdbcTemplate.queryForMap("SELECT m.id as id, m.problemid as pid, p.titleKo as title, m.start_time, m.end_time, m.status,m.code, m.memo FROM my as m join user as u on m.userid=u.id join problem as p on m.problemid=p.problemid where m.id=?",
                 mid);
         model.addAttribute("my", my);
         return "detail";
