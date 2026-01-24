@@ -16,12 +16,14 @@
 
 package com.shkim.CTR.config;
 
+import com.shkim.CTR.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -47,6 +49,9 @@ public class SecurityConfig {
 	@Autowired
 	public static UserDetailsService userDetailsService;
 
+	@Autowired
+	public static UserService userService;
+
 	public SecurityConfig(JdbcTemplate jdbcTemplate){
 		SecurityConfig.jdbcTemplate = jdbcTemplate;
 	}
@@ -56,6 +61,7 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http
+				.csrf(csrf -> csrf.disable())
 			.authorizeHttpRequests((authorize) -> authorize
 				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
 					.requestMatchers("/signup", "/signupComplete","/image/**").permitAll()
@@ -73,6 +79,17 @@ public class SecurityConfig {
 					.logoutSuccessUrl("/login?logout")
 					.permitAll()
 			)
+//				.sessionManagement(session -> session
+//						.sessionFixation().migrateSession() // 시큐리티가 세션 ID를 직접 바꾸지 못하게 방어
+//						.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+//				)
+				.rememberMe(remember -> remember
+								.alwaysRemember(true) // 🔥 핵심: 파라미터 체크 여부와 상관없이 무조건 발동!
+						.key("uniqueAndSecretKey") // 이 키가 유출되면 안 됩니다 (사령관님만의 비밀번호)
+						.tokenValiditySeconds(60 * 60 * 24 * 30) // 30일 동안 유지 (1440분보다 훨씬 길죠!)
+						.userDetailsService(userService) // 사령관님이 만든 그 UserService가 여기서 쓰입니다!
+						.rememberMeParameter("remember-me") // 로그인 폼의 체크박스 이름
+				)
 			.build();
 	}
 	// end::config[]

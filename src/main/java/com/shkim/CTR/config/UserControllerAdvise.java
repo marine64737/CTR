@@ -16,6 +16,7 @@
 
 package com.shkim.CTR.config;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -32,6 +33,11 @@ public class UserControllerAdvise {
 	@ModelAttribute("currentUserName")
 	String currentUser(Principal principal) {
 		return (principal != null) ? principal.getName() : null;
+	}
+
+	@ModelAttribute("httpSession")
+	HttpSession httpSession(HttpSession httpSession) {
+		return httpSession;
 	}
 
 }

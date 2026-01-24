@@ -1,16 +1,20 @@
 package com.shkim.CTR.my;
 
 import com.shkim.CTR.question.ProblemDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +30,10 @@ public class MyController {
     }
 
     @GetMapping("/login")
-    public String login(){
+    public String login(Authentication authentication){
+        if (authentication != null && authentication.isAuthenticated()) {
+            return "redirect:/home"; // 메인 페이지로 강제 압송
+        }
         return "login";
     }
 //    @PostMapping("/logout")
@@ -35,7 +42,13 @@ public class MyController {
 //        return "login";
 //    }
     @GetMapping("/home")
-    public String home(Model model, Principal principal){
+    public String home(@RequestParam(name = "key", required = false) String key,
+                       @RequestParam(name = "value", required = false) String value, HttpServletRequest request, Model model, Principal principal){
+        if (!ObjectUtils.isEmpty(key) && !ObjectUtils.isEmpty(value)) {
+            request.getSession().setAttribute(key, value);
+            //request.getSession().setAttribute("test", "hello");
+            log.info("Session Success");
+        }
 //        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, status FROM my as m join user as u on m.userid = u.id join problem as p on m.problemid = p.problemid where u.name = ? order by m.id desc limit 100",
 //                principal.getName());
         List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, m.status " +
@@ -50,6 +63,7 @@ public class MyController {
                         "JOIN problem p ON m.problemid = p.problemId;",
                 principal.getName());
         model.addAttribute("my", my);
+        model.addAttribute("sessionAttributeNames", Collections.list(request.getSession().getAttributeNames()));
         return "home";
     }
 
@@ -152,7 +166,7 @@ public class MyController {
         Map<String, Object> my = jdbcTemplate.queryForMap("SELECT problemId, titleKo FROM problem WHERE problemId = ?", id);
         int uid = jdbcTemplate.queryForObject("SELECT id FROM user WHERE name = ?",(rs, rowNum) -> rs.getInt("id"), principal.getName());
         jdbcTemplate.execute("INSERT INTO my(userid, problemid, status) VALUES("+uid+", "+my.get("problemid")+ ", 0)");
-        home(model, principal);
+//        home(model, principal);
         return "redirect:/solve/"+id;
     }
     @PostMapping("/time")

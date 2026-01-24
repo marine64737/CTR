@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -49,7 +51,9 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    static class CustomUserDetails extends User implements UserDetails{
+    public static class CustomUserDetails extends User implements UserDetails, Serializable {
+//        @Serial
+//        private static final long serialVersionUID = 1L;
         CustomUserDetails(User user){
             super(user.getId(), user.getName(), user.getPassword());
         }

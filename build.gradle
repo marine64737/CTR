@@ -14,15 +14,34 @@ java {
 	}
 }
 
+configurations.all {
+	// tools.jackson 패키지를 사용하는 모든 라이브러리를 차단합니다.
+	exclude group: 'tools.jackson', module: 'jackson-databind'
+}
+
 dependencies {
+	implementation platform('com.fasterxml.jackson:jackson-bom:2.15.2')
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	implementation "org.springframework.boot:spring-boot-starter-security"
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.session:spring-session-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	// Jackson의 핵심! 객체-JSON 변환을 담당하는 녀석입니다.
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+	// 이미 있으시겠지만, 확실히 하기 위해 세트 메뉴로 둡니다.
+	implementation 'com.fasterxml.jackson.core:jackson-core'
+	implementation 'com.fasterxml.jackson.core:jackson-annotations'
+
+	// 만약 Java 8의 시간 타입(LocalDateTime 등)을 쓰신다면 이것도 필수입니다.
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+
+	//implementation libs.jackson.databind
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-thymeleaf-test'

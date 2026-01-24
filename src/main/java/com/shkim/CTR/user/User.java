@@ -1,6 +1,8 @@
 package com.shkim.CTR.user;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 
     private int id;
 
