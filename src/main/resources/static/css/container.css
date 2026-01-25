@@ -1,0 +1,7 @@
+/* 로그인 폼을 감싸고 있는 가장 바깥쪽 컨테이너 */
+.container {
+    display: flex;          /* 1. Flexbox 활성화 */
+    justify-content: center; /* 2. 가로 방향 중앙 정렬 */
+    /*align-items: center;     /* 3. 세로 방향 중앙 정렬 */
+    /*min-height: 60vh;       /* 화면 높이의 80% 정도를 차지하게 해서 수직 중앙 확보 */
+}

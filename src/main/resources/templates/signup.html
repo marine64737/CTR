@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
-<head>
-    <title>Sign up</title>
+<div th:insert="~{header}"></div>
 </head>
 <body>
-<h1>Sign up</h1>
-<div th:if="${param.error}">
-    Already used username.</div>
+<div class="container">
 <form th:action="@{/signup}" method="post">
-    <div>
-        <input type="text" name="username" placeholder="Username"/>
+    <h1 class="mb-0 fw-bold text-dark">회원 가입</h1><br>
+    <div class="mb-3">
+        <label for="username" class="form-label">아이디</label><br>
+        <input type="text" id="username" name="username" placeholder="ID"/>
     </div>
-    <div>
-        <input type="password" name="password" placeholder="Password"/>
+    <div class="mb-3">
+        <label for="password" class="form-label">비밀번호</label><br>
+        <input type="password" id="password" name="password" placeholder="Password"/>
     </div>
-    <input type="submit" value="회원 가입" />
-    <a href="/login"><input type="button" value="뒤로가기" />
+    <div th:if="${param.error}">
+        이미 사용 중인 아이디입니다.</div><br>
+    <button type="submit" class="btn btn-primary">회원 가입</button>
+    <a href="/login"><button type="button" class="btn btn-warning">뒤로 가기</button></a>
 </form>
+    </div>
 </body>
+<link rel="stylesheet" th:href="@{/css/container.css}">
 </html>
