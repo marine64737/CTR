@@ -83,15 +83,16 @@ public class MyController {
         return "search";
     }
 
-    @RequestMapping("/solve/{problemid}")
-    public String solve(@PathVariable String problemid, Model model, Principal principal){
-        int pid = Integer.parseInt(problemid);
-        String name = principal.getName();
 //        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, " +
 //                        "DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') as st, DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') as end," +
 //                        "TIMESTAMPDIFF(MINUTE, start_time, end_time) as duration, " +
 //                        "m.status FROM my as m join user as u on m.userid=u.id where u.name = ? and m.problemid = ? order by m.id asc",
 //                name, pid);
+
+    @RequestMapping("/solve/{problemid}")
+    public String solve(@PathVariable String problemid, Model model, Principal principal){
+        int pid = Integer.parseInt(problemid);
+        String name = principal.getName();
         List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, " +
                         "DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') as st, DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') as end, "+
                         "TIMESTAMPDIFF(MINUTE, start_time, end_time) as duration, m.status "+
@@ -118,7 +119,8 @@ public class MyController {
     public String detail(@PathVariable String problemid, @PathVariable String id, Model model, Principal principal){
         int pid = Integer.parseInt(problemid);
         int mid = Integer.parseInt(id);
-        Map<String, Object> my = jdbcTemplate.queryForMap("SELECT m.id as id, m.problemid as pid, p.titleKo as title, m.start_time, m.end_time, m.status,m.code, m.memo FROM my as m join user as u on m.userid=u.id join problem as p on m.problemid=p.problemid where m.id=?",
+        Map<String, Object> my = jdbcTemplate.queryForMap("SELECT m.id as id, m.problemid as pid, p.titleKo as title, m.start_time, m.end_time, " +
+                        "m.status,m.code, m.memo FROM my as m join user as u on m.userid=u.id join problem as p on m.problemid=p.problemid where m.id=?",
                 mid);
         model.addAttribute("my", my);
         return "detail";

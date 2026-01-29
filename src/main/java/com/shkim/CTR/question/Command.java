@@ -35,10 +35,10 @@ public class Command implements CommandLineRunner {
     @Override
     public void run(String... strings) throws SQLException, IOException {
         log.info("Creating tables");
-        String URL = "jdbc:mysql://192.168.45.169:3306/ctr";
-        String USER = "root";
-        String PW = "1234";
-        int count = 0;
+//        String URL = "jdbc:mysql://192.168.45.169:3306/ctr";
+//        String USER = "root";
+//        String PW = "1234";
+//        int count = 0;
 //        try (Connection conn = DriverManager.getConnection(URL, USER, PW);
 //
 //             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("src/main/resources/backup.sql"), StandardCharsets.UTF_16LE))) {

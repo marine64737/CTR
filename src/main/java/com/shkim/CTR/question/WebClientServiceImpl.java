@@ -67,7 +67,7 @@ public class WebClientServiceImpl {
                         .retrieve()
                         .onStatus(HttpStatus.TOO_MANY_REQUESTS::equals, clientResponse -> Mono.error(new RuntimeException("429 Too Many Requests")))
                         .bodyToFlux(Problem.class).collectList()
-                        .delaySubscription(Duration.ofMillis(500)) // 요청 간 기본 1초 딜레이
+                        .delaySubscription(Duration.ofMillis(1000)) // 요청 간 기본 1초 딜레이
                         .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2)) // 429 시 최대 3번, 2초 간격 재시도
                                 .filter(throwable -> throwable instanceof RuntimeException &&
                                         throwable.getMessage().contains("429"))).block();
