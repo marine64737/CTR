@@ -219,19 +219,20 @@ public class Command implements CommandLineRunner {
 //
 //        jdbcTemplate.batchUpdate("INSERT INTO user(name, password) VALUE (?, ?)", list);
 //
-//        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS my("+
-//                "id int NOT NULL AUTO_INCREMENT," +
-//                "userid int not null," +
-//                "problemid int not null," +
-//                "start_time datetime, " +
-//                "end_time datetime, " +
-//                "status int not null, " +
-//                "code text, " +
-//                "memo text, " +
-//                "primary key(id))");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS my");
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS my("+
+                "id int NOT NULL AUTO_INCREMENT," +
+                "userid int not null," +
+                "problemid int not null," +
+                "start_time datetime, " +
+                "end_time datetime, " +
+                "status int not null, " +
+                "code text, " +
+                "memo text, " +
+                "primary key(id))");
 //                "foreign key(userid) references user(id), " +
 //                "foreign key(problemid) references problem(problemid))");
-//
+
 //                jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS my("+
 //                "id int NOT NULL AUTO_INCREMENT," +
 //                "userid int not null," +
@@ -239,27 +240,46 @@ public class Command implements CommandLineRunner {
 //                "primary key(id),"+
 //                "foreign key(userid) references user(id), " +
 //                "foreign key(problemid) references problem(problemid))");
+
+        List<Object[]> arr = new ArrayList<>();
+        List<Integer> problemNum = jdbcTemplate.queryForList("select problemid from problem", Integer.class);
+        for(int i=0; i<100000; i++){
+            Collections.shuffle(problemNum);
+            List<Integer> problemShuffled = problemNum.subList(0, 1000);
+            Random ran = new Random();
+            List<Integer> intsList = ran.ints(1000, 1, 100)
+                    .boxed().toList();
+            List<Integer> intsList2 = ran.ints(1000, 2, 4)
+                    .boxed().toList();
+            for (int j=0; j<1000; j++){
+                int u = intsList.get(j);
+                int p = problemShuffled.get(j);
+                int s = intsList2.get(j);
+                arr.add(new Object[]{u,p,s});
+            }
+            if (i%10==9) {
+                jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid, start_time, end_time, status) VALUES (?,?, now(), now()+INTERVAL 8 HOUR, ?)", arr);
+                log.info((i/10)+"/"+10000);
+                arr = new ArrayList<>();
+            }
+        }
+
+//        jdbcTemplate.execute("SET GLOBAL innodb_flush_log_at_trx_commit = 0");
+//        Random ran = new Random();
 //        List<Object[]> arr = new ArrayList<>();
-//        List<Integer> problemNum = jdbcTemplate.queryForList("select problemid from problem", Integer.class);
 //        for(int i=0; i<100000; i++){
-//            Collections.shuffle(problemNum);
-//            List<Integer> problemShuffled = problemNum.subList(0, 1000);
-//            Random ran = new Random();
-//            List<Integer> intsList = ran.ints(1000, 1, 100)
-//                    .boxed().toList();
-//            List<Integer> intsList2 = ran.ints(1000, 2, 4)
-//                    .boxed().toList();
 //            for (int j=0; j<1000; j++){
-//                int u = intsList.get(j);
-//                int p = problemShuffled.get(j);
-//                int s = intsList2.get(j);
-//                arr.add(new Object[]{u,p,s});
+//                int id = (1000*i)+j;
+//                int s = ran.nextInt(2, 4);
+//                arr.add(new Object[]{s, id});
 //            }
-//            if (i%5==4){
-//                jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid, start_time, end_time, status) VALUES (?,?, now(), now()+INTERVAL 8 HOUR, ?)", arr);
+//            if (i%10==9){
+//                jdbcTemplate.batchUpdate("UPDATE my set start_time = now(), end_time = now()+INTERVAL 8 HOUR, status=? where id = ?", arr);
 //                arr = new ArrayList<>();
 //            }
 //        }
+//        jdbcTemplate.execute("SET GLOBAL innodb_flush_log_at_trx_commit = 1");
+
 
 //        jdbcTemplate.execute("alter table my add foreign key u_fk(userid) references user(id)");
 //        jdbcTemplate.execute("alter table my add foreign key p_fk(problemid) references problem(problemid)");
