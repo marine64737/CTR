@@ -16,9 +16,9 @@
 
 package com.shkim.CTR.config;
 
-import jakarta.servlet.http.HttpSession;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ModelAttribute;
+//import jakarta.servlet.http.HttpSession;
+//import org.springframework.web.bind.annotation.ControllerAdvice;
+//import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.security.Principal;
 
@@ -27,17 +27,17 @@ import java.security.Principal;
  *
  * @author Rob Winch
  */
-@ControllerAdvice
-public class UserControllerAdvise {
-
-	@ModelAttribute("currentUserName")
-	String currentUser(Principal principal) {
-		return (principal != null) ? principal.getName() : null;
-	}
-
-	@ModelAttribute("httpSession")
-	HttpSession httpSession(HttpSession httpSession) {
-		return httpSession;
-	}
-
-}
+//@ControllerAdvice
+//public class UserControllerAdvise {
+//
+//	@ModelAttribute("currentUserName")
+//	String currentUser(Principal principal) {
+//		return (principal != null) ? principal.getName() : null;
+//	}
+//
+//	@ModelAttribute("httpSession")
+//	HttpSession httpSession(HttpSession httpSession) {
+//		return httpSession;
+//	}
+//
+//}

@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '4.0.0'
+	id 'org.springframework.boot' version '4.0.2'
 	id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -20,15 +20,12 @@ configurations.all {
 }
 
 dependencies {
-	implementation platform('com.fasterxml.jackson:jackson-bom:2.15.2')
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	//implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	//implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	//implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.session:spring-session-data-redis'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	//implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 	// Jackson의 핵심! 객체-JSON 변환을 담당하는 녀석입니다.
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
@@ -42,13 +39,13 @@ dependencies {
 
 
 	//implementation libs.jackson.databind
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	//developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-thymeleaf-test'
 	//testImplementation 'org.springframework.boot:spring-boot-starter-web-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	//runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'com.mysql:mysql-connector-j'
+	//runtimeOnly 'com.mysql:mysql-connector-j'
 }
 
 repositories {
