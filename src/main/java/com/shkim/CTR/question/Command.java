@@ -28,20 +28,36 @@ public class Command implements CommandLineRunner {
 
     @Autowired
     public WebClientServiceImpl webClientService;
+//    BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("src/main/resources/backup.sql"), StandardCharsets.UTF_16LE))) {
+    //line = line.trim();
+    //if (line.startsWith("\uFEFF")) line = line.substring(1);
+    //line = line.substring(1);
 
     public Command(JdbcTemplate jdbcTemplate){
         Command.jdbcTemplate = jdbcTemplate;
     }
+
+    //            byte[] buffer = new byte[10];
+//            int bytesRead = fis.read(buffer);
+//
+//            System.out.print("파일 헤더(Hex): ");
+//            for (int i = 0; i < bytesRead; i++) {
+//                System.out.printf("%02X ", buffer[i]);
+//            }
+    //             FileInputStream fis = new FileInputStream("src/main/resources/backup.sql");
+
+
     @Override
     public void run(String... strings) throws SQLException, IOException {
         log.info("Creating tables");
-//        String URL = "jdbc:mysql://192.168.45.169:3306/ctr";
+//        String URL = "jdbc:mysql://192.168.45.188:3308/ctr";
 //        String USER = "root";
 //        String PW = "1234";
 //        int count = 0;
 //        try (Connection conn = DriverManager.getConnection(URL, USER, PW);
 //
-//             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("src/main/resources/backup.sql"), StandardCharsets.UTF_16LE))) {
+//        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("src/main/resources/backup.sql")))) {
+//
 //
 //            Statement stmt = conn.createStatement();
 //            String line;
@@ -49,9 +65,7 @@ public class Command implements CommandLineRunner {
 //
 //            while ((line = br.readLine()) != null) {
 //                count++;
-//                line = line.trim();
-//                if (line.startsWith("\uFEFF")) line = line.substring(1);
-//                //line = line.substring(1);
+//
 //                if (line.isEmpty()) continue;
 //                if (line.startsWith("--") || line.startsWith("#") || line.startsWith("/*")) {
 //                    log.info(count+": Pass");
@@ -67,7 +81,6 @@ public class Command implements CommandLineRunner {
 //                    sb = new StringBuilder();
 //                    log.info(count+" Clear");
 //                }
-//                count++;
 //                if (count % 10 == 0) log.info("이관 완료: "+count);
 //            }
 //        } catch (Exception e) {
@@ -219,17 +232,17 @@ public class Command implements CommandLineRunner {
 //
 //        jdbcTemplate.batchUpdate("INSERT INTO user(name, password) VALUE (?, ?)", list);
 //
-        jdbcTemplate.execute("DROP TABLE IF EXISTS my");
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS my("+
-                "id int NOT NULL AUTO_INCREMENT," +
-                "userid int not null," +
-                "problemid int not null," +
-                "start_time datetime, " +
-                "end_time datetime, " +
-                "status int not null, " +
-                "code text, " +
-                "memo text, " +
-                "primary key(id))");
+//        jdbcTemplate.execute("DROP TABLE IF EXISTS my");
+//        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS my("+
+//                "id int NOT NULL AUTO_INCREMENT," +
+//                "userid int not null," +
+//                "problemid int not null," +
+//                "start_time datetime, " +
+//                "end_time datetime, " +
+//                "status int not null, " +
+//                "code text, " +
+//                "memo text, " +
+//                "primary key(id))");
 //                "foreign key(userid) references user(id), " +
 //                "foreign key(problemid) references problem(problemid))");
 
@@ -241,28 +254,28 @@ public class Command implements CommandLineRunner {
 //                "foreign key(userid) references user(id), " +
 //                "foreign key(problemid) references problem(problemid))");
 
-        List<Object[]> arr = new ArrayList<>();
-        List<Integer> problemNum = jdbcTemplate.queryForList("select problemid from problem", Integer.class);
-        for(int i=0; i<100000; i++){
-            Collections.shuffle(problemNum);
-            List<Integer> problemShuffled = problemNum.subList(0, 1000);
-            Random ran = new Random();
-            List<Integer> intsList = ran.ints(1000, 1, 100)
-                    .boxed().toList();
-            List<Integer> intsList2 = ran.ints(1000, 2, 4)
-                    .boxed().toList();
-            for (int j=0; j<1000; j++){
-                int u = intsList.get(j);
-                int p = problemShuffled.get(j);
-                int s = intsList2.get(j);
-                arr.add(new Object[]{u,p,s});
-            }
-            if (i%10==9) {
-                jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid, start_time, end_time, status) VALUES (?,?, now(), now()+INTERVAL 8 HOUR, ?)", arr);
-                log.info((i/10)+"/"+10000);
-                arr = new ArrayList<>();
-            }
-        }
+//        List<Object[]> arr = new ArrayList<>();
+//        List<Integer> problemNum = jdbcTemplate.queryForList("select problemid from problem", Integer.class);
+//        for(int i=0; i<100000; i++){
+//            Collections.shuffle(problemNum);
+//            List<Integer> problemShuffled = problemNum.subList(0, 1000);
+//            Random ran = new Random();
+//            List<Integer> intsList = ran.ints(1000, 1, 100)
+//                    .boxed().toList();
+//            List<Integer> intsList2 = ran.ints(1000, 2, 4)
+//                    .boxed().toList();
+//            for (int j=0; j<1000; j++){
+//                int u = intsList.get(j);
+//                int p = problemShuffled.get(j);
+//                int s = intsList2.get(j);
+//                arr.add(new Object[]{u,p,s});
+//            }
+//            if (i%10==9) {
+//                jdbcTemplate.batchUpdate("INSERT INTO my(userid, problemid, start_time, end_time, status) VALUES (?,?, now(), now()+INTERVAL 8 HOUR, ?)", arr);
+//                log.info((i/10)+"/"+10000);
+//                arr = new ArrayList<>();
+//            }
+//        }
 
 //        jdbcTemplate.execute("SET GLOBAL innodb_flush_log_at_trx_commit = 0");
 //        Random ran = new Random();
