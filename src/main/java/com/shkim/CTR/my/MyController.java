@@ -107,11 +107,13 @@ public class MyController {
                 name, pid);
         String title = jdbcTemplate.queryForObject("SELECT titleKo from problem where problemid = ?",
                 (rs, rowNum) -> rs.getString("titleKo"), pid);
+        String link = "https://www.acmicpc.net/problem/"+pid;
         model.addAttribute("problemid", pid);
         model.addAttribute("problemtitle", title);
         model.addAttribute("my", my);
         model.addAttribute("pid", pid);
         model.addAttribute("name", name);
+        model.addAttribute("link", link);
         return "solve";
     }
 
@@ -122,7 +124,9 @@ public class MyController {
         Map<String, Object> my = jdbcTemplate.queryForMap("SELECT m.id as id, m.problemid as pid, p.titleKo as title, " +
                         "m.code, m.memo FROM my as m join user as u on m.userid=u.id join problem as p on m.problemid=p.problemid where m.id=?",
                 mid);
+        String link = "https://www.acmicpc.net/problem/"+pid;
         model.addAttribute("my", my);
+        model.addAttribute("link", link);
         return "detail";
     }
 

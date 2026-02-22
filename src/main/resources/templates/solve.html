@@ -7,6 +7,7 @@
     <div class="d-flex align-items-center pb-3 mb-4 border-bottom">
         <span class="badge bg-primary me-2 fs-5 align-middle" style="font-size: 0.6em; vertical-align: middle;" th:text="${problemid}">NO.</span>
         <h2 class="h4 mb-0 fw-bold text-dark" th:text="${problemtitle}">Title</h2>
+        <a th:href="@{${link}}"><button type="button" class="btn btn-primary">바로가기</button></a>
     </div>
 <table class="table border-dark">
     <thead>
@@ -21,7 +22,7 @@
     </thead>
     <tbody>
     <tr th:each="my, stat: ${my}">
-        <th class="col-1 text-center align-middle"><a th:href="@{'/solve/'+${my.pid}+'/'+${my.id}}"><button type="button" class="btn btn-link" th:text="${stat.size-stat.count+1}">nO.</button></a></th>
+        <th class="col-1 text-center align-middle"><a th:href="@{'/solve/'+${my.pid}+'/'+${my.id}}"><button type="button" class="btn btn-link" th:text="${stat.count}">nO.</button></a></th>
         <td class="col-2 text-center p-3 align-middle" th:text="${my.st}">-</td>
         <td class="col-2 text-center p-3 align-middle" th:text="${my.end}">-</td>
         <td class="col-1 text-center p-3 align-middle" th:text="${my.duration}">-</td>

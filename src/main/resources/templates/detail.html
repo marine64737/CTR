@@ -10,6 +10,7 @@
     <div class="d-flex align-items-center pb-3 mb-4 border-bottom">
         <span class="badge bg-primary me-2 fs-5 align-middle" style="font-size: 0.6em; vertical-align: middle;" th:text="${my.pid}">NO.</span>
         <h2 class="h4 mb-0 fw-bold text-dark" th:text="${my.title}">Title</h2>
+        <a th:href="@{${link}}"><button type="button" class="btn btn-primary">바로가기</button></a>
     </div>
     <form action="#" th:action="@{/update}" method="post">
         <input type="hidden" name="id" th:value="${my.id}">
