@@ -35,3 +35,5 @@ out/
 
 ### VS Code ###
 .vscode/
+src/main/resources/backup.sql
+src/main/resources/backup_1.sql

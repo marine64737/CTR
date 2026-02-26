@@ -32,7 +32,7 @@
             <td class="col-1 text-center p-3 align-middle" th:case="2"><span class="badge text-bg-success fs-6">풀이 완료</span></td>
             <td class="col-1 text-center p-3 align-middle" th:case="3"><span class="badge text-bg-danger fs-6">미해결</span></td>
         </div>
-        <form action="#" th:action="@{/solve/timelap}" method="post">
+        <form action="#" th:action="@{/solve/timelaps}" method="post">
             <input type="hidden" name = "pid" th:value="${my.pid}"/>
             <input type="hidden" name = "status" th:value="${my.status}"/>
             <div th:switch="${my.status}">
@@ -53,7 +53,10 @@
 <!--        <input type="hidden" name="pid" th:value="${pid}">-->
 <!--        <input type="submit" value="풀이 추가" />-->
 <!--    </form>-->
-<a href="/home"><input type="button" value="뒤로 가기" />
+    <div style="display: flex; justify-content: space-between;">
+        <a href="/home"><input type="button" value="뒤로 가기" /></a>
+        <button type="submit" name="retry" value="true" class="btn btn-primary">재시도</button>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </a>
 </div>

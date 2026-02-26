@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.HtmlUtils;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -134,7 +135,7 @@ public class MyController {
     public String update(@RequestParam String id, @RequestParam String pid, @RequestParam String code, @RequestParam String memo, Model model, Principal principal){
         int mid = Integer.parseInt(id);
         int probid = Integer.parseInt(pid);
-        jdbcTemplate.execute("update my set code='"+code+"', memo='"+memo+"' where id="+mid);
+        jdbcTemplate.update("update my set code=?, memo=? where id=?", code, memo, mid);
         solve(pid, model, principal);
         return "redirect:/solve/"+pid;
     }
@@ -147,9 +148,9 @@ public class MyController {
 //        return "redirect:/solve/"+pid;
 //    }
 
-    @PostMapping("/solve/timelap")
+    @PostMapping("/solve/timelaps")
     public String timelap(@RequestParam String id, @RequestParam String pid, @RequestParam String status, @RequestParam(defaultValue = "true") boolean complete,
-                          Model model, Principal principal){
+                          @RequestParam(defaultValue = "false") boolean retry, Model model, Principal principal){
         int probid = Integer.parseInt(pid);
         int mid = Integer.parseInt(id);
         int uid = jdbcTemplate.queryForObject("select id from user where name=?", (rs, rowNum) -> rs.getInt("id"), principal.getName());
@@ -161,8 +162,8 @@ public class MyController {
         else if (mstatus == 1) {
             if (complete) jdbcTemplate.execute("update my set end_time=now() + INTERVAL 9 HOUR, status=2 where id="+mid);
             else jdbcTemplate.execute("update my set end_time=now() + INTERVAL 9 HOUR, status=3 where id="+mid);
-            jdbcTemplate.execute("insert into my(userid, problemid, status) values("+uid+", "+probid+", 0)");
         }
+        if (retry) jdbcTemplate.execute("insert into my(userid, problemid, status) values("+uid+", "+probid+", 0)");
         solve(pid, model, principal);
         return "redirect:/solve/"+pid;
     }
