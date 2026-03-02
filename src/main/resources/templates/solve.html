@@ -55,7 +55,10 @@
 <!--    </form>-->
     <div style="display: flex; justify-content: space-between;">
         <a href="/home"><input type="button" value="뒤로 가기" /></a>
-        <button type="submit" name="retry" value="true" class="btn btn-primary">재시도</button>
+        <form action="#" th:action="@{/solve/solveadd}" method="post">
+            <input type="hidden" name = "pid" th:value="${pid}"/>
+        <button type="submit" class="btn btn-primary">재시도</button>
+        </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </a>

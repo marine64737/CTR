@@ -149,8 +149,7 @@ public class MyController {
 //    }
 
     @PostMapping("/solve/timelaps")
-    public String timelap(@RequestParam String id, @RequestParam String pid, @RequestParam String status, @RequestParam(defaultValue = "true") boolean complete,
-                          @RequestParam(defaultValue = "false") boolean retry, Model model, Principal principal){
+    public String timelap(@RequestParam String id, @RequestParam String pid, @RequestParam String status, @RequestParam(defaultValue = "true") boolean complete, Model model, Principal principal){
         int probid = Integer.parseInt(pid);
         int mid = Integer.parseInt(id);
         int uid = jdbcTemplate.queryForObject("select id from user where name=?", (rs, rowNum) -> rs.getInt("id"), principal.getName());
@@ -163,7 +162,14 @@ public class MyController {
             if (complete) jdbcTemplate.execute("update my set end_time=now() + INTERVAL 9 HOUR, status=2 where id="+mid);
             else jdbcTemplate.execute("update my set end_time=now() + INTERVAL 9 HOUR, status=3 where id="+mid);
         }
-        if (retry) jdbcTemplate.execute("insert into my(userid, problemid, status) values("+uid+", "+probid+", 0)");
+        solve(pid, model, principal);
+        return "redirect:/solve/"+pid;
+    }
+    @PostMapping("/solve/solveadd")
+    public String solveadd(@RequestParam String pid, Model model, Principal principal){
+        int probid = Integer.parseInt(pid);
+        int uid = jdbcTemplate.queryForObject("select id from user where name=?", (rs, rowNum) -> rs.getInt("id"), principal.getName());
+        jdbcTemplate.execute("insert into my(userid, problemid, status) values("+uid+", "+probid+", 0)");
         solve(pid, model, principal);
         return "redirect:/solve/"+pid;
     }
