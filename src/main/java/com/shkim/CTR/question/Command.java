@@ -276,6 +276,8 @@ public class Command implements CommandLineRunner {
 //                arr = new ArrayList<>();
 //            }
 //        }
+//        jdbcTemplate.execute("create index u_p_sd_id_s on my(userid, problemid, start_time desc, id desc, status)");
+//        jdbcTemplate.execute("create index u_sd_id_p_s on my(userid, start_time desc, id desc, problemid, status)");+
 
 //        jdbcTemplate.execute("SET GLOBAL innodb_flush_log_at_trx_commit = 0");
 //        Random ran = new Random();

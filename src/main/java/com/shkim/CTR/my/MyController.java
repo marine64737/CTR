@@ -57,13 +57,25 @@ public class MyController {
                         "    SELECT id, userid, problemid, status " +
                         "    FROM my " +
                         "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
-                        "    ORDER BY id DESC " +
+                        "    AND start_time IS NOT NULL ORDER BY start_time DESC " +
+                        "    LIMIT 100" +
+                        ") AS m " +
+                        "JOIN user u ON m.userid = u.id " +
+                        "JOIN problem p ON m.problemid = p.problemId;",
+                principal.getName());
+        List<Map<String, Object>> my1 = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, m.status " +
+                        "FROM (" +
+                        "    SELECT id, userid, problemid, status " +
+                        "    FROM my " +
+                        "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
+                        "    AND start_time IS NULL ORDER BY id DESC " +
                         "    LIMIT 100" +
                         ") AS m " +
                         "JOIN user u ON m.userid = u.id " +
                         "JOIN problem p ON m.problemid = p.problemId;",
                 principal.getName());
         model.addAttribute("my", my);
+        model.addAttribute("my1", my1);
         model.addAttribute("sessionAttributeNames", Collections.list(request.getSession().getAttributeNames()));
         return "home";
     }

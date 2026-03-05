@@ -22,7 +22,7 @@
     </thead>
     <tbody>
     <tr th:each="my, stat: ${my}">
-        <th class="col-1 text-center align-middle"><a th:href="@{'/solve/'+${my.pid}+'/'+${my.id}}"><button type="button" class="btn btn-link" th:text="${stat.count}">nO.</button></a></th>
+        <th class="col-1 text-center align-middle"><a th:href="@{'/solve/'+${my.pid}+'/'+${my.id}}"><button type="button" class="btn btn-link" th:text="${stat.count}">No.</button></a></th>
         <td class="col-2 text-center p-3 align-middle" th:text="${my.st}">-</td>
         <td class="col-2 text-center p-3 align-middle" th:text="${my.end}">-</td>
         <td class="col-1 text-center p-3 align-middle" th:text="${my.duration}">-</td>
