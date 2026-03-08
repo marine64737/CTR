@@ -114,9 +114,8 @@ public class MyController {
                         "    FROM my " +
                         "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1) " +
                         "    and problemid = ? " +
-                        "    ORDER BY id DESC " +
                         ") AS m " +
-                        "JOIN user u ON m.userid = u.id ",
+                        "JOIN user u ON m.userid = u.id ORDER BY start_time IS NULL DESC, start_time DESC",
                 name, pid);
         String title = jdbcTemplate.queryForObject("SELECT titleKo from problem where problemid = ?",
                 (rs, rowNum) -> rs.getString("titleKo"), pid);
