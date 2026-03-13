@@ -15,6 +15,7 @@
         <th class="col-1 text-center p-1">No.</th>
         <th class="col-2 text-center p-1">풀이 시작</th>
         <th class="col-2 text-center p-1">풀이 종료</th>
+        <th class="col-1 text-center p-1">풀이 시간(분)</th>
         <th class="col-1 text-center p-1">풀이 시간</th>
         <th class="col-1 text-center p-1">풀이 현황</th>
         <th class="col-2 text-center"></th>
@@ -22,10 +23,13 @@
     </thead>
     <tbody>
     <tr th:each="my, stat: ${my}">
-        <th class="col-1 text-center align-middle"><a th:href="@{'/solve/'+${my.pid}+'/'+${my.id}}"><button type="button" class="btn btn-link" th:text="${stat.count}">No.</button></a></th>
+        <th class="col-1 text-center align-middle"><a th:href="@{'/solve/'+${my.pid}+'/'+${my.id}}"><button type="button" class="btn btn-link" th:text="${stat.size - stat.count + 1}">No.</button></a></th>
         <td class="col-2 text-center p-3 align-middle" th:text="${my.st}">-</td>
         <td class="col-2 text-center p-3 align-middle" th:text="${my.end}">-</td>
         <td class="col-1 text-center p-3 align-middle" th:text="${my.duration}">-</td>
+        <td class="col-1 text-center p-3 align-middle" th:if="${my.duration != null}" th:text="${my.hour == 0}? ${my.duration}%60+분 : ${my.hour}+'시간 '+${my.duration}%60+분">-</td>
+        <td class="col-1 text-center p-3 align-middle" th:if="${my.duration == null}"></td>
+<!--        <td class="col-1 text-center p-3 align-middle" th:unless=${my.hour == 0} th:text="${my.duration}%60">-</td>-->
         <div th:switch="${my.status}">
             <td class="col-1 text-center p-3 align-middle" th:case="0"><span class="badge text-bg-primary fs-6">풀이 전</span></td>
             <td class="col-1 text-center p-3 align-middle" th:case="1"><span class="badge text-bg-secondary fs-6">풀이 중</span></td>

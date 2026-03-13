@@ -108,7 +108,8 @@ public class MyController {
         String name = principal.getName();
         List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, " +
                         "DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') as st, DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') as end, "+
-                        "TIMESTAMPDIFF(MINUTE, start_time, end_time) as duration, m.status "+
+                        "TIMESTAMPDIFF(MINUTE, start_time, end_time) as duration, " +
+                        "TIMESTAMPDIFF(HOUR, start_time, end_time) as hour, m.status "+
                         "FROM (" +
                         "    SELECT id, userid, problemid, start_time, end_time, status " +
                         "    FROM my " +
