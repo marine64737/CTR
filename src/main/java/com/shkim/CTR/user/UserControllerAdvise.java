@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.shkim.CTR.config;
+package com.shkim.CTR.user;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.ControllerAdvice;
