@@ -1,4 +1,4 @@
-package com.shkim.CTR.question;
+package com.shkim.CTR.problem;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;

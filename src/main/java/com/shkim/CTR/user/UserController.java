@@ -1,6 +1,5 @@
 package com.shkim.CTR.user;
 
-import com.shkim.CTR.question.ProblemDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,10 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.security.Principal;
-import java.util.Date;
-import java.util.List;
 
 @Controller
 public class UserController {

@@ -1,4 +1,4 @@
-package com.shkim.CTR.question;
+package com.shkim.CTR.problem;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.shkim.CTR.question;
+package com.shkim.CTR.System;
 
 import com.shkim.CTR.CtrApplication;
 import org.slf4j.Logger;
@@ -6,19 +6,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 public class Command implements CommandLineRunner {
@@ -307,7 +298,7 @@ public class Command implements CommandLineRunner {
 //        String[] arr = {"A+B", "A-B", "터렛", "피보나치 함수", "어린 왕자", "ACM Craft", "습격자 초라기", "벡터 매칭", "A/B",
 //                "분산처리", "다리 놓기", "Fly me to the Alpha Centauri", "유기농 배추", "Contact"};
 //        for (int i=0; i<arr.length; i++){
-//            jdbcTemplate.execute("INSERT INTO question (number, title, url) values ('"+(1000+i)+"', '"+arr[i]+"',"+
+//            jdbcTemplate.execute("INSERT INTO problem (number, title, url) values ('"+(1000+i)+"', '"+arr[i]+"',"+
 //                    "'https://www.acmicpc.net/problem/"+(1000+i)+"')");
 //        }
 //        List<Object[]> arr = new ArrayList<>();
