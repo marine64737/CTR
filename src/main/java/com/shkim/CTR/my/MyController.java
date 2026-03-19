@@ -63,9 +63,9 @@ public class MyController {
                         "JOIN user u ON m.userid = u.id " +
                         "JOIN problem p ON m.problemid = p.problemId;",
                 principal.getName());
-        List<Map<String, Object>> my1 = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, m.status " +
+        List<Map<String, Object>> my1 = jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, p.titleKo as title, m.status, m.nonvisible " +
                         "FROM (" +
-                        "    SELECT id, userid, problemid, status " +
+                        "    SELECT id, userid, problemid, status, nonvisible " +
                         "    FROM my " +
                         "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
                         "    AND start_time IS NULL ORDER BY id DESC " +
@@ -80,6 +80,21 @@ public class MyController {
         return "home";
     }
 
+//    @PostMapping("/home/toggle")
+//    public String toggle(
+//            @RequestParam(name = "key", required = false) String key,
+//                         @RequestParam(name = "value", required = false) String value, HttpServletRequest request,
+//                         @RequestParam String id, @RequestParam boolean noview, Model model, Principal principal){
+//        if (!ObjectUtils.isEmpty(key) && !ObjectUtils.isEmpty(value)) {
+//            request.getSession().setAttribute(key, value);
+//            log.info("Session Success");
+//        }
+//        int mid = Integer.parseInt(id);
+//        if (noview) jdbcTemplate.execute("update my set nonvisible = true where id="+mid);
+//        else jdbcTemplate.execute("update my set nonvisible = false where id="+mid);
+//        home(key, value, request, model, principal);
+//        return "redirect:/home";
+//    }
     @GetMapping("/search")
     public String search(Model model){
 //        model.addAttribute("word", null);
@@ -129,7 +144,6 @@ public class MyController {
         model.addAttribute("link", link);
         return "solve";
     }
-
     @RequestMapping("/solve/{problemid}/{id}")
     public String detail(@PathVariable String problemid, @PathVariable String id, Model model, Principal principal){
         int pid = Integer.parseInt(problemid);
@@ -160,23 +174,23 @@ public class MyController {
 //        return "redirect:/solve/"+pid;
 //    }
 
-    @PostMapping("/solve/timelaps")
-    public String timelap(@RequestParam String id, @RequestParam String pid, @RequestParam String status, @RequestParam(defaultValue = "true") boolean complete, Model model, Principal principal){
-        int probid = Integer.parseInt(pid);
-        int mid = Integer.parseInt(id);
-        int uid = jdbcTemplate.queryForObject("select id from user where name=?", (rs, rowNum) -> rs.getInt("id"), principal.getName());
-        int mstatus = Integer.parseInt(status);
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String date = now.format(formatter);
-        if (mstatus == 0) jdbcTemplate.execute("update my set start_time=now() + INTERVAL 9 HOUR, status=1 where id="+mid);
-        else if (mstatus == 1) {
-            if (complete) jdbcTemplate.execute("update my set end_time=now() + INTERVAL 9 HOUR, status=2 where id="+mid);
-            else jdbcTemplate.execute("update my set end_time=now() + INTERVAL 9 HOUR, status=3 where id="+mid);
-        }
-        solve(pid, model, principal);
-        return "redirect:/solve/"+pid;
-    }
+//    @PostMapping("/solve/timelaps")
+//    public String timelap(@RequestParam String id, @RequestParam String pid, @RequestParam String status, @RequestParam(defaultValue = "true") boolean complete, Model model, Principal principal){
+//        int probid = Integer.parseInt(pid);
+//        int mid = Integer.parseInt(id);
+//        int uid = jdbcTemplate.queryForObject("select id from user where name=?", (rs, rowNum) -> rs.getInt("id"), principal.getName());
+//        int mstatus = Integer.parseInt(status);
+//        LocalDateTime now = LocalDateTime.now();
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        String date = now.format(formatter);
+//        if (mstatus == 0) jdbcTemplate.execute("update my set start_time=now() + INTERVAL 9 HOUR, status=1 where id="+mid);
+//        else if (mstatus == 1) {
+//            if (complete) jdbcTemplate.execute("update my set end_time=now() + INTERVAL 9 HOUR, status=2 where id="+mid);
+//            else jdbcTemplate.execute("update my set end_time=now() + INTERVAL 9 HOUR, status=3 where id="+mid);
+//        }
+//        solve(pid, model, principal);
+//        return "redirect:/solve/"+pid;
+//    }
     @PostMapping("/solve/solveadd")
     public String solveadd(@RequestParam String pid, Model model, Principal principal){
         int probid = Integer.parseInt(pid);

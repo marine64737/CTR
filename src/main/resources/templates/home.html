@@ -12,7 +12,7 @@
     <tr>
         <th class="col-1 text-center p-2">No.</th>
         <th class="col-9 text-center p-2">제목</th>
-        <th class="col-9 text-center p-2">풀이 현황</th>
+        <th class="col-3 text-center p-2">풀이 현황</th>
     </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -34,20 +34,24 @@
                 <thead>
                 <tr>
                     <th class="col-1 text-center p-2">No.</th>
-                    <th class="col-9 text-center p-2">제목</th>
-                    <th class="col-9 text-center p-2">풀이 현황</th>
+                    <th class="col-6 text-center p-2">제목</th>
+                    <th class="col-3 text-center p-2">풀이 현황</th>
+                    <th class="col-3 text-center p-2">숨기기</th>
                 </tr>
                 </thead>
                 <tbody class="table-group-divider">
                 <tr th:each="problem: ${my1}">
-                    <th class="text-center p-2"><a th:href="@{'/solve/'+${problem.pid}}"><button type="button" class="btn btn-link" th:text="${problem.pid}">problemid</button></a></th>
-                    <td class="p-2"><a th:href="@{'/solve/'+${problem.pid}}"><button type="button" class="btn btn-link" th:text="${problem.title}">title</button></a></td>
+                    <th class="text-center p-2 align-middle" th:if="${problem.nonvisible == false}"><a th:href="@{'/solve/'+${problem.pid}}"><button type="button" class="btn btn-link" th:text="${problem.pid}">problemid</button></a></th>
+                    <th class="text-center p-2 align-middle" th:if="${problem.nonvisible == true}" th:text="${problem.pid}">problemid</th>
+                    <td class="p-2 align-middle" th:if="${problem.nonvisible == false}"><a th:href="@{'/solve/'+${problem.pid}}"><button type="button" class="btn btn-link" th:text="${problem.title}">title</button></a></td>
+                    <td class="text-center p-2 align-middle" th:if="${problem.nonvisible == true}">-</td>
                     <div th:switch="${problem.status}">
-                        <td class="p-2 text-center align-middle" th:case="0"><span class="badge text-bg-primary fs-6">풀이 전</span></td>
-                        <td class="p-2 text-center align-middle" th:case="1"><span class="badge text-bg-secondary fs-6">풀이 중</span></td>
-                        <td class="p-2 text-center align-middle" th:case="2"><span class="badge text-bg-success fs-6">풀이 완료</span></td>
-                        <td class="p-2 text-center align-middle" th:case="3"><span class="badge text-bg-danger fs-6">미해결</span></td>
+                        <td class="p-2 text-center align-middle" th:if="${problem.nonvisible == false}" th:case="0"><span class="badge text-bg-primary fs-6">풀이 전</span></td>
+                        <td class="p-2 text-center align-middle" th:if="${problem.nonvisible == true}">-</td>
                     </div>
+                    <td>
+                        <button class = "btn btn-success fs-8" type="button" th:onclick = "toggleStatus([[${problem.id}]])" th:text = "${problem.nonvisible == true}? 보이기 : 숨기기">-</button>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -59,5 +63,5 @@
 </body>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-
+<script src="/js/system.js"></script>
 </html>
