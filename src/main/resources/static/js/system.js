@@ -22,8 +22,8 @@ function timeLaps(id, status, success) {
         .catch(error => console.error('Error:', error));
 }
 
-function solveAdd(uid, pid) {
-    fetch(`/solve/solveadd/{currentUserName}/{pid}`, { method: 'POST' })
+function solveAdd(currentUserName, pid) {
+    fetch(`/solve/solveadd/${currentUserName}/${pid}`, { method: 'POST' })
         .then(response => {
             if (response.ok) return response.text();
             throw new Error('네트워크 응답 실패');

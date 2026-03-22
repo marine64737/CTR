@@ -101,11 +101,16 @@ public class MyController {
     }
 
     @GetMapping("/searchcomplete")
-    public String searchcomplete(@RequestParam(name = "word") String word, Model model){
+    public String searchcomplete(@RequestParam(name = "word") String word, Model model, Principal principal){
         String sql = "%"+word+"%";
-        List<ProblemDTO> questions = jdbcTemplate.query("SELECT problemId, titleKo FROM problem WHERE problemId LIKE ? OR titleKo LIKE ?",
-                (rs, rowNum) -> new ProblemDTO(rs.getInt("problemId"), rs.getString("titleKo"), null), sql, sql);
-        model.addAttribute("questions", questions);
+        String name = principal.getName();
+        List<Map<String, Object>> problems = jdbcTemplate.queryForList("select p.problemid, p.titleKo, m.userid from problem as p left join (SELECT distinct problemId, userid FROM my WHERE userid\n" +
+                        "= (SELECT id FROM user WHERE name = ? LIMIT 1)) as m on p.problemid = m.problemid where p.problemId LIKE ?\n" +
+                        "or p.titleKo LIKE ?;",
+                name, sql, sql);
+//        List<ProblemDTO> questions = jdbcTemplate.query("SELECT problemId, titleKo FROM problem WHERE problemId LIKE ? OR titleKo LIKE ?",
+//                (rs, rowNum) -> new ProblemDTO(rs.getInt("problemId"), rs.getString("titleKo"), null), sql, sql);
+        model.addAttribute("problems", problems);
         model.addAttribute("word", word);
         return "search";
     }
@@ -194,7 +199,7 @@ public class MyController {
     public String solveadd(@RequestParam String pid, Model model, Principal principal){
         int probid = Integer.parseInt(pid);
         int uid = jdbcTemplate.queryForObject("select id from user where name=?", (rs, rowNum) -> rs.getInt("id"), principal.getName());
-        jdbcTemplate.execute("insert into my(userid, problemid, status) values("+uid+", "+probid+", 0)");
+        jdbcTemplate.execute("insert into my(userid, problemid, status, nonvisible) values("+uid+", "+probid+", 0, 0)");
         solve(pid, model, principal);
         return "redirect:/solve/"+pid;
     }
@@ -203,15 +208,8 @@ public class MyController {
     public String add(@RequestParam(name = "id") int id, Model model, Principal principal){
         Map<String, Object> my = jdbcTemplate.queryForMap("SELECT problemId, titleKo FROM problem WHERE problemId = ?", id);
         int uid = jdbcTemplate.queryForObject("SELECT id FROM user WHERE name = ?",(rs, rowNum) -> rs.getInt("id"), principal.getName());
-        jdbcTemplate.execute("INSERT INTO my(userid, problemid, status) VALUES("+uid+", "+my.get("problemid")+ ", 0)");
+        jdbcTemplate.execute("INSERT INTO my(userid, problemid, status, nonvisible) VALUES("+uid+", "+my.get("problemid")+ ", 0, 0)");
 //        home(model, principal);
         return "redirect:/solve/"+id;
-    }
-    @PostMapping("/time")
-    public String time(Model model){
-        Date now = new Date();
-        String nowTime = now.toString();
-        jdbcTemplate.execute("INSERT INTO temp(today_time) VALUES('"+nowTime+"')");
-        return "redirect:/";
     }
 }

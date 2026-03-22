@@ -49,10 +49,10 @@ public class MyAPIController {
         return ResponseEntity.ok("success");
     }
     @PostMapping("/solve/solveadd/{currentUserName}/{pid}")
-    public ResponseEntity<String> solveadd(@RequestParam String currentUserName, @RequestParam String pid){
+    public ResponseEntity<String> solveadd(@PathVariable String currentUserName, @PathVariable String pid){
         int uid = jdbcTemplate.queryForObject("select id from user where name=?", (rs, rowNum) -> rs.getInt("id"), currentUserName);
         int probid = Integer.parseInt(pid);
-        jdbcTemplate.execute("insert into my(userid, problemid, status) values("+uid+", "+probid+", 0)");
+        jdbcTemplate.execute("insert into my(userid, problemid, status, nonvisible) values("+uid+", "+probid+", 0, 0)");
         return ResponseEntity.ok("success");
     }
 }

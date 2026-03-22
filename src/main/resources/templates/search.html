@@ -22,12 +22,13 @@
         </tr>
         </thead>
         <tbody class="table-group-divider">
-        <tr th:each="question: ${questions}">
+        <tr th:each="problem: ${problems}">
             <form action="#" th:action="@{/added}" method="post">
-                <input type="hidden" name="id" th:value="${question.id}"/>
-                <td class="col-1 text-center p-2 align-middle" th:text="${question.id}">ID</td>
-                <td class="col-9 p-2 align-middle" th:text="${question.title}">Title</td>
-                <td class="col-1 p-2"><button type="submit" class="btn btn-primary">추가</button></td>
+                <input type="hidden" name="id" th:value="${problem.problemid}"/>
+                <td class="col-1 text-center p-2 align-middle" th:text="${problem.problemid}">ID</td>
+                <td class="col-9 p-2 align-middle" th:text="${problem.titleKo}">Title</td>
+                <td class="col-1 p-2" th:if="${problem.userid == null}"><button type="submit" class="btn btn-primary">추가</button></td>
+                <td class="col-1 p-2" th:unless="${problem.userid == null}"><a th:href="@{'/solve/'+${problem.problemid}}"><button type="button" class="btn btn-primary">이동</button></a></td>
             </form>
         </tr>
         </tbody>
