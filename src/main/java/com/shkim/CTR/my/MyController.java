@@ -52,26 +52,15 @@ public class MyController {
 //        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, status FROM my as m join user as u on m.userid = u.id join problem as p on m.problemid = p.problemid where u.name = ? order by m.id desc limit 100",
 //                principal.getName());
         List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, m.status " +
-                        "FROM (" +
-                        "    SELECT id, userid, problemid, status " +
-                        "    FROM my " +
-                        "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
-                        "    AND start_time IS NOT NULL ORDER BY start_time DESC " +
-                        "    LIMIT 100" +
-                        ") AS m " +
-                        "JOIN user u ON m.userid = u.id " +
-                        "JOIN problem p ON m.problemid = p.problemId;",
+                        "FROM (SELECT id, userid, problemid, status FROM my WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
+                        "    AND start_time IS NOT NULL ORDER BY start_time DESC LIMIT 100) AS m " +
+                        "JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId;",
                 principal.getName());
         List<Map<String, Object>> my1 = jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, p.titleKo as title, m.status, m.nonvisible " +
-                        "FROM (" +
-                        "    SELECT id, userid, problemid, status, nonvisible " +
-                        "    FROM my " +
+                        "FROM (SELECT id, userid, problemid, status, nonvisible FROM my " +
                         "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
-                        "    AND start_time IS NULL ORDER BY id DESC " +
-                        "    LIMIT 100" +
-                        ") AS m " +
-                        "JOIN user u ON m.userid = u.id " +
-                        "JOIN problem p ON m.problemid = p.problemId;",
+                        "    AND start_time IS NULL ORDER BY id DESC LIMIT 100) AS m " +
+                        "JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId;",
                 principal.getName());
         model.addAttribute("my", my);
         model.addAttribute("my1", my1);
