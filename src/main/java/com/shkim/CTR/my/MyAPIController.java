@@ -27,14 +27,14 @@ public class MyAPIController {
     }
 
     @PostMapping("/home/toggle/{id}")
-    public ResponseEntity<String> toggle(@PathVariable Long id) {
+    public static ResponseEntity<String> toggle(@PathVariable Long id) {
         // SQL에서 직접 boolean(tinyint) 값을 반전시킴
         String sql = "UPDATE my SET nonvisible = NOT nonvisible WHERE id = ?";
         jdbcTemplate.update(sql, id);
         return ResponseEntity.ok("success");
     }
     @PostMapping("/solve/timelaps/{id}/{status}/{success}")
-    public ResponseEntity<String> timelap(@PathVariable String id, @PathVariable String status, @PathVariable String success){
+    public ResponseEntity<String> timelaps(@PathVariable String id, @PathVariable String status, @PathVariable String success){
         int mid = Integer.parseInt(id);
         int mstatus = Integer.parseInt(status);
         int msuccess = Integer.parseInt(success);
