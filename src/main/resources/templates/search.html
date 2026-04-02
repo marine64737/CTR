@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
-<html xmlns:th="https://www.thymeleaf.org">
+<!--<html xmlns:th="https://www.thymeleaf.org">-->
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <div th:insert="~{header}"></div>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
@@ -13,7 +14,7 @@
     <button type="submit" class="btn btn-primary">검색</button>
         <a href="/"><button type="button" class="btn btn-warning">뒤로 가기</button></a><br>
 </form>
-    <table class="table border-dark">
+    <table class="table border-dark" th:if="${problems != null}">
         <thead>
         <tr>
             <th class="col-1 text-center p-2">No.</th>
@@ -35,5 +36,6 @@
     </table>
 </div>
 </body>
+<div th:insert="~{footer}"></div>
 <link rel="stylesheet" th:href="@{/css/container.css}">
 </html>

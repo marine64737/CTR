@@ -23,11 +23,12 @@
         <label for="memo-editor" class="form-label">Memo</label><br>
         <textarea class="form-control form-control-lg" id="memo-editor" name="memo" th:text="${my.memo}" rows="3"></textarea>
     </div>
-        <button type="submit" class="btn btn-primary">수정 완료</button>
+        <button type="submit" class="btn btn-primary">작성 완료</button>
         <a th:href="'/solve/'+${my.pid}"><button type="button" class="btn btn-warning">뒤로 가기</button>
     </form>
 </div>
 </body>
+<div th:insert="~{footer}"></div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>

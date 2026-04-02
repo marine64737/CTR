@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.sql.SQLException;
+import java.util.List;
 
 @Component
 public class Command implements CommandLineRunner {
@@ -170,7 +171,7 @@ public class Command implements CommandLineRunner {
 //                    problem.isLevelLocked(),
 //                    problem.averageTries(),
 //                    problem.official()}).toList();
-//            jdbcTemplate.batchUpdate("INSERT INTO problem VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE titleKo = values(titleKo)", apis);
+//            jdbcTemplate.batchUpdate("INSERT INTO problem VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE titleKo = values(titleKo), level = values(level)", apis);
 //            log.info("inserting data: t="+(t+1)+"/"+list_num+")");
 //        }
 //        for (int t=0; t<list_num; t++){

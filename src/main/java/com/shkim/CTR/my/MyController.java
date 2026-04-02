@@ -1,6 +1,7 @@
 package com.shkim.CTR.my;
 
 import com.shkim.CTR.problem.ProblemDTO;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +52,7 @@ public class MyController {
         }
 //        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, status FROM my as m join user as u on m.userid = u.id join problem as p on m.problemid = p.problemid where u.name = ? order by m.id desc limit 100",
 //                principal.getName());
-        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, m.status " +
+        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, m.status, p.level " +
                         "FROM (SELECT id, userid, problemid, status FROM my WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
                         "    AND start_time IS NOT NULL ORDER BY start_time DESC LIMIT 100) AS m " +
                         "JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId;",
@@ -124,17 +125,20 @@ public class MyController {
                         "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1) " +
                         "    and problemid = ? " +
                         ") AS m " +
-                        "JOIN user u ON m.userid = u.id ORDER BY start_time IS NULL DESC, start_time DESC",
+                        "JOIN user u ON m.userid = u.id JOIN problem p on m.problemid = p.problemid ORDER BY start_time IS NULL DESC, start_time DESC",
                 name, pid);
         String title = jdbcTemplate.queryForObject("SELECT titleKo from problem where problemid = ?",
                 (rs, rowNum) -> rs.getString("titleKo"), pid);
+       Object status = jdbcTemplate.queryForObject("SELECT status from my where userid = (select id from user where name = ?) and problemid = ? order by id desc limit 1", (rs, rowNum) -> rs.getInt("status"), name, pid);
+        int i_status=0;
+        if (status != null) i_status = Integer.parseInt(status.toString());
         String link = "https://www.acmicpc.net/problem/"+pid;
-        model.addAttribute("problemid", pid);
         model.addAttribute("problemtitle", title);
         model.addAttribute("my", my);
         model.addAttribute("pid", pid);
         model.addAttribute("name", name);
         model.addAttribute("link", link);
+        model.addAttribute("status", i_status);
         return "solve";
     }
     @RequestMapping("/solve/{problemid}/{id}")

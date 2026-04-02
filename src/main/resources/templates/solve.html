@@ -5,9 +5,15 @@
 <body>
 <div class="container-xl">
     <div class="d-flex align-items-center pb-3 mb-4 border-bottom">
-        <span class="badge bg-primary me-2 fs-5 align-middle" style="font-size: 0.6em; vertical-align: middle;" th:text="${problemid}">NO.</span>
+        <span class="badge bg-primary me-2 fs-5 align-middle" style="font-size: 0.6em; vertical-align: middle;" th:text="${pid}">NO.</span>
         <h2 class="h4 mb-0 fw-bold text-dark me-lg-2" th:text="${problemtitle}">Title</h2>
         <a th:href="@{${link}}"><button type="button" class="btn btn-primary">바로가기</button></a>
+    </div>
+    <div class="pb-3 mb-4 border-bottom">
+    <p>1. 문제를 풀기 전 '풀이 시작'을 눌러 주시고, '바로가기'의 백준 사이트에서 코드 제출 후 '맞았습니다!!'를 확인하고 '풀이 완료'를 눌러주세요.</p>
+    <p>2. '미해결'은 재량에 따라 추가로 학습이 필요하다고 생각되면 눌러주세요.</p>
+    <p>3. 문제를 다시 풀고 싶다면 '재시도'를 눌러주세요.</p>
+    <p>Tip. 테스트 케이스가 막히는 경우에도 백준 사이트 코드 제출 전에 코드를 저장하여 무엇이 부족했는지 기록을 남길 수 있습니다.</p>
     </div>
 <table class="table border-dark">
     <thead>
@@ -63,12 +69,13 @@
         <a href="/home"><input type="button" value="뒤로 가기" /></a>
 <!--        <form action="#" th:action="@{/solve/solveadd}" method="post">-->
 <!--            <input type="hidden" name = "pid" th:value="${pid}"/>-->
-        <button type="button" class="btn btn-primary" th:onclick="solveAdd([[${currentUserName}]], [[${pid}]])">재시도</button>
+        <button type="button" class="btn btn-primary" th:if="${status} == 2 or ${status} == 3" th:onclick="solveAdd([[${currentUserName}]], [[${pid}]])">재시도</button>
 <!--        </form>-->
     </div>
     <script src="/js/system.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </a>
 </div>
+<div th:insert="~{footer}"></div>
 </body>
 </html>
