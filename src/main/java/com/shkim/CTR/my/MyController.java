@@ -63,6 +63,11 @@ public class MyController {
                         "    AND start_time IS NULL ORDER BY id DESC LIMIT 100) AS m " +
                         "JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId;",
                 principal.getName());
+        Object probNum = jdbcTemplate.queryForObject("SELECT count(distinct problemid) as count FROM my " +
+                        "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
+                        "    AND start_time IS NOT NULL",
+                (rs, rowNum) -> rs.getInt("count"), principal.getName());
+        if (probNum != null) model.addAttribute("count", Integer.parseInt(probNum.toString()));
         model.addAttribute("my", my);
         model.addAttribute("my1", my1);
         model.addAttribute("sessionAttributeNames", Collections.list(request.getSession().getAttributeNames()));

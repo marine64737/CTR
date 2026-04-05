@@ -7,8 +7,8 @@
     <a href="/search"><button type="button" class="btn btn-primary">문제 추가</button></a>
     <div class="row">
         <div class="col-6">
-            <br><h2 class="mb-0 fw-bold text-dark">풀이 이력</h2>
-            <p class="mb-0 fw-bold text-dark">풀이 완료 시 티어 공개</p>
+            <br><h2 class="mb-0 fw-bold text-dark" th:text="'풀이 이력 '+'/ 문제 수: '+${count}"></h2>
+<!--            <p class="mb-0 fw-bold text-dark">풀이 완료 시 티어 공개</p>-->
 
             <table class="table border-dark" th:if="${my.size() != 0}">
     <thead>
@@ -74,7 +74,6 @@
         </div>
         <div class="col-6">
             <br><h2 class="mb-0 fw-bold text-dark">풀이 예정</h2>
-            <p class="mb-0 fw-bold text-dark">문제 추가 후 순서 관리가 필요하다면 숨기기 가능</p>
             <table class="table border-dark" th:if="${my1.size() != 0}">
                 <thead>
                 <tr>
