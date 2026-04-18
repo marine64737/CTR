@@ -16,6 +16,18 @@
         <input type="hidden" name="id" th:value="${my.id}">
         <input type="hidden" name="pid" th:value="${my.pid}">
     <div class="mb-3">
+        <div class="mb-3">
+            <label for="memory" class="form-label m-3">메모리</label>
+            <input type="text" id="memory" name="memory" th:value="${my.memory}"/>
+            <label class="form-label m-1">KB</label>
+            <label for="time" class="form-label m-3">실행 시간</label>
+            <input type="text" id="time" name="time" th:value="${my.time}"/>
+            <label class="form-label m-1">ms</label>
+        </div>
+<!--        <div class="mb-3">-->
+<!--            <label for="time" class="form-label">실행 시간</label>-->
+<!--            <input type="text" id="time" name="time" th:text="${my.time}"/>-->
+<!--        </div>-->
     <label for="code-editor" class="form-label">Code</label><br>
         <textarea class="form-control form-control-lg" id="code-editor" name="code" th:text="${my.code}"></textarea>
     </div>

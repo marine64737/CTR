@@ -123,9 +123,9 @@ public class MyController {
         List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, " +
                         "DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') as st, DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') as end, "+
                         "TIMESTAMPDIFF(MINUTE, start_time, end_time) as duration, " +
-                        "TIMESTAMPDIFF(HOUR, start_time, end_time) as hour, m.status "+
+                        "TIMESTAMPDIFF(HOUR, start_time, end_time) as hour, m.status, m.memory, m.time "+
                         "FROM (" +
-                        "    SELECT id, userid, problemid, start_time, end_time, status " +
+                        "    SELECT id, userid, problemid, start_time, end_time, status, memory, time " +
                         "    FROM my " +
                         "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1) " +
                         "    and problemid = ? " +
@@ -151,7 +151,7 @@ public class MyController {
         int pid = Integer.parseInt(problemid);
         int mid = Integer.parseInt(id);
         Map<String, Object> my = jdbcTemplate.queryForMap("SELECT m.id as id, m.problemid as pid, p.titleKo as title, " +
-                        "m.code, m.memo FROM my as m join user as u on m.userid=u.id join problem as p on m.problemid=p.problemid where m.id=?",
+                        "m.code, m.memo, m.memory, m.time FROM my as m join user as u on m.userid=u.id join problem as p on m.problemid=p.problemid where m.id=?",
                 mid);
         String link = "https://www.acmicpc.net/problem/"+pid;
         model.addAttribute("my", my);
@@ -160,10 +160,11 @@ public class MyController {
     }
 
     @PostMapping("/update")
-    public String update(@RequestParam String id, @RequestParam String pid, @RequestParam String code, @RequestParam String memo, Model model, Principal principal){
+    public String update(@RequestParam String id, @RequestParam String pid, @RequestParam String code, @RequestParam String memo,
+                         @RequestParam String memory, @RequestParam String time, Model model, Principal principal){
         int mid = Integer.parseInt(id);
         int probid = Integer.parseInt(pid);
-        jdbcTemplate.update("update my set code=?, memo=? where id=?", code, memo, mid);
+        jdbcTemplate.update("update my set code=?, memo=?, memory=?, time=? where id=?", code, memo, memory, time, mid);
         solve(pid, model, principal);
         return "redirect:/solve/"+pid;
     }

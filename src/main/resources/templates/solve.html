@@ -3,7 +3,7 @@
 <div th:insert="~{header}"></div>
 </head>
 <body>
-<div class="container-xl">
+<div class="container-fluid">
     <div class="d-flex align-items-center pb-3 mb-4 border-bottom">
         <span class="badge bg-primary me-2 fs-5 align-middle" style="font-size: 0.6em; vertical-align: middle;" th:text="${pid}">NO.</span>
         <h2 class="h4 mb-0 fw-bold text-dark me-lg-2" th:text="${problemtitle}">Title</h2>
@@ -21,8 +21,10 @@
         <th class="col-1 text-center p-1">No.</th>
         <th class="col-2 text-center p-1">풀이 시작</th>
         <th class="col-2 text-center p-1">풀이 종료</th>
-        <th class="col-1 text-center p-1">풀이 시간(분)</th>
+<!--        <th class="col-1 text-center p-1">풀이 시간(분)</th>-->
         <th class="col-1 text-center p-1">풀이 시간</th>
+        <th class="col-1 text-center p-1">메모리</th>
+        <th class="col-1 text-center p-1">시간</th>
         <th class="col-2 text-center p-1">상세 보기</th>
         <th class="col-1 text-center p-1">풀이 현황</th>
         <th class="col-2 text-center"></th>
@@ -33,9 +35,13 @@
         <th class="col-1 text-center align-middle"><a th:href="@{'/solve/'+${my.pid}+'/'+${my.id}}"><button type="button" class="btn btn-link" th:text="${stat.size - stat.count + 1}">No.</button></a></th>
         <td class="col-2 text-center p-2 align-middle" th:text="${my.st}">-</td>
         <td class="col-2 text-center p-2 align-middle" th:text="${my.end}">-</td>
-        <td class="col-1 text-center p-2 align-middle" th:text="${my.duration}">-</td>
+<!--        <td class="col-1 text-center p-2 align-middle" th:text="${my.duration}">-</td>-->
         <td class="col-1 text-center p-2 align-middle" th:if="${my.duration != null}" th:text="${my.hour == 0}? ${my.duration}%60+분 : ${my.hour}+'시간 '+${my.duration}%60+분">-</td>
         <td class="col-1 text-center p-2 align-middle" th:if="${my.duration == null}"></td>
+        <td class="col-1 text-center p-2 align-middle" th:if="${my.memory != null}" th:text="${my.memory}+' KB'">-</td>
+        <td class="col-1 text-center p-2 align-middle" th:unless="${my.memory != null}" >-</td>
+        <td class="col-1 text-center p-2 align-middle" th:if="${my.time != null}" th:text="${my.time}+' ms'">-</td>
+        <td class="col-1 text-center p-2 align-middle" th:unless="${my.time != null}" >-</td>
         <td class="col-2 text-center p-2 align-middle"><a th:href="@{'/solve/'+${my.pid}+'/'+${my.id}}"><button type="button" class="btn btn-success">상세 보기</button></a></td>
 <!--        <td class="col-1 text-center p-3 align-middle" th:unless=${my.hour == 0} th:text="${my.duration}%60">-</td>-->
         <div th:switch="${my.status}">
