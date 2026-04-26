@@ -18,10 +18,10 @@
     <div class="mb-3">
         <div class="mb-3">
             <label for="memory" class="form-label m-3">메모리</label>
-            <input type="text" id="memory" name="memory" th:value="${my.memory}"/>
+            <input type="text" id="memory" name="memory" th:value="(${my.memory} == null)? 0:${my.memory}"/>
             <label class="form-label m-1">KB</label>
             <label for="time" class="form-label m-3">실행 시간</label>
-            <input type="text" id="time" name="time" th:value="${my.time}"/>
+            <input type="text" id="time" name="time" th:value="(${my.time} == null)? 0:${my.time}"/>
             <label class="form-label m-1">ms</label>
         </div>
 <!--        <div class="mb-3">-->
