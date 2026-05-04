@@ -53,5 +53,5 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           script: |
             sudo fuser -k 8080/tcp || true
-            cd /home/ksh/ksh/CTR
+            cd /home/ksh/ksh
             docker compose up -d --build
