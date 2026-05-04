@@ -30,7 +30,7 @@ public class IndexController {
 	@GetMapping("/")
 	String index() {
 		return "redirect:/home";
-		//commit test
+		//commit test retry
 	}
 
 }
