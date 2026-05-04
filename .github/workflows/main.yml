@@ -52,7 +52,7 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-            pkill -f 'java -jar' || true
+            sudo fuser -k 8080/tcp || true
             nohup java -jar /home/ksh/ksh/CTR/build/libs/*.jar > app.log 2>&1 &
 
       
