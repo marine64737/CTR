@@ -29,6 +29,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
           source: "build/libs/*.jar"
           target: "/home/ksh/ksh/CTR"
           
@@ -38,6 +39,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
           source: "./*"
           target: "/home/ksh/ksh/CTR/code"
           strip_components: 0
@@ -48,6 +50,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
           script: |
             pkill -f 'java -jar' || true
             nohup java -jar /home/ksh/ksh/CTR/build/libs/*.jar > app.log 2>&1 &
@@ -59,6 +62,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
           script: |
             cd /home/ksh/ksh
             docker-compose up -d --build
