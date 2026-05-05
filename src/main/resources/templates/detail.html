@@ -36,7 +36,7 @@
         <textarea class="form-control form-control-lg" id="memo-editor" name="memo" th:text="${my.memo}" rows="3"></textarea>
     </div>
         <button type="submit" class="btn btn-primary">작성 완료</button>
-        <a th:href="'/solve/'+${my.pid}"><button type="button" class="btn btn-warning">뒤로 가기</button>
+        <a th:href="'/ctr/solve/'+${my.pid}"><button type="button" class="btn btn-warning">뒤로 가기</button>
     </form>
 </div>
 </body>
@@ -45,7 +45,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script> ```
-<script th:src="@{/JS/codeeditor.js}"></script>
+<script th:src="@{/js/codeeditor.js}"></script>
 <link rel="stylesheet" th:href="@{/css/editor-style.css}">
 <link rel="stylesheet" th:href="@{/css/memo-style.css}">
 </html>

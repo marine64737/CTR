@@ -4,7 +4,7 @@ import com.shkim.CTR.problem.Problem;
 import com.shkim.CTR.problem.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+//import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -39,12 +39,12 @@ public class WebClientServiceImpl {
 //                                throwable.getMessage().contains("429"))).block();
 //        return response.stream().map(problem -> new Object[]{problem.problemId(), problem.titleKo(), problem.level()}).toList();
 //    }
-    public List<Problem> get(int num) {
-        StringBuilder sb = new StringBuilder();
-        for (int i=1000+100*num; i<1000+100*(num+1); i++){
-            sb.append(i);
-            if (i < 1000+100*(num+1)-1) sb.append(',');
-        }
+//    public List<Problem> get(int num) {
+//        StringBuilder sb = new StringBuilder();
+//        for (int i=1000+100*num; i<1000+100*(num+1); i++){
+//            sb.append(i);
+//            if (i < 1000+100*(num+1)-1) sb.append(',');
+//        }
 
         // webClient 기본 설정
 //        WebClient webClient =
@@ -54,23 +54,23 @@ public class WebClientServiceImpl {
 //                        .build();
 
         // api 요청
-        return WebClient
-                .builder()
-                .baseUrl("https://solved.ac/api/v3")
-                .build()
-                        .get()
-                        .uri(uriBuilder ->
-                                uriBuilder
-                                        .path("/problem/lookup")
-                                        .queryParam("problemIds", sb)
-                                        .build())
-                        .retrieve()
-                        .onStatus(HttpStatus.TOO_MANY_REQUESTS::equals, clientResponse -> Mono.error(new RuntimeException("429 Too Many Requests")))
-                        .bodyToFlux(Problem.class).collectList()
-                        .delaySubscription(Duration.ofMillis(500)) // 요청 간 기본 1초 딜레이
-                        .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2)) // 429 시 최대 3번, 2초 간격 재시도
-                                .filter(throwable -> throwable instanceof RuntimeException &&
-                                        throwable.getMessage().contains("429"))).block();
+//        return WebClient
+//                .builder()
+//                .baseUrl("https://solved.ac/api/v3")
+//                .build()
+//                        .get()
+//                        .uri(uriBuilder ->
+//                                uriBuilder
+//                                        .path("/problem/lookup")
+//                                        .queryParam("problemIds", sb)
+//                                        .build())
+//                        .retrieve()
+//                        .onStatus(HttpStatus.TOO_MANY_REQUESTS::equals, clientResponse -> Mono.error(new RuntimeException("429 Too Many Requests")))
+//                        .bodyToFlux(Problem.class).collectList()
+//                        .delaySubscription(Duration.ofMillis(500)) // 요청 간 기본 1초 딜레이
+//                        .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2)) // 429 시 최대 3번, 2초 간격 재시도
+//                                .filter(throwable -> throwable instanceof RuntimeException &&
+//                                        throwable.getMessage().contains("429"))).block();
 //        List<Problem> list = new ArrayList<>();
 //        System.out.println("Size: "+response.size());
 //        for (int i=0; i< response.size(); i++){
@@ -88,25 +88,25 @@ public class WebClientServiceImpl {
         //        Integer.parseInt(response.get("level").toString()), 0, false, false, false, 0, false, null))
         //return response;
         //log.info(response.get("titleKo").toString());
-    }
+//    }
 
-    public Tag getTag(int num) {
-        return WebClient
-                .builder()
-                .baseUrl("https://solved.ac/api/v3")
-                .build()
-                .get()
-                .uri(uriBuilder ->
-                        uriBuilder
-                                .path("/tag/list")
-                                .queryParam("page", num)
-                                .build())
-                .retrieve()
-                .onStatus(HttpStatus.TOO_MANY_REQUESTS::equals, clientResponse -> Mono.error(new RuntimeException("429 Too Many Requests")))
-                .bodyToMono(Tag.class)
-                .delaySubscription(Duration.ofMillis(1000)) // 요청 간 기본 1초 딜레이
-                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2)) // 429 시 최대 3번, 2초 간격 재시도
-                        .filter(throwable -> throwable instanceof RuntimeException &&
-                                throwable.getMessage().contains("429"))).block();
-    }
+//    public Tag getTag(int num) {
+//        return WebClient
+//                .builder()
+//                .baseUrl("https://solved.ac/api/v3")
+//                .build()
+//                .get()
+//                .uri(uriBuilder ->
+//                        uriBuilder
+//                                .path("/tag/list")
+//                                .queryParam("page", num)
+//                                .build())
+//                .retrieve()
+//                .onStatus(HttpStatus.TOO_MANY_REQUESTS::equals, clientResponse -> Mono.error(new RuntimeException("429 Too Many Requests")))
+//                .bodyToMono(Tag.class)
+//                .delaySubscription(Duration.ofMillis(1000)) // 요청 간 기본 1초 딜레이
+//                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2)) // 429 시 최대 3번, 2초 간격 재시도
+//                        .filter(throwable -> throwable instanceof RuntimeException &&
+//                                throwable.getMessage().contains("429"))).block();
+//    }
 }
