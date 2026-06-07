@@ -75,7 +75,7 @@
         String encodedPassword = passwordEncoder.encode(password);
 
         String sql = "INSERT INTO user (name, password) " +
-                "SELECT ?, ? FROM DUAL " +
+                "SELECT ?, ? " +
                 "WHERE NOT EXISTS (SELECT 1 FROM user WHERE name = ?)";
 
         int result = jdbcTemplate.update(sql, username, encodedPassword, username);
