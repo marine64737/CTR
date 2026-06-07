@@ -69,7 +69,26 @@
 	수정된 Query - name: UNIQUE key
 	<br>
 	<img width="620" height="185" alt="image" src="https://github.com/user-attachments/assets/60090968-79c6-460e-af63-23efe968cc40" />
-	<img width="1314" height="697" alt="image" src="https://github.com/user-attachments/assets/8282c614-c1aa-400a-b69a-7b37a80bb694" />
+	
+	``` java
+	    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(password);
+
+        String sql = "INSERT INTO user (name, password) " +
+                "SELECT ?, ? FROM DUAL " +
+                "WHERE NOT EXISTS (SELECT 1 FROM user WHERE name = ?)";
+
+        int result = jdbcTemplate.update(sql, username, encodedPassword, username);
+
+        if (result == 0) {
+            log.info("Sign up Failed! (Duplicate Name)");
+            return "redirect:/signup?error";
+        } else {
+            log.info("Sign up Success!");
+            return "redirect:/login";
+        }
+	```
+	
 	name이 unique key가 되어 중복 가입 불가, Query에서도 기존 로직은 찰나의 순간 가입 버튼이 두 번 눌리거나 동일한 이름의 사람이 우연히 동시에 가입할 때 중복으로 등록이 가능했다면, 수정된 로직은 같은 name으로 name이 존재하지 않을 경우에 `insert`가 이루어지고, 찰나의 순간이어도 db에 등록되어 name이 존재하면 0을 출력하여 아무 일도 발생하지 않는다.
 </div>
 </details>
@@ -87,7 +106,7 @@
 	Subquery 도입만으로도 ‘수정된 Query’보다 더 빠른 응답 속도를 보임. (약 0.6초 -> 0.2초) 첫 응답 시 0.2초며, 캐시가 저장되면 0.0x초 출력됨.
 	현재 Query - 최종 Query로, 코딩 테스트를 진행하면서 불편한 부분에 대해서 수정한 부분들.
 	
-	```java
+	``` java
 	//my: 현재까지 푼 문제(start_time이 적혀있는 문제)
         List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, m.status, p.level " +
                         "FROM (SELECT id, userid, problemid, status FROM my WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
