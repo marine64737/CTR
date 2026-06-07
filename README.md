@@ -70,26 +70,26 @@
 	<br>
 	<img width="620" height="185" alt="image" src="https://github.com/user-attachments/assets/60090968-79c6-460e-af63-23efe968cc40" />
 	
-	``` java
-	    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode(password);
+```java
+PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+String encodedPassword = passwordEncoder.encode(password);
 
-        String sql = "INSERT INTO user (name, password) " +
-                "SELECT ?, ? " +
-                "WHERE NOT EXISTS (SELECT 1 FROM user WHERE name = ?)";
+String sql = "INSERT INTO user (name, password) " +
+		"SELECT ?, ? " +
+		"WHERE NOT EXISTS (SELECT 1 FROM user WHERE name = ?)";
 
-        int result = jdbcTemplate.update(sql, username, encodedPassword, username);
+int result = jdbcTemplate.update(sql, username, encodedPassword, username);
 
-        if (result == 0) {
-            log.info("Sign up Failed! (Duplicate Name)");
-            return "redirect:/signup?error";
-        } else {
-            log.info("Sign up Success!");
-            return "redirect:/login";
-        }
-	```
+if (result == 0) {
+	log.info("Sign up Failed! (Duplicate Name)");
+	return "redirect:/signup?error";
+} else {
+	log.info("Sign up Success!");
+	return "redirect:/login";
+}
+```
 	
-	name이 unique key가 되어 중복 가입 불가, Query에서도 기존 로직은 찰나의 순간 가입 버튼이 두 번 눌리거나 동일한 이름의 사람이 우연히 동시에 가입할 때 중복으로 등록이 가능했다면, 수정된 로직은 같은 name으로 name이 존재하지 않을 경우에 `insert`가 이루어지고, 찰나의 순간이어도 db에 등록되어 name이 존재하면 0을 출력하여 아무 일도 발생하지 않는다.
+name이 unique key가 되어 중복 가입 불가, Query에서도 기존 로직은 찰나의 순간 가입 버튼이 두 번 눌리거나 동일한 이름의 사람이 우연히 동시에 가입할 때 중복으로 등록이 가능했다면, 수정된 로직은 같은 name으로 name이 존재하지 않을 경우에 `insert`가 이루어지고, 찰나의 순간이어도 db에 등록되어 name이 존재하면 0을 출력하여 아무 일도 발생하지 않는다.
 </div>
 </details>
 <details>
@@ -106,27 +106,27 @@
 	Subquery 도입만으로도 ‘수정된 Query’보다 더 빠른 응답 속도를 보임. (약 0.6초 -> 0.2초) 첫 응답 시 0.2초며, 캐시가 저장되면 0.0x초 출력됨.
 	현재 Query - 최종 Query로, 코딩 테스트를 진행하면서 불편한 부분에 대해서 수정한 부분들.
 	
-	``` java
-	//my: 현재까지 푼 문제(start_time이 적혀있는 문제)
-        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, m.status, p.level " +
-                        "FROM (SELECT id, userid, problemid, status FROM my WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
-                        "    AND start_time IS NOT NULL ORDER BY start_time DESC LIMIT 100) AS m " +
-                        "JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId;",
-                principal.getName());
-	//my1: 추가는 했지만 아직 풀지 않고 대기 중인 문제(To-do list( (start_time이 null인 문제)
-        List<Map<String, Object>> my1 = jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, p.titleKo as title, m.status, m.nonvisible " +
-                        "FROM (SELECT id, userid, problemid, status, nonvisible FROM my " +
-                        "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
-                        "    AND start_time IS NULL ORDER BY id DESC LIMIT 100) AS m " +
-                        "JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId;",
-                principal.getName());
-	//probNum: 현재까지 푼 문제 수(중복 없이)
-        Object probNum = jdbcTemplate.queryForObject("SELECT count(distinct problemid) as count FROM my " +
-                        "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
-                        "    AND start_time IS NOT NULL",
-                (rs, rowNum) -> rs.getInt("count"), principal.getName());
-        if (probNum != null) model.addAttribute("count", Integer.parseInt(probNum.toString())); // 메인 페이지 상위에 문제 수 출력
-	```
+``` java
+//my: 현재까지 푼 문제(start_time이 적혀있는 문제)
+List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, m.status, p.level " +
+				"FROM (SELECT id, userid, problemid, status FROM my WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
+				"    AND start_time IS NOT NULL ORDER BY start_time DESC LIMIT 100) AS m " +
+				"JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId;",
+		principal.getName());
+//my1: 추가는 했지만 아직 풀지 않고 대기 중인 문제(To-do list( (start_time이 null인 문제)
+List<Map<String, Object>> my1 = jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, p.titleKo as title, m.status, m.nonvisible " +
+				"FROM (SELECT id, userid, problemid, status, nonvisible FROM my " +
+				"    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
+				"    AND start_time IS NULL ORDER BY id DESC LIMIT 100) AS m " +
+				"JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId;",
+		principal.getName());
+//probNum: 현재까지 푼 문제 수(중복 없이)
+Object probNum = jdbcTemplate.queryForObject("SELECT count(distinct problemid) as count FROM my " +
+				"    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
+				"    AND start_time IS NOT NULL",
+		(rs, rowNum) -> rs.getInt("count"), principal.getName());
+if (probNum != null) model.addAttribute("count", Integer.parseInt(probNum.toString())); // 메인 페이지 상위에 문제 수 출력
+```
 	
 </div>
 </details>
@@ -137,16 +137,16 @@
 	<img width="1500" height="60" alt="image" src="https://github.com/user-attachments/assets/a102956c-0420-413d-aad6-4cafe2a39115" />
 	현재 Query - 최종 Query로, 코딩 테스트를 진행하면서 불편한 부분에 대해서 수정한 부분들.
 	
-	```java
-        String sql = "%"+word+"%";
-        String name = principal.getName();
-        List<Map<String, Object>> problems = jdbcTemplate.queryForList("select p.problemid, p.titleKo, m.userid from problem as p left join (SELECT distinct problemId, userid FROM my WHERE userid\n" +
-                        "= (SELECT id FROM user WHERE name = ? LIMIT 1)) as m on p.problemid = m.problemid where p.problemId LIKE ?\n" +
-                        "or p.titleKo LIKE ?;",
-                name, sql, sql);
-	```
+```java
+String sql = "%"+word+"%";
+String name = principal.getName();
+List<Map<String, Object>> problems = jdbcTemplate.queryForList("select p.problemid, p.titleKo, m.userid from problem as p left join (SELECT distinct problemId, userid FROM my WHERE userid\n" +
+				"= (SELECT id FROM user WHERE name = ? LIMIT 1)) as m on p.problemid = m.problemid where p.problemId LIKE ?\n" +
+				"or p.titleKo LIKE ?;",
+		name, sql, sql);
+```
 
-	left join한 상태인데, userid를 확인하여 null인 경우(푼 적이 없는 경우) 추가, null이 아닌 경우(푼 적 있는 경우) 링크 이동으로 구분하여 문제 풀이를 진행할 수 있음.
+left join한 상태인데, userid를 확인하여 null인 경우(푼 적이 없는 경우) 추가, null이 아닌 경우(푼 적 있는 경우) 링크 이동으로 구분하여 문제 풀이를 진행할 수 있음.
 </div>
 </details>
 <details>
@@ -158,31 +158,30 @@
 	<img width="1500" height="393" alt="image" src="https://github.com/user-attachments/assets/508be07c-dbd7-4c32-b0da-adfc98aac140" />
 	현재 Query - column이 추가된 것 외에는 큰 차이 없음.
 	
-	```java
-        int pid = Integer.parseInt(problemid);
-        String name = principal.getName();
-        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, " +
-                        "DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') as st, DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') as end, "+
-                        "TIMESTAMPDIFF(MINUTE, start_time, end_time) as duration, " +
-                        "TIMESTAMPDIFF(HOUR, start_time, end_time) as hour, m.status, m.memory, m.time "+
-                        "FROM (" +
-                        "    SELECT id, userid, problemid, start_time, end_time, status, memory, time " +
-                        "    FROM my " +
-                        "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1) " +
-                        "    and problemid = ? " +
-                        ") AS m " +
-                        "JOIN user u ON m.userid = u.id JOIN problem p on m.problemid = p.problemid ORDER BY start_time IS NULL DESC, start_time DESC",
-                name, pid);
-        String title = jdbcTemplate.queryForObject("SELECT titleKo from problem where problemid = ?",
-                (rs, rowNum) -> rs.getString("titleKo"), pid);
-        Object status = jdbcTemplate.queryForObject("SELECT status from my where userid = (select id from user where name = ?) and problemid = ? order by id desc limit 1", (rs, rowNum) -> rs.getInt("status"), name, pid);
-        int i_status=0;
-        if (status != null) i_status = Integer.parseInt(status.toString());
-	```
-	
-	<br>
-	pid는 pathvariable로 뺀 건데 int parsing 안 하고도 사용 가능한지는 확인 필요. my list는 start_time이 null인 항목이 맨 위에 올라와야 최신 순으로 보기 편하기 때문에 추가했고 start_time desc는 과거에 푼 이력을 최신 순으로 나열한 것.<br>
-	status는 마지막 문제 풀이 상태가 미해결, 혹은 풀이 완료 상태일 때만 '재시도' 버튼이 떠서 이력을 추가하고자 할 때만 누를 수 있게 설정.
+```java
+int pid = Integer.parseInt(problemid);
+String name = principal.getName();
+List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, " +
+				"DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') as st, DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') as end, "+
+				"TIMESTAMPDIFF(MINUTE, start_time, end_time) as duration, " +
+				"TIMESTAMPDIFF(HOUR, start_time, end_time) as hour, m.status, m.memory, m.time "+
+				"FROM (" +
+				"    SELECT id, userid, problemid, start_time, end_time, status, memory, time " +
+				"    FROM my " +
+				"    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1) " +
+				"    and problemid = ? " +
+				") AS m " +
+				"JOIN user u ON m.userid = u.id JOIN problem p on m.problemid = p.problemid ORDER BY start_time IS NULL DESC, start_time DESC",
+		name, pid);
+String title = jdbcTemplate.queryForObject("SELECT titleKo from problem where problemid = ?",
+		(rs, rowNum) -> rs.getString("titleKo"), pid);
+Object status = jdbcTemplate.queryForObject("SELECT status from my where userid = (select id from user where name = ?) and problemid = ? order by id desc limit 1", (rs, rowNum) -> rs.getInt("status"), name, pid);
+int i_status=0;
+if (status != null) i_status = Integer.parseInt(status.toString());
+```
+
+pid는 pathvariable로 뺀 건데 int parsing 안 하고도 사용 가능한지는 확인 필요. my list는 start_time이 null인 항목이 맨 위에 올라와야 최신 순으로 보기 편하기 때문에 추가했고 start_time desc는 과거에 푼 이력을 최신 순으로 나열한 것.<br>
+status는 마지막 문제 풀이 상태가 미해결, 혹은 풀이 완료 상태일 때만 '재시도' 버튼이 떠서 이력을 추가하고자 할 때만 누를 수 있게 설정.
 </div>
 </details>
 <details>
@@ -190,9 +189,9 @@
 <div markdown="1">
 	특별한 내용은 없다. 저장하는 기능(update)으로 끝. 유일하게 css를 별도로 넣은 부분이다.<br>
 	
-	```java
-    	jdbcTemplate.update("update my set code=?, memo=?, memory=?, time=? where id=?", code, memo, memory, time, mid);
-	```
+```java
+jdbcTemplate.update("update my set code=?, memo=?, memory=?, time=? where id=?", code, memo, memory, time, mid);
+```
 	
 </div>
 </details>
