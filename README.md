@@ -72,6 +72,8 @@
 	<img width="1314" height="697" alt="image" src="https://github.com/user-attachments/assets/8282c614-c1aa-400a-b69a-7b37a80bb694" />
 	name이 unique key가 되어 중복 가입 불가, Query에서도 기존 로직은 찰나의 순간 가입 버튼이 두 번 눌리거나 동일한 이름의 사람이 우연히 동시에 가입할 때 중복으로 등록이 가능했다면, 수정된 로직은 같은 name으로 name이 존재하지 않을 경우에 `insert`가 이루어지고, 찰나의 순간이어도 db에 등록되어 name이 존재하면 0을 출력하여 아무 일도 발생하지 않는다.
 </div>
+</details>
+<details>
 <summary>메인 화면</summary>
 <div markdown="1">
 	기존 Query<br>유저 별 풀었던 문제를 문제 번호 순으로 Group화하여 문제 별로 몇 번 풀었는지 출력<br>
@@ -106,6 +108,8 @@
         if (probNum != null) model.addAttribute("count", Integer.parseInt(probNum.toString())); // 메인 페이지 상위에 문제 수 출력
 	```
 </div>
+</details>
+<details>
 <summary>문제 검색</summary>
 <div markdown="1">
 	기존 Query - 단순 검색 결과 출력으로, 단점으로는 풀고 있는지, 이미 풀었던 문제인지를 따지지 않고 풀이 이력을 중복으로 추가할 우려가 있음.<br>
@@ -121,6 +125,8 @@
 	```<br>
 	left join한 상태인데, userid를 확인하여 null인 경우(푼 적이 없는 경우) 추가, null이 아닌 경우(푼 적 있는 경우) 링크 이동으로 구분하여 문제 풀이를 진행할 수 있음.
 </div>
+</details>
+<details>
 <summary>선택한 문제의 풀이 이력</summary>
 <div markdown="1">
 	기존 Query<br>
@@ -152,6 +158,8 @@
 	pid는 pathvariable로 뺀 건데 int parsing 안 하고도 사용 가능한지는 확인 필요. my list는 start_time이 null인 항목이 맨 위에 올라와야 최신 순으로 보기 편하기 때문에 추가했고 start_time desc는 과거에 푼 이력을 최신 순으로 나열한 것.<br>
 	status는 마지막 문제 풀이 상태가 미해결, 혹은 풀이 완료 상태일 때만 '재시도' 버튼이 떠서 이력을 추가하고자 할 때만 누를 수 있게 설정.
 </div>
+</details>
+<details>
 <summary>풀이 기록하기</summary>
 <div markdown="1">
 	특별한 내용은 없다. 저장하는 기능(update)으로 끝. 유일하게 css를 별도로 넣은 부분이다.<br>
