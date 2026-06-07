@@ -86,6 +86,7 @@
 	<img width="1500" height="378" alt="image" src="https://github.com/user-attachments/assets/23d8e66d-e419-408a-85ff-d9c61f8db585" />
 	Subquery 도입만으로도 ‘수정된 Query’보다 더 빠른 응답 속도를 보임. (약 0.6초 -> 0.2초) 첫 응답 시 0.2초며, 캐시가 저장되면 0.0x초 출력됨.
 	현재 Query - 최종 Query로, 코딩 테스트를 진행하면서 불편한 부분에 대해서 수정한 부분들.
+	
 	```java
 	//my: 현재까지 푼 문제(start_time이 적혀있는 문제)
         List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, m.status, p.level " +
@@ -107,6 +108,7 @@
                 (rs, rowNum) -> rs.getInt("count"), principal.getName());
         if (probNum != null) model.addAttribute("count", Integer.parseInt(probNum.toString())); // 메인 페이지 상위에 문제 수 출력
 	```
+	
 </div>
 </details>
 <details>
@@ -115,6 +117,7 @@
 	기존 Query - 단순 검색 결과 출력으로, 단점으로는 풀고 있는지, 이미 풀었던 문제인지를 따지지 않고 풀이 이력을 중복으로 추가할 우려가 있음.<br>
 	<img width="1500" height="60" alt="image" src="https://github.com/user-attachments/assets/a102956c-0420-413d-aad6-4cafe2a39115" />
 	현재 Query - 최종 Query로, 코딩 테스트를 진행하면서 불편한 부분에 대해서 수정한 부분들.
+	
 	```java
         String sql = "%"+word+"%";
         String name = principal.getName();
@@ -122,7 +125,8 @@
                         "= (SELECT id FROM user WHERE name = ? LIMIT 1)) as m on p.problemid = m.problemid where p.problemId LIKE ?\n" +
                         "or p.titleKo LIKE ?;",
                 name, sql, sql);
-	```<br>
+	```
+
 	left join한 상태인데, userid를 확인하여 null인 경우(푼 적이 없는 경우) 추가, null이 아닌 경우(푼 적 있는 경우) 링크 이동으로 구분하여 문제 풀이를 진행할 수 있음.
 </div>
 </details>
@@ -134,6 +138,7 @@
 	최적화 Query<br>
 	<img width="1500" height="393" alt="image" src="https://github.com/user-attachments/assets/508be07c-dbd7-4c32-b0da-adfc98aac140" />
 	현재 Query - column이 추가된 것 외에는 큰 차이 없음.
+	
 	```java
         int pid = Integer.parseInt(problemid);
         String name = principal.getName();
@@ -151,10 +156,12 @@
                 name, pid);
         String title = jdbcTemplate.queryForObject("SELECT titleKo from problem where problemid = ?",
                 (rs, rowNum) -> rs.getString("titleKo"), pid);
-       Object status = jdbcTemplate.queryForObject("SELECT status from my where userid = (select id from user where name = ?) and problemid = ? order by id desc limit 1", (rs, rowNum) -> rs.getInt("status"), name, pid);
+        Object status = jdbcTemplate.queryForObject("SELECT status from my where userid = (select id from user where name = ?) and problemid = ? order by id desc limit 1", (rs, rowNum) -> rs.getInt("status"), name, pid);
         int i_status=0;
         if (status != null) i_status = Integer.parseInt(status.toString());
-	```<br>
+	```
+	
+	<br>
 	pid는 pathvariable로 뺀 건데 int parsing 안 하고도 사용 가능한지는 확인 필요. my list는 start_time이 null인 항목이 맨 위에 올라와야 최신 순으로 보기 편하기 때문에 추가했고 start_time desc는 과거에 푼 이력을 최신 순으로 나열한 것.<br>
 	status는 마지막 문제 풀이 상태가 미해결, 혹은 풀이 완료 상태일 때만 '재시도' 버튼이 떠서 이력을 추가하고자 할 때만 누를 수 있게 설정.
 </div>
@@ -163,9 +170,11 @@
 <summary>풀이 기록하기</summary>
 <div markdown="1">
 	특별한 내용은 없다. 저장하는 기능(update)으로 끝. 유일하게 css를 별도로 넣은 부분이다.<br>
+	
 	```java
     	jdbcTemplate.update("update my set code=?, memo=?, memory=?, time=? where id=?", code, memo, memory, time, mid);
-	```<br>
+	```
+	
 </div>
 </details>
 
