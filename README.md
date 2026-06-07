@@ -33,7 +33,7 @@
 ## Scheme
 <img width="935" height="431" alt="image" src="https://github.com/user-attachments/assets/9e09a235-76ee-4c23-af92-37786f008988" />
 | Table name | 역할 |
-|---|---|
+| --- | --- |
 | user | 회원 정보 |
 | my | 회원 별 풀이 이력 |
 | problem | 문제 데이터 |
