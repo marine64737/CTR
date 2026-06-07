@@ -47,13 +47,13 @@
 	→ 데이터 보존, 무결성을 위해 삭제는 없음, 잘못된 기록은 메모 필요
 - 풀이 시간 기록, 코드, 메모 기록 가능
 - MySQL 유저 데이터 기반 로그인
-- Redis Session 기반 로그인 상태 유지
+- `Redis Session` 기반 로그인 상태 유지
 - 라즈베리파이 3B+ 구축했을 시에는 MySQL은 Docker 이식, Spring은 local PC에서 운영.
 - 프로젝트가 늘어나 미니 PC를 사용하기 시작했을 때에는 모든 시스템을 미니 PC에 이식하여 Docker 이용하여 사용 중.
 
 ## 실행 및 테스트 방법
 
-1. Git clone 후, application.yml 또는 application.properties 설정
+1. `Git clone` 후, `application.yml` 또는 `application.properties` 설정
 2. DB 연동 (MySQL)
 3. 로컬에서 실행: `./gradlew bootRun`
 4. 브라우저 접속: `http://localhost:8080/`
@@ -63,10 +63,10 @@
 ### 1. solved.ac API 데이터 추출
 - 사이트 이용을 위해선 문제를 선택해야 하는데 그러기 위해선 문제 데이터가 필요.
 - 방식이 몇 가지 있으나 solved.ac API 이용이 비공식 API지만 효율이 좋아 채택.
-- 요청이 많으면 서버로부터 429 Too many requests 응답이 발생하여 적절한 API 항목 선택, 호출 간격 등 조절 필요.
+- 요청이 많으면 서버로부터 `429 Too many requests` 응답이 발생하여 적절한 API 항목 선택, 호출 간격 등 조절 필요.
 
 ### 2. 대규모 데이터 부하 테스트(1억)
-- 이전 프로젝트인 BoardProject에서 매크로를 사용하여 더미 데이터를 생성한 것을 응용.
+- 이전 프로젝트인 `BoardProject`에서 매크로를 사용하여 더미 데이터를 생성한 것을 응용.
 - 회원 별 풀이 이력 table `my`의 데이터가 누적됐을 때의 상황을 가정.
 - 실제 기업과 유사한 환경을 만들고자 더미 데이터를 가능한 한 많이 넣기 위해 실험 진행.
 - 코드 작성 후 숫자만 조절하여 데이터를 생성해보았는데 1000만까지 생성.
@@ -88,7 +88,7 @@
 
 ### 라즈베리파이 성능 최적화
 - 대한상공회의소 수강 시 방열판, 쿨링팬 등 이미 장착하여 온도 문제는 없었음(Idle ±6도).
-- watch –n 1 "vcgencmd measure_temp && free –m && top" 명령어를 사용하여 1초마다 온도, memory 사용량, CPU 점유율을 확인하면서 진행.
+- `watch –n 1 "vcgencmd measure_temp && free –m && top"` 명령어를 사용하여 1초마다 온도, memory 사용량, CPU 점유율을 확인하면서 진행.
 - Data insert 시 top에선 Disk IO 대기율(작업이 밀려있는 정도)인 WA를 확인, 라즈베리파이는 48%까지 기록.
 - AI의 조언에 따라 (64GB SD카드를 사용하고 있었으므로) 2500MB를 Swap memory로 사용하여 작업.
 - 별도로 작업 속도는 측정해보지 않았으나 memory를 늘린 만큼 작업 시 많은 memory를 점유하는 것을 확인.
