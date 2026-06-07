@@ -60,9 +60,15 @@
 
 ## 트러블 슈팅
 <details>
-<summary>트러뷸 슈팅 1</summary>
+<summary>회원 가입</summary>
 <div markdown="1">
-	Test
+	기존 Query - name: MULTI key
+	<img width="650" height="212" alt="image" src="https://github.com/user-attachments/assets/a7444525-749d-4ee5-ad83-278f7a681974" />
+	<img width="1447" height="667" alt="image" src="https://github.com/user-attachments/assets/087aa8a1-cee3-4b2f-952c-9a884f50b19a" />
+	수정된 Query - name: UNIQUE key
+	<img width="620" height="185" alt="image" src="https://github.com/user-attachments/assets/60090968-79c6-460e-af63-23efe968cc40" />
+	<img width="1314" height="697" alt="image" src="https://github.com/user-attachments/assets/8282c614-c1aa-400a-b69a-7b37a80bb694" />
+	name이 unique key가 되어 중복 가입 불가, Query에서도 기존 로직은 찰나의 순간 가입 버튼이 두 번 눌리거나 동일한 이름의 사람이 우연히 동시에 가입할 때 중복으로 등록이 가능했다면, 수정된 로직은 같은 name으로 name이 존재하지 않을 경우에 `insert`가 이루어지고, 찰나의 순간이어도 db에 등록되어 name이 존재하면 0을 출력하여 아무 일도 발생하지 않는다.
 </div>
 </details>
 
