@@ -58,6 +58,14 @@
 3. 로컬에서 실행: `./gradlew bootRun`
 4. 브라우저 접속: `http://localhost:8080/`
 
+## 트러블 슈팅
+<details>
+<summary>트러뷸 슈팅 1</summary>
+<div markdown="1">
+	Test
+</div>
+</details>
+
 ## 추가 진행 사항
 
 ### 1. solved.ac API 데이터 추출
