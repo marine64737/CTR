@@ -34,11 +34,4 @@ public class ProblemController {
         jdbcTemplate.execute("INSERT INTO problem (problemId, titleKo) VALUES ('"+problemDTO.getId()+"', '"+problemDTO.getTitle()+"')");
         return "redirect:/list";
     }
-
-//    @GetMapping("/add")
-//    public String questionAdd(Model model){
-//        model.addAttribute(new ProblemDTO(null, null, null));
-//        return "form";
-//    }
-
 }

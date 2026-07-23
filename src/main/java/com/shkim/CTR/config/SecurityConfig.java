@@ -79,34 +79,14 @@ public class SecurityConfig {
 					.logoutSuccessUrl("/login?logout")
 					.permitAll()
 			)
-//				.sessionManagement(session -> session
-//						.sessionFixation().migrateSession() // 시큐리티가 세션 ID를 직접 바꾸지 못하게 방어
-//						.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-//				)
 				.rememberMe(remember -> remember
-								.alwaysRemember(true) // 🔥 핵심: 파라미터 체크 여부와 상관없이 무조건 발동!
-						.key("uniqueAndSecretKey") // 이 키가 유출되면 안 됩니다 (사령관님만의 비밀번호)
-						.tokenValiditySeconds(60 * 60 * 24 * 30) // 30일 동안 유지 (1440분보다 훨씬 길죠!)
-						.userDetailsService(userService) // 사령관님이 만든 그 UserService가 여기서 쓰입니다!
-						.rememberMeParameter("remember-me") // 로그인 폼의 체크박스 이름
+						.alwaysRemember(true)
+						.key("uniqueAndSecretKey")
+						.tokenValiditySeconds(60 * 60 * 24 * 30)
+						.userDetailsService(userService)
+						.rememberMeParameter("remember-me")
 				)
 			.build();
 	}
-	// end::config[]
-	// @formatter:on
-//	@Bean
-//	public UserDetailsService userDetailsService() {
-//		UserDetails user = User.builder()
-//				.username("user")
-//				.password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
-//				.roles("USER")
-//				.build();
-//		UserDetails admin = User.builder()
-//				.username("admin")
-//				.password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
-//				.roles("USER", "ADMIN")
-//				.build();
-//		return new InMemoryUserDetailsManager(user, admin);
-//	}
 
 }

@@ -14,10 +14,6 @@ public class ProblemDTO {
         this.url=url;
     }
 
-//    public Question(String num, String title){
-//        this.num=num;
-//        this.title=title;
-//    }
     public int getId(){
         return this.id;
     }

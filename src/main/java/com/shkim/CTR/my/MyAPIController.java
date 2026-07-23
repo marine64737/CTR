@@ -28,7 +28,6 @@ public class MyAPIController {
 
     @PostMapping("/home/toggle/{id}")
     public static ResponseEntity<String> toggle(@PathVariable Long id) {
-        // SQL에서 직접 boolean(tinyint) 값을 반전시킴
         String sql = "UPDATE my SET nonvisible = NOT nonvisible WHERE id = ?";
         jdbcTemplate.update(sql, id);
         return ResponseEntity.ok("success");
@@ -38,9 +37,6 @@ public class MyAPIController {
         int mid = Integer.parseInt(id);
         int mstatus = Integer.parseInt(status);
         int msuccess = Integer.parseInt(success);
-//        LocalDateTime now = LocalDateTime.now();
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//        String date = now.format(formatter);
         if (mstatus == 0) jdbcTemplate.execute("update my set start_time=now() + INTERVAL 9 HOUR, status=1 where id="+mid);
         else if (mstatus == 1) {
             if (msuccess == 1) jdbcTemplate.execute("update my set end_time=now() + INTERVAL 9 HOUR, status=2 where id="+mid);

@@ -46,22 +46,4 @@ public class UserController {
             return "redirect:/login";
         }
     }
-
-
-//        List<User> users = jdbcTemplate.query("SELECT * from user where name = ?",
-//                (rs, rowNum) ->
-//                        new User(rs.getInt("id"),
-//                                rs.getString("name"),
-//                                rs.getString("password")), username);
-//        if (!users.isEmpty()) {
-//            log.info("Sign up Failed!");
-//            return "redirect:/signup?error";
-//        }
-//        else {
-//            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-//            String encodedPassword = passwordEncoder.encode(password);
-//            jdbcTemplate.execute("INSERT INTO user(name, password) values('"+username+"', '"+encodedPassword+"')");
-//            log.info("Sign up Success!");
-//            return "redirect:/login";
-//        }
 }

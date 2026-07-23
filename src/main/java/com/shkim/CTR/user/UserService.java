@@ -52,8 +52,6 @@ public class UserService implements UserDetailsService {
     }
 
     public static class CustomUserDetails extends User implements UserDetails, Serializable {
-//        @Serial
-//        private static final long serialVersionUID = 1L;
         CustomUserDetails(User user){
             super(user.getId(), user.getName(), user.getPassword());
         }
