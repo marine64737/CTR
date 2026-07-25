@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,9 @@ import java.util.Map;
 public class MyController {
     private static final Logger log = LoggerFactory.getLogger(MyController.class);
 
+    @Autowired
+    public QueryMethod queryMethod;
+
     public static JdbcTemplate jdbcTemplate;
 
     MyController (JdbcTemplate jdbcTemplate){
@@ -33,7 +37,7 @@ public class MyController {
     @GetMapping("/login")
     public String login(Authentication authentication){
         if (authentication != null && authentication.isAuthenticated()) {
-            return "redirect:/home"; // 메인 페이지로 강제 압송
+            return "redirect:/"; // 메인 페이지로 강제 압송
         }
         return "login";
     }
@@ -44,24 +48,12 @@ public class MyController {
             request.getSession().setAttribute(key, value);
             log.info("Session Success");
         }
-        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, m.status, p.level " +
-                        "FROM (SELECT id, userid, problemid, end_time, status FROM my WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
-                        "    AND end_time IS NOT NULL ORDER BY id DESC LIMIT 100) AS m " +
-                        "JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId order by end_time desc;",
-                principal.getName());
-        List<Map<String, Object>> my1 = jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, p.titleKo as title, m.status, m.nonvisible " +
-                        "FROM (SELECT id, userid, problemid, start_time, status, nonvisible FROM my " +
-                        "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
-                        "    AND end_time IS NULL ORDER BY id DESC LIMIT 100) AS m " +
-                        "JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId order by start_time desc;",
-                principal.getName());
-        Object probNum = jdbcTemplate.queryForObject("SELECT count(distinct problemid) as count FROM my " +
-                        "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
-                        "    AND start_time IS NOT NULL",
-                (rs, rowNum) -> rs.getInt("count"), principal.getName());
-        if (probNum != null) model.addAttribute("count", Integer.parseInt(probNum.toString()));
-        model.addAttribute("my", my);
-        model.addAttribute("my1", my1);
+        List<Map<String, Object>> my_solved = queryMethod.problems(true, "bojproblem", principal);
+        List<Map<String, Object>> my_not_solved = queryMethod.problems(false, "bojproblem", principal);
+        int probNum = queryMethod.problemNum(principal.getName());
+        model.addAttribute("count", probNum);
+        model.addAttribute("my", my_solved);
+        model.addAttribute("my1", my_not_solved);
         model.addAttribute("sessionAttributeNames", Collections.list(request.getSession().getAttributeNames()));
         return "index";
     }
@@ -87,18 +79,7 @@ public class MyController {
     public String solve(@PathVariable String problemid, Model model, Principal principal){
         int pid = Integer.parseInt(problemid);
         String name = principal.getName();
-        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, " +
-                        "DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') as st, DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') as end, "+
-                        "TIMESTAMPDIFF(MINUTE, start_time, end_time) as duration, " +
-                        "TIMESTAMPDIFF(HOUR, start_time, end_time) as hour, m.status, m.memory, m.time "+
-                        "FROM (" +
-                        "    SELECT id, userid, problemid, start_time, end_time, status, memory, time " +
-                        "    FROM my " +
-                        "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1) " +
-                        "    and problemid = ? " +
-                        ") AS m " +
-                        "JOIN user u ON m.userid = u.id JOIN problem p on m.problemid = p.problemid ORDER BY start_time IS NULL DESC, start_time DESC",
-                name, pid);
+        List<Map<String, Object>> my = queryMethod.solveProblem(name, pid, "bojproblem");
         String title = jdbcTemplate.queryForObject("SELECT titleKo from problem where problemid = ?",
                 (rs, rowNum) -> rs.getString("titleKo"), pid);
        Object status = jdbcTemplate.queryForObject(

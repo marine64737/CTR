@@ -26,7 +26,7 @@ public class myTests {
     @Transactional
     @DisplayName("ToggleTest")
     public void testToggle() throws Exception {
-        mockMvc.perform(post("/home/toggle/1"))
+        mockMvc.perform(post("/toggle/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("success"));
     }

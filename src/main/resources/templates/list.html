@@ -13,11 +13,11 @@
     <tbody>
     <tr th:each="question: ${questions}">
         <td  th:text="${question.id}"></td>
-        <td><a th:href="${question.url}" th:text="${question.title}"></td>
+        <td><a th:href="${question.url}" th:text="${question.title}"></a></td>
     </tr>
     </tbody>
 </table>
-<p><a href="/add"><input type="button" value="항목 추가" /></p>
-<p><a href="/"><input type="button" value="뒤로 가기" /></p>
+<p><a href="/add"><input type="button" value="항목 추가" /></a></p>
+<p><a href="/"><input type="button" value="뒤로 가기" /></a></p>
 </body>
 </html>

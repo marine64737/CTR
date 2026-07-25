@@ -26,7 +26,7 @@ public class MyAPIController {
         MyAPIController.jdbcTemplate = jdbcTemplate;
     }
 
-    @PostMapping("/home/toggle/{id}")
+    @PostMapping("/toggle/{id}")
     public static ResponseEntity<String> toggle(@PathVariable Long id) {
         String sql = "UPDATE my SET nonvisible = NOT nonvisible WHERE id = ?";
         jdbcTemplate.update(sql, id);

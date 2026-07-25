@@ -72,7 +72,7 @@
 <!--        <input type="submit" value="풀이 추가" />-->
 <!--    </form>-->
     <div style="display: flex; justify-content: space-between;">
-        <a href="/home"><input type="button" value="뒤로 가기" /></a>
+        <a href="/"><input type="button" value="뒤로 가기" /></a>
 <!--        <form action="#" th:action="@{/solve/solveadd}" method="post">-->
 <!--            <input type="hidden" name = "pid" th:value="${pid}"/>-->
         <button type="button" class="btn btn-primary" th:if="${status} == 2 or ${status} == 3" th:onclick="solveAdd([[${currentUserName}]], [[${pid}]])">재시도</button>
