@@ -12,7 +12,7 @@
     <p>검색: <input type="text" name="word" th:value="${word}"/></p>
         <p>문제 번호의 일부 혹은 제목의 일부를 적어주세요.</p>
     <button type="submit" class="btn btn-primary">검색</button>
-        <a href="/ctr/"><button type="button" class="btn btn-warning">뒤로 가기</button></a><br>
+        <a href="/"><button type="button" class="btn btn-warning">뒤로 가기</button></a><br>
 </form>
     <table class="table border-dark" th:if="${problems != null}">
         <thead>

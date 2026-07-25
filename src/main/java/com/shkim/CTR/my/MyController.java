@@ -37,7 +37,7 @@ public class MyController {
         }
         return "login";
     }
-    @GetMapping("/home")
+    @GetMapping("/")
     public String home(@RequestParam(name = "key", required = false) String key,
                        @RequestParam(name = "value", required = false) String value, HttpServletRequest request, Model model, Principal principal){
         if (!ObjectUtils.isEmpty(key) && !ObjectUtils.isEmpty(value)) {
@@ -45,15 +45,15 @@ public class MyController {
             log.info("Session Success");
         }
         List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, m.status, p.level " +
-                        "FROM (SELECT id, userid, problemid, status FROM my WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
-                        "    AND start_time IS NOT NULL ORDER BY start_time DESC LIMIT 100) AS m " +
-                        "JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId;",
+                        "FROM (SELECT id, userid, problemid, end_time, status FROM my WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
+                        "    AND end_time IS NOT NULL ORDER BY id DESC LIMIT 100) AS m " +
+                        "JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId order by end_time desc;",
                 principal.getName());
         List<Map<String, Object>> my1 = jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, p.titleKo as title, m.status, m.nonvisible " +
-                        "FROM (SELECT id, userid, problemid, status, nonvisible FROM my " +
+                        "FROM (SELECT id, userid, problemid, start_time, status, nonvisible FROM my " +
                         "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
-                        "    AND start_time IS NULL ORDER BY id DESC LIMIT 100) AS m " +
-                        "JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId;",
+                        "    AND end_time IS NULL ORDER BY id DESC LIMIT 100) AS m " +
+                        "JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId order by start_time desc;",
                 principal.getName());
         Object probNum = jdbcTemplate.queryForObject("SELECT count(distinct problemid) as count FROM my " +
                         "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
@@ -63,7 +63,7 @@ public class MyController {
         model.addAttribute("my", my);
         model.addAttribute("my1", my1);
         model.addAttribute("sessionAttributeNames", Collections.list(request.getSession().getAttributeNames()));
-        return "home";
+        return "index";
     }
     @GetMapping("/search")
     public String search(Model model){
