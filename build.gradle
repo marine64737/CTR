@@ -15,7 +15,6 @@ java {
 }
 
 configurations.all {
-	// tools.jackson 패키지를 사용하는 모든 라이브러리를 차단합니다.
 	exclude group: 'tools.jackson', module: 'jackson-databind'
 }
 
@@ -31,14 +30,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
-	// Jackson의 핵심! 객체-JSON 변환을 담당하는 녀석입니다.
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
+	implementation 'org.jsoup:jsoup:1.17.2'
 
-	// 이미 있으시겠지만, 확실히 하기 위해 세트 메뉴로 둡니다.
 	implementation 'com.fasterxml.jackson.core:jackson-core'
 	implementation 'com.fasterxml.jackson.core:jackson-annotations'
 
-	// 만약 Java 8의 시간 타입(LocalDateTime 등)을 쓰신다면 이것도 필수입니다.
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2'
 

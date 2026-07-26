@@ -22,8 +22,9 @@ public class QueryMethod {
                             SELECT m.problemid as pid, p.titleKo as title, m.status, p.level
                             FROM (SELECT id, userid, problemid, start_time, end_time, status FROM my WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)
                             AND start_time IS NOT NULL ORDER BY id DESC LIMIT 100) AS m
-                            JOIN user u ON m.userid = u.id JOIN " + platform + " p ON m.problemid = p.problemId order by end_time desc, start_time desc
-                    """;
+                            JOIN user u ON m.userid = u.id JOIN
+                            """
+                    + platform + " p ON m.problemid = p.problemId order by end_time desc, start_time desc";
             return jdbcTemplate.queryForList(sql, principal.getName());
         }
         else {
@@ -32,16 +33,17 @@ public class QueryMethod {
                            FROM (SELECT id, userid, problemid, start_time, status, nonvisible FROM my
                            WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)
                            AND start_time is null ORDER BY id DESC LIMIT 100) AS m
-                           JOIN user u ON m.userid = u.id JOIN " + platform + " p ON m.problemid = p.problemId order by id desc
-                    """;
+                           JOIN user u ON m.userid = u.id JOIN
+                           """
+                    + platform + " p ON m.problemid = p.problemId order by id desc";
             return jdbcTemplate.queryForList(sql, principal.getName());
         }
     }
-    public int problemNum(String name){
+    public int totalNum(String name){
         String query = """
                 SELECT count(distinct problemid) as count FROM my
-                                        WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
-                                        AND start_time IS NOT NULL
+                WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)
+                AND start_time IS NOT NULL
                 """;
         Object o = jdbcTemplate.queryForObject(query,
                 (rs, rowNum) -> rs.getInt("count"), name);
@@ -51,6 +53,30 @@ public class QueryMethod {
         catch (Exception e){
             return 0;
         }
+    }
+    public int problemNum(String name, int platform){
+        String query = """
+                SELECT count(distinct problemid) as count FROM my
+                WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)
+                AND start_time IS NOT NULL AND platform = ?
+                """;
+        Object o = jdbcTemplate.queryForObject(query,
+                (rs, rowNum) -> rs.getInt("count"), name, platform);
+        try {
+            return Integer.parseInt(o.toString());
+        }
+        catch (Exception e){
+            return 0;
+        }
+    }
+    public List<Map<String, Object>> searchComplete(String platform, String word, String name){
+        String sql = "select p.problemid, p.titleKo, m.userid from "+ platform +
+                """
+                as p left join (SELECT distinct problemId, userid FROM my WHERE userid
+                = (SELECT id FROM user WHERE name = ? LIMIT 1)) as m on p.problemid = m.problemid where p.problemId LIKE ?
+                or p.titleKo LIKE ?
+                """;
+        return jdbcTemplate.queryForList(sql, name, word, word);
     }
     public List<Map<String, Object>> solveProblem(String name, int problemId, String platform){
         return jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, " +

@@ -50,7 +50,9 @@ public class MyController {
         }
         List<Map<String, Object>> my_solved = queryMethod.problems(true, "bojproblem", principal);
         List<Map<String, Object>> my_not_solved = queryMethod.problems(false, "bojproblem", principal);
-        int probNum = queryMethod.problemNum(principal.getName());
+        int totalNum = queryMethod.totalNum(principal.getName());
+        int probNum = queryMethod.problemNum(principal.getName(), 0);
+        model.addAttribute("total", totalNum);
         model.addAttribute("count", probNum);
         model.addAttribute("my", my_solved);
         model.addAttribute("my1", my_not_solved);
@@ -64,12 +66,9 @@ public class MyController {
 
     @GetMapping("/searchcomplete")
     public String searchcomplete(@RequestParam(name = "word") String word, Model model, Principal principal){
-        String sql = "%"+word+"%";
+        String w = "%"+word+"%";
         String name = principal.getName();
-        List<Map<String, Object>> problems = jdbcTemplate.queryForList("select p.problemid, p.titleKo, m.userid from problem as p left join (SELECT distinct problemId, userid FROM my WHERE userid\n" +
-                        "= (SELECT id FROM user WHERE name = ? LIMIT 1)) as m on p.problemid = m.problemid where p.problemId LIKE ?\n" +
-                        "or p.titleKo LIKE ?;",
-                name, sql, sql);
+        List<Map<String, Object>> problems = queryMethod.searchComplete("bojproblem", w, name);
         model.addAttribute("problems", problems);
         model.addAttribute("word", word);
         return "search";
