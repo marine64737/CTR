@@ -1,6 +1,11 @@
 package com.shkim.CTR.Domain.My.Controller;
 
-import com.shkim.CTR.Domain.My.Service.QueryMethod;
+import com.shkim.CTR.Config.SessionConfig;
+import com.shkim.CTR.Domain.My.DTO.HomeDTO;
+import com.shkim.CTR.Domain.My.DTO.SearchCompleteDTO;
+import com.shkim.CTR.Domain.My.DTO.UnsolvedProblemsDTO;
+import com.shkim.CTR.Domain.My.Service.MyService;
+import com.shkim.CTR.Domain.My.DTO.SolvedProblemsDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,11 +14,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +25,10 @@ public class MyController {
     private static final Logger log = LoggerFactory.getLogger(MyController.class);
 
     @Autowired
-    public QueryMethod queryMethod;
+    public MyService myService;
+
+    @Autowired
+    public SessionConfig sessionConfig;
 
     public static JdbcTemplate jdbcTemplate;
 
@@ -40,19 +46,13 @@ public class MyController {
     @GetMapping("/")
     public String home(@RequestParam(name = "key", required = false) String key,
                        @RequestParam(name = "value", required = false) String value, HttpServletRequest request, Model model, Principal principal){
-        if (!ObjectUtils.isEmpty(key) && !ObjectUtils.isEmpty(value)) {
-            request.getSession().setAttribute(key, value);
-            log.info("Session Success");
-        }
-        List<Map<String, Object>> my_solved = queryMethod.problems(true, "bojproblem", principal);
-        List<Map<String, Object>> my_not_solved = queryMethod.problems(false, "bojproblem", principal);
-        int totalNum = queryMethod.totalNum(principal.getName());
-        int probNum = queryMethod.problemNum(principal.getName(), 0);
-        model.addAttribute("total", totalNum);
-        model.addAttribute("count", probNum);
-        model.addAttribute("my", my_solved);
-        model.addAttribute("my1", my_not_solved);
-        model.addAttribute("sessionAttributeNames", Collections.list(request.getSession().getAttributeNames()));
+        sessionConfig.setSession(key, value, request);
+        List<SolvedProblemsDTO> my_solved = myService.solved_problems(principal);
+        List<UnsolvedProblemsDTO> my_not_solved = myService.unsolved_problems(principal);
+        int totalNum = myService.totalNum(principal.getName());
+        int probNum = myService.problemNum(principal.getName());
+        HomeDTO homeDTO = new HomeDTO(my_solved, my_not_solved, probNum, totalNum);
+        model.addAttribute("home", homeDTO);
         return "index";
     }
     @GetMapping("/search")
@@ -63,8 +63,7 @@ public class MyController {
     @GetMapping("/searchcomplete")
     public String searchcomplete(@RequestParam(name = "word") String word, Model model, Principal principal){
         String w = "%"+word+"%";
-        String name = principal.getName();
-        List<Map<String, Object>> problems = queryMethod.searchComplete("bojproblem", w, name);
+        List<SearchCompleteDTO> problems = myService.searchComplete(w, principal.getName());
         model.addAttribute("problems", problems);
         model.addAttribute("word", word);
         return "search";
@@ -74,7 +73,7 @@ public class MyController {
     public String solve(@PathVariable String problemid, Model model, Principal principal){
         int pid = Integer.parseInt(problemid);
         String name = principal.getName();
-        List<Map<String, Object>> my = queryMethod.solveProblem(name, pid, "bojproblem");
+        List<Map<String, Object>> my = myService.solveProblem(name, pid, "bojproblem");
         String title = jdbcTemplate.queryForObject("SELECT titleKo from problem where problemid = ?",
                 (rs, rowNum) -> rs.getString("titleKo"), pid);
        Object status = jdbcTemplate.queryForObject(

@@ -34,7 +34,8 @@ public class UserService implements UserDetailsService {
                     (rs, rowNum) -> new User(
                             rs.getInt("id"),
                             rs.getString("name"),
-                            "{bcrypt}"+rs.getString("password")
+                            "{bcrypt}"+rs.getString("password"),
+                            rs.getInt("platform")
                     ),
                     username
             );
@@ -48,7 +49,7 @@ public class UserService implements UserDetailsService {
 
     public static class CustomUserDetails extends User implements UserDetails, Serializable {
         CustomUserDetails(User user){
-            super(user.getId(), user.getName(), user.getPassword());
+            super(user.getId(), user.getName(), user.getPassword(), user.getPlatform());
         }
         private static final List<GrantedAuthority> ROLE_USER = Collections
                 .unmodifiableList(AuthorityUtils.createAuthorityList("ROLE_USER"));

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.shkim.CTR.Global;
+package com.shkim.CTR.Config;
 
 import com.shkim.CTR.Domain.User.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.shkim.CTR.Global;
+package com.shkim.CTR.Config;
 
 import com.shkim.CTR.CtrApplication;
 import org.jsoup.Jsoup;

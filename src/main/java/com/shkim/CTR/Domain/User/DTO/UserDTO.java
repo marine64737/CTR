@@ -1,20 +1,18 @@
-package com.shkim.CTR.Domain.User.Entity;
+package com.shkim.CTR.Domain.User.DTO;
 
 import java.io.Serializable;
 
-public class User implements Serializable {
+public class UserDTO implements Serializable {
 
     private int id;
 
     private String name;
 
-    private String password;
     private int platform;
 
-    public User(int id, String name, String password, int platform) {
+    public UserDTO(int id, String name, int platform) {
         this.id = id;
         this.name = name;
-        this.password = password;
         this.platform = platform;
     }
 
@@ -30,16 +28,8 @@ public class User implements Serializable {
         return this.name;
     }
 
-    public void setName(String name){
+    public void setName(String username){
         this.name= name;
-    }
-
-    public String getPassword(){
-        return this.password;
-    }
-
-    public void setPassword(String password){
-        this.password= password;
     }
 
     public int getPlatform() {

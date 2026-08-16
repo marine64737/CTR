@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.shkim.CTR.Global;
+package com.shkim.CTR.Config;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.Module;
@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.shkim.CTR.Domain.User.Service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +30,7 @@ import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
@@ -85,5 +87,12 @@ public class SessionConfig implements BeanClassLoaderAware {
 		serializer.setSameSite("Lax");
 		serializer.setUseSecureCookie(false);
 		return serializer;
+	}
+
+	@Bean
+	public void setSession(String key, String value, HttpServletRequest request) {
+		if (!ObjectUtils.isEmpty(key) && !ObjectUtils.isEmpty(value)) {
+			request.getSession().setAttribute(key, value);
+		}
 	}
 }
