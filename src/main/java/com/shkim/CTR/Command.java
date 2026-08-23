@@ -25,33 +25,12 @@ public class Command implements CommandLineRunner {
     }
     @Override
     public void run(String... strings) throws IOException {
-        String base_url = "https://school.programmers.co.kr/learn/courses/30/lessons/";
-        List<Integer> integers = IntStream.rangeClosed(0, 500000).boxed().toList();
-
-        String targetClassName = "challenge-title";
-
-        for (int integer : integers) {
-            String url = base_url+integer;
-            //System.out.println("=== 크롤링 중인 주소: " + url + " ===");
-
-            try {
-                Document doc = Jsoup.connect(url).get();
-
-                Elements element = doc.select("." + targetClassName);
-                String e = element.text();
-
-                // 매칭된 요소들의 텍스트 출력 또는 데이터 수집
-                if (!e.isEmpty()) {
-                    jdbcTemplate.update("INSERT INTO prgproblem(problemid, titleKo) VALUES(?, ?)", integer, e);
-                    log.info("["+integer+"]: " + e);
-                }
-
-            } catch (IOException e) {
-                continue;
-                //System.err.println("URL 연결 실패 (" + url + "): " + e.getMessage());
-            } finally {
-                if (integer % 1000 == 0) log.info("진행 중: "+integer);
-            }
+        log.info("Command Started");
+        String boj_base_url = "https://www.acmicpc.net/problem/";
+        String prg_base_url = "https://school.programmers.co.kr/learn/courses/30/lessons/";
+        for (int i=1; i<=40000; i++) {
+            jdbcTemplate.update("update problem set url = ? where problemid = ? and platform = 0", boj_base_url+i, i);
+            jdbcTemplate.update("update problem set url = ? where problemid = ? and platform = 1", prg_base_url+i, i);
         }
         log.info("Completed");
     }

@@ -1,11 +1,8 @@
 package com.shkim.CTR.Domain.My.Controller;
 
 import com.shkim.CTR.Config.SessionConfig;
-import com.shkim.CTR.Domain.My.DTO.HomeDTO;
-import com.shkim.CTR.Domain.My.DTO.SearchCompleteDTO;
-import com.shkim.CTR.Domain.My.DTO.UnsolvedProblemsDTO;
+import com.shkim.CTR.Domain.My.DTO.*;
 import com.shkim.CTR.Domain.My.Service.MyService;
-import com.shkim.CTR.Domain.My.DTO.SolvedProblemsDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,8 +69,7 @@ public class MyController {
     @RequestMapping("/solve/{problemid}")
     public String solve(@PathVariable String problemid, Model model, Principal principal){
         int pid = Integer.parseInt(problemid);
-        String name = principal.getName();
-        List<Map<String, Object>> my = myService.solveProblem(name, pid, "bojproblem");
+        List<SolveProblemDTO> my = myService.solveProblem(principal, pid);
         String title = jdbcTemplate.queryForObject("SELECT titleKo from problem where problemid = ?",
                 (rs, rowNum) -> rs.getString("titleKo"), pid);
        Object status = jdbcTemplate.queryForObject(
@@ -91,15 +87,10 @@ public class MyController {
         return "solve";
     }
     @RequestMapping("/solve/{problemid}/{id}")
-    public String detail(@PathVariable String problemid, @PathVariable String id, Model model, Principal principal){
-        int pid = Integer.parseInt(problemid);
+    public String detail(@PathVariable String id, Model model){
         int mid = Integer.parseInt(id);
-        Map<String, Object> my = jdbcTemplate.queryForMap("SELECT m.id as id, m.problemid as pid, p.titleKo as title, " +
-                        "m.code, m.memo, m.memory, m.time FROM my as m join user as u on m.userid=u.id join problem as p on m.problemid=p.problemid where m.id=?",
-                mid);
-        String link = "https://www.acmicpc.net/problem/"+pid;
+        DetailDTO my = myService.detail(mid);
         model.addAttribute("my", my);
-        model.addAttribute("link", link);
         return "detail";
     }
 

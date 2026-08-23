@@ -1,12 +1,11 @@
 package com.shkim.CTR.Domain.My.Repository;
 
-import com.shkim.CTR.Domain.My.DTO.SearchCompleteDTO;
-import com.shkim.CTR.Domain.My.DTO.SolvedProblemsDTO;
-import com.shkim.CTR.Domain.My.DTO.UnsolvedProblemsDTO;
+import com.shkim.CTR.Domain.My.DTO.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -76,18 +75,45 @@ public class MyRepository {
                 rs.getInt("uid")
         ));
     }
-    public List<Map<String, Object>> solveProblem(String name, int problemId, String platform){
-        return jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, " +
-                        "DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') as st, DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') as end, "+
-                        "TIMESTAMPDIFF(MINUTE, start_time, end_time) as duration, " +
-                        "TIMESTAMPDIFF(HOUR, start_time, end_time) as hour, m.status, m.memory, m.time "+
-                        "FROM (" +
-                        "    SELECT id, userid, problemid, start_time, end_time, status, memory, time " +
-                        "    FROM my " +
-                        "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1) " +
-                        "    and problemid = ? " +
-                        ") AS m " +
-                        "JOIN user u ON m.userid = u.id JOIN "+ platform +" p on m.problemid = p.problemid ORDER BY start_time IS NULL DESC, start_time DESC",
-                name, problemId);
+    public List<SolveProblemDTO> solveProblem(String name, int problemId){
+        String sql = "SELECT m.id as id, m.problemid as pid, " +
+                "DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') as st, DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') as end, "+
+                "TIMESTAMPDIFF(MINUTE, start_time, end_time) as duration, " +
+                "TIMESTAMPDIFF(HOUR, start_time, end_time) as hour, m.status, m.memory, m.time "+
+                "FROM (" +
+                "    SELECT id, userid, problemid, start_time, end_time, status, memory, time " +
+                "    FROM my " +
+                "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1) " +
+                "    and problemid = ? " +
+                ") AS m " +
+                "JOIN user u ON m.userid = u.id JOIN problem p on m.problemid = p.problemid and u.platform = p.platform ORDER BY start_time IS NULL DESC, start_time DESC";
+        return jdbcTemplate.query(sql,
+                new Object[]{name, problemId}, (rs, rowNum) -> new SolveProblemDTO(
+                        rs.getInt("id"),
+                        rs.getInt("pid"),
+                        LocalDateTime.parse(rs.getString("st")),
+                        LocalDateTime.parse(rs.getString("end")),
+                        rs.getLong("duration"),
+                        rs.getLong("hour"),
+                        rs.getInt("status"),
+                        rs.getInt("memory"),
+                        rs.getInt("time")
+                ));
+    }
+    public DetailDTO detail(int id) {
+        String sql = "SELECT m.id as id, m.problemid as pid, p.titleKo as title, " +
+                "m.code, m.memo, m.memory, m.time FROM my as m join user as u on m.userid=u.id join problem as p on m.problemid=p.problemid " +
+                "and u.platform = p.platform where m.id=?";
+        return jdbcTemplate.queryForObject(sql,
+                new Object[]{id}, (rs, rowNum) -> new DetailDTO(
+                        rs.getInt("id"),
+                        rs.getInt("pid"),
+                        rs.getString("title"),
+                        rs.getString("code"),
+                        rs.getString("memo"),
+                        rs.getInt("memory"),
+                        rs.getInt("time"),
+                        rs.getString("url")
+                ));
     }
 }
