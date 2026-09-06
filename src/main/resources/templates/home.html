@@ -4,17 +4,17 @@
 </head>
 <body>
 <div class="container-xl">
-    <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            플랫폼
-        </button>
-        <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">백준</a></li>
-            <li><a class="dropdown-item" href="#">프로그래머스</a></li>
-            <li><a class="dropdown-item" href="#">리트코드</a></li>
-        </ul>
-    </div>
-    <a href="/search"><button type="button" class="btn btn-primary">문제 추가</button></a>
+<!--    <div class="dropdown">-->
+<!--        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--            플랫폼-->
+<!--        </button>-->
+<!--        <ul class="dropdown-menu">-->
+<!--            <li><a class="dropdown-item" href="#">백준</a></li>-->
+<!--            <li><a class="dropdown-item" href="#">프로그래머스</a></li>-->
+<!--            <li><a class="dropdown-item" href="#">리트코드</a></li>-->
+<!--        </ul>-->
+<!--    </div>-->
+<!--    <a href="/search"><button type="button" class="btn btn-primary">문제 추가</button></a>-->
     <div class="row">
         <div class="col-6">
             <br><h2 class="mb-0 fw-bold text-dark" th:text="'풀이 이력 '+'/ 문제 수: '+${count}"></h2>
@@ -112,9 +112,9 @@
             <p class="mb-0 fw-bold text-dark" th:unless="${my1.size() != 0}"><br>풀이 예정 문제가 존재하지 않습니다.<br></p>
         </div>
 </div>
-    <br>
-    <a href="/search"><button type="button" class="btn btn-primary" th:if="${my.size() > 20}">문제 추가</button></a>
-    <p><a href="/list"><button type="button" class="btn btn-secondary" th:if="${currentUserName == 'tkdgh'}">전체 문제</button></a></p>
+<!--    <br>-->
+<!--    <a href="/search"><button type="button" class="btn btn-primary" th:if="${my.size() > 20}">문제 추가</button></a>-->
+<!--    <p><a href="/list"><button type="button" class="btn btn-secondary" th:if="${currentUserName == 'tkdgh'}">전체 문제</button></a></p>-->
 </div>
 </body>
 <div th:insert="~{footer}"></div>
