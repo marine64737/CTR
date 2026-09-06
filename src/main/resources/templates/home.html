@@ -14,7 +14,7 @@
 <!--            <li><a class="dropdown-item" href="#">리트코드</a></li>-->
 <!--        </ul>-->
 <!--    </div>-->
-    <a href="/search"><button type="button" class="btn btn-primary">문제 추가</button></a>
+    <a href="/ctr/search"><button type="button" class="btn btn-primary">문제 추가</button></a>
     <div class="row">
         <div class="col-6">
             <br><h2 class="mb-0 fw-bold text-dark" th:text="'풀이 이력 '+'/ 문제 수: '+${count}"></h2>
@@ -113,7 +113,7 @@
         </div>
 </div>
     <br>
-    <a href="/search"><button type="button" class="btn btn-primary" th:if="${my.size() > 20}">문제 추가</button></a>
+    <a href="/ctr/search"><button type="button" class="btn btn-primary" th:if="${my.size() > 20}">문제 추가</button></a>
 <!--    <p><a href="/list"><button type="button" class="btn btn-secondary" th:if="${currentUserName == 'tkdgh'}">전체 문제</button></a></p>-->
 </div>
 </body>
