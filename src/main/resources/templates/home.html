@@ -90,7 +90,7 @@
                     <th class="col-1 text-center p-2">No.</th>
                     <th class="col-6 text-center p-2">제목</th>
                     <th class="col-3 text-center p-2">풀이 현황</th>
-                    <th class="col-3 text-center p-2">숨기기</th>
+<!--                    <th class="col-3 text-center p-2">숨기기</th>-->
                 </tr>
                 </thead>
                 <tbody class="table-group-divider">
@@ -103,9 +103,9 @@
                         <a th:href="@{'/solve/'+${problem.pid}}"><td class="p-2 text-center align-middle" th:if="${problem.nonvisible == false}" th:case="0"><a th:href="@{'/solve/'+${problem.pid}}"><span class="badge text-bg-primary fs-6">풀이 전</span></a></td></a>
                         <td class="p-2 text-center align-middle" th:if="${problem.nonvisible == true}">-</td>
                     </div>
-                    <td>
-                        <button class = "btn btn-success fs-8" type="button" th:onclick = "toggleStatus([[${problem.id}]])" th:text = "${problem.nonvisible == true}? 보이기 : 숨기기">-</button>
-                    </td>
+<!--                    <td>-->
+<!--                        <button class = "btn btn-success fs-8" type="button" th:onclick = "toggleStatus([[${problem.id}]])" th:text = "${problem.nonvisible == true}? 보이기 : 숨기기">-</button>-->
+<!--                    </td>-->
                 </tr>
                 </tbody>
             </table>
