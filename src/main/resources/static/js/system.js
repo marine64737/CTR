@@ -1,5 +1,5 @@
 function toggleStatus(id) {
-    fetch(`/home/toggle/${id}`, { method: 'POST' })
+    fetch(`/ctr/home/toggle/${id}`, { method: 'POST' })
         .then(response => {
             if (response.ok) return response.text();
             throw new Error('네트워크 응답 실패');
@@ -11,7 +11,7 @@ function toggleStatus(id) {
 }
 
 function timeLaps(id, status, success) {
-    fetch(`/solve/timelaps/${id}/${status}/${success}`, { method: 'POST' })
+    fetch(`/ctr/solve/timelaps/${id}/${status}/${success}`, { method: 'POST' })
         .then(response => {
             if (response.ok) return response.text();
             throw new Error('네트워크 응답 실패');
@@ -23,7 +23,7 @@ function timeLaps(id, status, success) {
 }
 
 function solveAdd(currentUserName, pid) {
-    fetch(`/solve/solveadd/${currentUserName}/${pid}`, { method: 'POST' })
+    fetch(`/ctr/solve/solveadd/${currentUserName}/${pid}`, { method: 'POST' })
         .then(response => {
             if (response.ok) return response.text();
             throw new Error('네트워크 응답 실패');
