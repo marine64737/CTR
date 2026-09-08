@@ -30,7 +30,7 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         try {
             Member member = jdbcTemplate.queryForObject(
-                    "SELECT * FROM member WHERE name = ?",
+                    "SELECT * FROM user WHERE name = ?",
                     (rs, rowNum) -> new Member(
                             rs.getInt("id"),
                             rs.getString("name"),

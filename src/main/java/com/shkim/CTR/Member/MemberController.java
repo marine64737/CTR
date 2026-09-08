@@ -32,9 +32,9 @@ public class MemberController {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(password);
 
-        String sql = "INSERT INTO Member (name, password) " +
+        String sql = "INSERT INTO user (name, password) " +
                 "SELECT ?, ? FROM DUAL " +
-                "WHERE NOT EXISTS (SELECT 1 FROM Member WHERE name = ?)";
+                "WHERE NOT EXISTS (SELECT 1 FROM user WHERE name = ?)";
 
         int result = jdbcTemplate.update(sql, username, encodedPassword, username);
 
@@ -48,7 +48,7 @@ public class MemberController {
     }
 
 
-//        List<Member> users = jdbcTemplate.query("SELECT * from Member where name = ?",
+//        List<Member> users = jdbcTemplate.query("SELECT * from user where name = ?",
 //                (rs, rowNum) ->
 //                        new Member(rs.getInt("id"),
 //                                rs.getString("name"),
