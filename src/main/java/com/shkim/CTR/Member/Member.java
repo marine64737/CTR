@@ -1,8 +1,8 @@
-package com.shkim.CTR.user;
+package com.shkim.CTR.Member;
 
 import java.io.Serializable;
 
-public class User implements Serializable {
+public class Member implements Serializable {
 
     private int id;
 
@@ -10,7 +10,7 @@ public class User implements Serializable {
 
     private String password;
 
-    public User(int id, String name, String password) {
+    public Member(int id, String name, String password) {
         this.id = id;
         this.name = name;
         this.password = password;
@@ -28,7 +28,7 @@ public class User implements Serializable {
         return this.name;
     }
 
-    public void setName(String username){
+    public void setName(String name){
         this.name= name;
     }
 

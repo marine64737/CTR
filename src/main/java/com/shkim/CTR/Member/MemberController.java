@@ -1,4 +1,4 @@
-package com.shkim.CTR.user;
+package com.shkim.CTR.Member;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class UserController {
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
+public class MemberController {
+    private static final Logger log = LoggerFactory.getLogger(MemberController.class);
 
     public static JdbcTemplate jdbcTemplate;
 
-    UserController(JdbcTemplate jdbcTemplate){
-        UserController.jdbcTemplate = jdbcTemplate;
+    MemberController(JdbcTemplate jdbcTemplate){
+        MemberController.jdbcTemplate = jdbcTemplate;
     }
 
     @GetMapping("/signup")
@@ -32,9 +32,9 @@ public class UserController {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(password);
 
-        String sql = "INSERT INTO user (name, password) " +
+        String sql = "INSERT INTO Member (name, password) " +
                 "SELECT ?, ? FROM DUAL " +
-                "WHERE NOT EXISTS (SELECT 1 FROM user WHERE name = ?)";
+                "WHERE NOT EXISTS (SELECT 1 FROM Member WHERE name = ?)";
 
         int result = jdbcTemplate.update(sql, username, encodedPassword, username);
 
@@ -48,9 +48,9 @@ public class UserController {
     }
 
 
-//        List<User> users = jdbcTemplate.query("SELECT * from user where name = ?",
+//        List<Member> users = jdbcTemplate.query("SELECT * from Member where name = ?",
 //                (rs, rowNum) ->
-//                        new User(rs.getInt("id"),
+//                        new Member(rs.getInt("id"),
 //                                rs.getString("name"),
 //                                rs.getString("password")), username);
 //        if (!users.isEmpty()) {
@@ -60,7 +60,7 @@ public class UserController {
 //        else {
 //            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 //            String encodedPassword = passwordEncoder.encode(password);
-//            jdbcTemplate.execute("INSERT INTO user(name, password) values('"+username+"', '"+encodedPassword+"')");
+//            jdbcTemplate.execute("INSERT INTO Member(name, password) values('"+username+"', '"+encodedPassword+"')");
 //            log.info("Sign up Success!");
 //            return "redirect:/login";
 //        }

@@ -50,7 +50,7 @@ public class MyAPIController {
     }
     @PostMapping("/solve/solveadd/{currentUserName}/{pid}")
     public ResponseEntity<String> solveadd(@PathVariable String currentUserName, @PathVariable String pid){
-        int uid = jdbcTemplate.queryForObject("select id from user where name=?", (rs, rowNum) -> rs.getInt("id"), currentUserName);
+        int uid = jdbcTemplate.queryForObject("select id from Member where name=?", (rs, rowNum) -> rs.getInt("id"), currentUserName);
         int probid = Integer.parseInt(pid);
         jdbcTemplate.execute("insert into my(userid, problemid, status, nonvisible) values("+uid+", "+probid+", 0, 0)");
         return ResponseEntity.ok("success");
