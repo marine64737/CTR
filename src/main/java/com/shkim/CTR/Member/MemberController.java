@@ -32,9 +32,9 @@ public class MemberController {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(password);
 
-        String sql = "INSERT INTO user (name, password) " +
+        String sql = "INSERT INTO Member (name, password) " +
                 "SELECT ?, ? FROM DUAL " +
-                "WHERE NOT EXISTS (SELECT 1 FROM user WHERE name = ?)";
+                "WHERE NOT EXISTS (SELECT 1 FROM Member WHERE name = ?)";
 
         int result = jdbcTemplate.update(sql, username, encodedPassword, username);
 
