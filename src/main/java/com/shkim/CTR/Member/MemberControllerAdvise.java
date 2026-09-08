@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.shkim.CTR.user;
+package com.shkim.CTR.Member;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -23,12 +23,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import java.security.Principal;
 
 /**
- * {@link ControllerAdvice} to expose user related attributes.
+ * {@link ControllerAdvice} to expose Member related attributes.
  *
  * @author Rob Winch
  */
 @ControllerAdvice
-public class UserControllerAdvise {
+public class MemberControllerAdvise {
 
 	@ModelAttribute("currentUserName")
 	String currentUser(Principal principal) {

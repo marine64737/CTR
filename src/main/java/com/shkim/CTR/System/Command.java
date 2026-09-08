@@ -189,16 +189,16 @@ public class Command implements CommandLineRunner {
 //            log.info("inserting data: t="+(t+1)+"/"+list_num+")");
 //        }
 //
-//        List<Object[]> user = new ArrayList<>();
+//        List<Object[]> Member = new ArrayList<>();
 //        for (int i = 0; i < 100 ; i++) {
-//            user.add(new Object[]{i+1});
+//            Member.add(new Object[]{i+1});
 //        }
 //
 //
 //        jdbcTemplate.execute("DROP TABLE IF EXISTS my");
 //
-//        jdbcTemplate.execute("DROP TABLE IF EXISTS user");
-//        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS user(id int not null AUTO_INCREMENT, name VARCHAR(255), password VARCHAR(255), PRIMARY KEY(id))");
+//        jdbcTemplate.execute("DROP TABLE IF EXISTS Member");
+//        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS Member(id int not null AUTO_INCREMENT, name VARCHAR(255), password VARCHAR(255), PRIMARY KEY(id))");
 //
 //        String[] names = {
 //                "Perez","Adams","Collins","Morgan","Ramirez","Price","Morales","Flores","Ramos","Parker","Myers",
@@ -222,7 +222,7 @@ public class Command implements CommandLineRunner {
 //        }
 //
 //
-//        jdbcTemplate.batchUpdate("INSERT INTO user(name, password) VALUE (?, ?)", list);
+//        jdbcTemplate.batchUpdate("INSERT INTO Member(name, password) VALUE (?, ?)", list);
 //
 //        jdbcTemplate.execute("DROP TABLE IF EXISTS my");
 //        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS my("+
@@ -235,7 +235,7 @@ public class Command implements CommandLineRunner {
 //                "code text, " +
 //                "memo text, " +
 //                "primary key(id))");
-//                "foreign key(userid) references user(id), " +
+//                "foreign key(userid) references Member(id), " +
 //                "foreign key(problemid) references problem(problemid))");
 
 //                jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS my("+
@@ -243,7 +243,7 @@ public class Command implements CommandLineRunner {
 //                "userid int not null," +
 //                "problemid int not null," +
 //                "primary key(id),"+
-//                "foreign key(userid) references user(id), " +
+//                "foreign key(userid) references Member(id), " +
 //                "foreign key(problemid) references problem(problemid))");
 
 //        List<Object[]> arr = new ArrayList<>();
@@ -288,7 +288,7 @@ public class Command implements CommandLineRunner {
 //        jdbcTemplate.execute("SET GLOBAL innodb_flush_log_at_trx_commit = 1");
 
 
-//        jdbcTemplate.execute("alter table my add foreign key u_fk(userid) references user(id)");
+//        jdbcTemplate.execute("alter table my add foreign key u_fk(userid) references Member(id)");
 //        jdbcTemplate.execute("alter table my add foreign key p_fk(problemid) references problem(problemid)");
 //        jdbcTemplate.execute("alter table my add index u_p_s (userid, problemid, status)");
 

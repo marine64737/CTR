@@ -16,23 +16,16 @@
 
 package com.shkim.CTR.config;
 
-import com.shkim.CTR.user.UserService;
+import com.shkim.CTR.Member.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 /**
  * Spring Security configuration.
@@ -41,6 +34,7 @@ import java.util.List;
  * @author Vedran Pavic
  */
 @Configuration
+@EnableRedisHttpSession
 public class SecurityConfig {
 
 	@Autowired
@@ -96,17 +90,17 @@ public class SecurityConfig {
 	// @formatter:on
 //	@Bean
 //	public UserDetailsService userDetailsService() {
-//		UserDetails user = User.builder()
-//				.username("user")
+//		UserDetails Member = Member.builder()
+//				.username("Member")
 //				.password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
 //				.roles("USER")
 //				.build();
-//		UserDetails admin = User.builder()
+//		UserDetails admin = Member.builder()
 //				.username("admin")
 //				.password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
 //				.roles("USER", "ADMIN")
 //				.build();
-//		return new InMemoryUserDetailsManager(user, admin);
+//		return new InMemoryUserDetailsManager(Member, admin);
 //	}
 
 }

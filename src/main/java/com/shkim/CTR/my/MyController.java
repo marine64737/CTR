@@ -50,21 +50,21 @@ public class MyController {
             //request.getSession().setAttribute("test", "hello");
             log.info("Session Success");
         }
-//        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, status FROM my as m join user as u on m.userid = u.id join problem as p on m.problemid = p.problemid where u.name = ? order by m.id desc limit 100",
+//        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, status FROM my as m join Member as u on m.userid = u.id join problem as p on m.problemid = p.problemid where u.name = ? order by m.id desc limit 100",
 //                principal.getName());
         List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, m.status, p.level " +
-                        "FROM (SELECT id, userid, problemid, status FROM my WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
+                        "FROM (SELECT id, userid, problemid, status FROM my WHERE userid = (SELECT id FROM Member WHERE name = ? LIMIT 1)" +
                         "    AND start_time IS NOT NULL ORDER BY start_time DESC LIMIT 100) AS m " +
-                        "JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId;",
+                        "JOIN Member u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId;",
                 principal.getName());
         List<Map<String, Object>> my1 = jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, p.titleKo as title, m.status, m.nonvisible " +
                         "FROM (SELECT id, userid, problemid, status, nonvisible FROM my " +
-                        "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
+                        "    WHERE userid = (SELECT id FROM Member WHERE name = ? LIMIT 1)" +
                         "    AND start_time IS NULL ORDER BY id DESC LIMIT 100) AS m " +
-                        "JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId;",
+                        "JOIN Member u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId;",
                 principal.getName());
         Object probNum = jdbcTemplate.queryForObject("SELECT count(distinct problemid) as count FROM my " +
-                        "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
+                        "    WHERE userid = (SELECT id FROM Member WHERE name = ? LIMIT 1)" +
                         "    AND start_time IS NOT NULL",
                 (rs, rowNum) -> rs.getInt("count"), principal.getName());
         if (probNum != null) model.addAttribute("count", Integer.parseInt(probNum.toString()));
@@ -100,7 +100,7 @@ public class MyController {
         String sql = "%"+word+"%";
         String name = principal.getName();
         List<Map<String, Object>> problems = jdbcTemplate.queryForList("select p.problemid, p.titleKo, m.userid from problem as p left join (SELECT distinct problemId, userid FROM my WHERE userid\n" +
-                        "= (SELECT id FROM user WHERE name = ? LIMIT 1)) as m on p.problemid = m.problemid where p.problemId LIKE ?\n" +
+                        "= (SELECT id FROM Member WHERE name = ? LIMIT 1)) as m on p.problemid = m.problemid where p.problemId LIKE ?\n" +
                         "or p.titleKo LIKE ?;",
                 name, sql, sql);
 //        List<ProblemDTO> questions = jdbcTemplate.query("SELECT problemId, titleKo FROM problem WHERE problemId LIKE ? OR titleKo LIKE ?",
@@ -113,7 +113,7 @@ public class MyController {
 //        List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, " +
 //                        "DATE_FORMAT(m.start_time, '%Y-%m-%d %H:%i:%s') as st, DATE_FORMAT(m.end_time, '%Y-%m-%d %H:%i:%s') as end," +
 //                        "TIMESTAMPDIFF(MINUTE, start_time, end_time) as duration, " +
-//                        "m.status FROM my as m join user as u on m.userid=u.id where u.name = ? and m.problemid = ? order by m.id asc",
+//                        "m.status FROM my as m join Member as u on m.userid=u.id where u.name = ? and m.problemid = ? order by m.id asc",
 //                name, pid);
 
     @RequestMapping("/solve/{problemid}")
@@ -127,14 +127,14 @@ public class MyController {
                         "FROM (" +
                         "    SELECT id, userid, problemid, start_time, end_time, status, memory, time " +
                         "    FROM my " +
-                        "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1) " +
+                        "    WHERE userid = (SELECT id FROM Member WHERE name = ? LIMIT 1) " +
                         "    and problemid = ? " +
                         ") AS m " +
-                        "JOIN user u ON m.userid = u.id JOIN problem p on m.problemid = p.problemid ORDER BY start_time IS NULL DESC, start_time DESC",
+                        "JOIN Member u ON m.userid = u.id JOIN problem p on m.problemid = p.problemid ORDER BY start_time IS NULL DESC, start_time DESC",
                 name, pid);
         String title = jdbcTemplate.queryForObject("SELECT titleKo from problem where problemid = ?",
                 (rs, rowNum) -> rs.getString("titleKo"), pid);
-       Object status = jdbcTemplate.queryForObject("SELECT status from my where userid = (select id from user where name = ?) and problemid = ? order by id desc limit 1", (rs, rowNum) -> rs.getInt("status"), name, pid);
+       Object status = jdbcTemplate.queryForObject("SELECT status from my where userid = (select id from Member where name = ?) and problemid = ? order by id desc limit 1", (rs, rowNum) -> rs.getInt("status"), name, pid);
         int i_status=0;
         if (status != null) i_status = Integer.parseInt(status.toString());
         String link = "https://www.acmicpc.net/problem/"+pid;
@@ -151,7 +151,7 @@ public class MyController {
         int pid = Integer.parseInt(problemid);
         int mid = Integer.parseInt(id);
         Map<String, Object> my = jdbcTemplate.queryForMap("SELECT m.id as id, m.problemid as pid, p.titleKo as title, " +
-                        "m.code, m.memo, m.memory, m.time FROM my as m join user as u on m.userid=u.id join problem as p on m.problemid=p.problemid where m.id=?",
+                        "m.code, m.memo, m.memory, m.time FROM my as m join Member as u on m.userid=u.id join problem as p on m.problemid=p.problemid where m.id=?",
                 mid);
         String link = "https://www.acmicpc.net/problem/"+pid;
         model.addAttribute("my", my);
@@ -171,7 +171,7 @@ public class MyController {
 //    @PostMapping("/solve/add")
 //    public String update(@RequestParam String pid, Model model, Principal principal){
 //        int id = Integer.parseInt(pid);
-//        int uid = jdbcTemplate.queryForObject("select id from user where name=?", (rs, rowNum) -> rs.getInt("id"), principal.getName());
+//        int uid = jdbcTemplate.queryForObject("select id from Member where name=?", (rs, rowNum) -> rs.getInt("id"), principal.getName());
 //        jdbcTemplate.execute("insert into my(userid, problemid, status) values("+uid+", "+id+", 0)");
 //        solve(pid, model, principal);
 //        return "redirect:/solve/"+pid;
@@ -181,7 +181,7 @@ public class MyController {
 //    public String timelap(@RequestParam String id, @RequestParam String pid, @RequestParam String status, @RequestParam(defaultValue = "true") boolean complete, Model model, Principal principal){
 //        int probid = Integer.parseInt(pid);
 //        int mid = Integer.parseInt(id);
-//        int uid = jdbcTemplate.queryForObject("select id from user where name=?", (rs, rowNum) -> rs.getInt("id"), principal.getName());
+//        int uid = jdbcTemplate.queryForObject("select id from Member where name=?", (rs, rowNum) -> rs.getInt("id"), principal.getName());
 //        int mstatus = Integer.parseInt(status);
 //        LocalDateTime now = LocalDateTime.now();
 //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -197,7 +197,7 @@ public class MyController {
     @PostMapping("/solve/solveadd")
     public String solveadd(@RequestParam String pid, Model model, Principal principal){
         int probid = Integer.parseInt(pid);
-        int uid = jdbcTemplate.queryForObject("select id from user where name=?", (rs, rowNum) -> rs.getInt("id"), principal.getName());
+        int uid = jdbcTemplate.queryForObject("select id from Member where name=?", (rs, rowNum) -> rs.getInt("id"), principal.getName());
         jdbcTemplate.execute("insert into my(userid, problemid, status, nonvisible) values("+uid+", "+probid+", 0, 0)");
         solve(pid, model, principal);
         return "redirect:/solve/"+pid;
@@ -206,7 +206,7 @@ public class MyController {
     @PostMapping("/added")
     public String add(@RequestParam(name = "id") int id, Model model, Principal principal){
         Map<String, Object> my = jdbcTemplate.queryForMap("SELECT problemId, titleKo FROM problem WHERE problemId = ?", id);
-        int uid = jdbcTemplate.queryForObject("SELECT id FROM user WHERE name = ?",(rs, rowNum) -> rs.getInt("id"), principal.getName());
+        int uid = jdbcTemplate.queryForObject("SELECT id FROM Member WHERE name = ?",(rs, rowNum) -> rs.getInt("id"), principal.getName());
         jdbcTemplate.execute("INSERT INTO my(userid, problemid, status, nonvisible) VALUES("+uid+", "+my.get("problemid")+ ", 0, 0)");
 //        home(model, principal);
         return "redirect:/solve/"+id;

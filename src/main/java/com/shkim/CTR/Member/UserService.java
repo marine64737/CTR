@@ -1,21 +1,16 @@
-package com.shkim.CTR.user;
+package com.shkim.CTR.Member;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,9 +29,9 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         try {
-            User user = jdbcTemplate.queryForObject(
-                    "SELECT * FROM user WHERE name = ?",
-                    (rs, rowNum) -> new User(
+            Member member = jdbcTemplate.queryForObject(
+                    "SELECT * FROM member WHERE name = ?",
+                    (rs, rowNum) -> new Member(
                             rs.getInt("id"),
                             rs.getString("name"),
                             "{bcrypt}"+rs.getString("password")
@@ -44,18 +39,23 @@ public class UserService implements UserDetailsService {
                     username
             );
 
-            return new CustomUserDetails(user);
+//            return new CustomUserDetails(member);
+            return User.withUsername(member.getName())
+                    .password(member.getPassword())
+                    .authorities("ROLE_USER")
+                    .build();
+
 
         } catch (EmptyResultDataAccessException e) {
             throw new UsernameNotFoundException("유저가 없습니다: " + username);
         }
     }
 
-    public static class CustomUserDetails extends User implements UserDetails, Serializable {
+    public static class CustomUserDetails extends Member implements UserDetails, Serializable {
 //        @Serial
 //        private static final long serialVersionUID = 1L;
-        CustomUserDetails(User user){
-            super(user.getId(), user.getName(), user.getPassword());
+        CustomUserDetails(Member Member){
+            super(Member.getId(), Member.getName(), Member.getPassword());
         }
         private static final List<GrantedAuthority> ROLE_USER = Collections
                 .unmodifiableList(AuthorityUtils.createAuthorityList("ROLE_USER"));

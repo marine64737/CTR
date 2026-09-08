@@ -28,14 +28,14 @@
 
 ---
 ## 시스템 구조
-<img width="914" height="597" alt="image" src="https://github.com/user-attachments/assets/f313e3d8-32bc-4858-9bc0-17ca560d2eaf" />
+<img width="914" height="597" alt="image" src="https://github.com/member-attachments/assets/f313e3d8-32bc-4858-9bc0-17ca560d2eaf" />
 
 ## Scheme
-<img width="935" height="431" alt="image" src="https://github.com/user-attachments/assets/9e09a235-76ee-4c23-af92-37786f008988" />
+<img width="935" height="431" alt="image" src="https://github.com/member-attachments/assets/9e09a235-76ee-4c23-af92-37786f008988" />
 
 | Table name | 역할 |
 | --- | --- |
-| user | 회원 정보 |
+| member | 회원 정보 |
 | my | 회원 별 풀이 이력 |
 | problem | 문제 데이터 |
 | tag | 문제 태그(알고리즘 등) |
@@ -64,19 +64,19 @@
 <div markdown="1">
 	기존 Query - name: MULTI key
 	<br>
-	<img width="650" height="212" alt="image" src="https://github.com/user-attachments/assets/a7444525-749d-4ee5-ad83-278f7a681974" />
-	<img width="1447" height="667" alt="image" src="https://github.com/user-attachments/assets/087aa8a1-cee3-4b2f-952c-9a884f50b19a" />
+	<img width="650" height="212" alt="image" src="https://github.com/member-attachments/assets/a7444525-749d-4ee5-ad83-278f7a681974" />
+	<img width="1447" height="667" alt="image" src="https://github.com/member-attachments/assets/087aa8a1-cee3-4b2f-952c-9a884f50b19a" />
 	수정된 Query - name: UNIQUE key
 	<br>
-	<img width="620" height="185" alt="image" src="https://github.com/user-attachments/assets/60090968-79c6-460e-af63-23efe968cc40" />
+	<img width="620" height="185" alt="image" src="https://github.com/member-attachments/assets/60090968-79c6-460e-af63-23efe968cc40" />
 	
 ```java
 PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 String encodedPassword = passwordEncoder.encode(password);
 
-String sql = "INSERT INTO user (name, password) " +
+String sql = "INSERT INTO member (name, password) " +
 		"SELECT ?, ? " +
-		"WHERE NOT EXISTS (SELECT 1 FROM user WHERE name = ?)";
+		"WHERE NOT EXISTS (SELECT 1 FROM member WHERE name = ?)";
 
 int result = jdbcTemplate.update(sql, username, encodedPassword, username);
 
@@ -96,33 +96,33 @@ name이 unique key가 되어 중복 가입 불가, Query에서도 기존 로직�
 <summary>메인 화면</summary>
 <div markdown="1">
 	기존 Query<br>유저 별 풀었던 문제를 문제 번호 순으로 Group화하여 문제 별로 몇 번 풀었는지 출력<br>
-	<img width="1500" height="130" alt="image" src="https://github.com/user-attachments/assets/059e752a-4761-4024-9060-00785f044154" />
+	<img width="1500" height="130" alt="image" src="https://github.com/member-attachments/assets/059e752a-4761-4024-9060-00785f044154" />
 	수정된 Query<br>유저 별 풀었던 문제를 최근에 푼 순으로 출력<br>
-	<img width="1500" height="143" alt="image" src="https://github.com/user-attachments/assets/4e46cccc-88d5-45fc-b047-10c6ffb2aaf6" />
+	<img width="1500" height="143" alt="image" src="https://github.com/member-attachments/assets/4e46cccc-88d5-45fc-b047-10c6ffb2aaf6" />
 	유저 입장에서는 같은 문제를 얼마나 많이 풀었는지는 중요하지 않을 것이라 예상.<br>
 	‘내’가 최근에 무슨 문제를 풀었는지 복기하는 것이 더 필요할 것이라는 판단.<br>
 	Subquery 추가한 Query - Subquery로 순서대로 조건을 불러오는 방식으로 변경<br>
-	<img width="1500" height="378" alt="image" src="https://github.com/user-attachments/assets/23d8e66d-e419-408a-85ff-d9c61f8db585" />
+	<img width="1500" height="378" alt="image" src="https://github.com/member-attachments/assets/23d8e66d-e419-408a-85ff-d9c61f8db585" />
 	Subquery 도입만으로도 ‘수정된 Query’보다 더 빠른 응답 속도를 보임. (약 0.6초 -> 0.2초) 첫 응답 시 0.2초며, 캐시가 저장되면 0.0x초 출력됨.
 	현재 Query - 최종 Query로, 코딩 테스트를 진행하면서 불편한 부분에 대해서 수정한 부분들.
 	
 ``` java
 //my: 현재까지 푼 문제(start_time이 적혀있는 문제)
 List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.problemid as pid, p.titleKo as title, m.status, p.level " +
-				"FROM (SELECT id, userid, problemid, status FROM my WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
+				"FROM (SELECT id, userid, problemid, status FROM my WHERE userid = (SELECT id FROM member WHERE name = ? LIMIT 1)" +
 				"    AND start_time IS NOT NULL ORDER BY start_time DESC LIMIT 100) AS m " +
-				"JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId;",
+				"JOIN member u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId;",
 		principal.getName());
 //my1: 추가는 했지만 아직 풀지 않고 대기 중인 문제(To-do list( (start_time이 null인 문제)
 List<Map<String, Object>> my1 = jdbcTemplate.queryForList("SELECT m.id as id, m.problemid as pid, p.titleKo as title, m.status, m.nonvisible " +
 				"FROM (SELECT id, userid, problemid, status, nonvisible FROM my " +
-				"    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
+				"    WHERE userid = (SELECT id FROM member WHERE name = ? LIMIT 1)" +
 				"    AND start_time IS NULL ORDER BY id DESC LIMIT 100) AS m " +
-				"JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId;",
+				"JOIN member u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId;",
 		principal.getName());
 //probNum: 현재까지 푼 문제 수(중복 없이)
 Object probNum = jdbcTemplate.queryForObject("SELECT count(distinct problemid) as count FROM my " +
-				"    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)" +
+				"    WHERE userid = (SELECT id FROM member WHERE name = ? LIMIT 1)" +
 				"    AND start_time IS NOT NULL",
 		(rs, rowNum) -> rs.getInt("count"), principal.getName());
 if (probNum != null) model.addAttribute("count", Integer.parseInt(probNum.toString())); // 메인 페이지 상위에 문제 수 출력
@@ -134,14 +134,14 @@ if (probNum != null) model.addAttribute("count", Integer.parseInt(probNum.toStri
 <summary>문제 검색</summary>
 <div markdown="1">
 	기존 Query - 단순 검색 결과 출력으로, 단점으로는 풀고 있는지, 이미 풀었던 문제인지를 따지지 않고 풀이 이력을 중복으로 추가할 우려가 있음.<br>
-	<img width="1500" height="60" alt="image" src="https://github.com/user-attachments/assets/a102956c-0420-413d-aad6-4cafe2a39115" />
+	<img width="1500" height="60" alt="image" src="https://github.com/member-attachments/assets/a102956c-0420-413d-aad6-4cafe2a39115" />
 	현재 Query - 최종 Query로, 코딩 테스트를 진행하면서 불편한 부분에 대해서 수정한 부분들.
 	
 ```java
 String sql = "%"+word+"%";
 String name = principal.getName();
 List<Map<String, Object>> problems = jdbcTemplate.queryForList("select p.problemid, p.titleKo, m.userid from problem as p left join (SELECT distinct problemId, userid FROM my WHERE userid\n" +
-				"= (SELECT id FROM user WHERE name = ? LIMIT 1)) as m on p.problemid = m.problemid where p.problemId LIKE ?\n" +
+				"= (SELECT id FROM member WHERE name = ? LIMIT 1)) as m on p.problemid = m.problemid where p.problemId LIKE ?\n" +
 				"or p.titleKo LIKE ?;",
 		name, sql, sql);
 ```
@@ -153,9 +153,9 @@ left join한 상태인데, userid를 확인하여 null인 경우(푼 적이 없�
 <summary>선택한 문제의 풀이 이력</summary>
 <div markdown="1">
 	기존 Query<br>
-	<img width="1500" height="169" alt="image" src="https://github.com/user-attachments/assets/6dda822b-1977-48e0-b5ef-08e82dc49b25" />
+	<img width="1500" height="169" alt="image" src="https://github.com/member-attachments/assets/6dda822b-1977-48e0-b5ef-08e82dc49b25" />
 	최적화 Query<br>
-	<img width="1500" height="393" alt="image" src="https://github.com/user-attachments/assets/508be07c-dbd7-4c32-b0da-adfc98aac140" />
+	<img width="1500" height="393" alt="image" src="https://github.com/member-attachments/assets/508be07c-dbd7-4c32-b0da-adfc98aac140" />
 	현재 Query - column이 추가된 것 외에는 큰 차이 없음.
 	
 ```java
@@ -168,14 +168,14 @@ List<Map<String, Object>> my = jdbcTemplate.queryForList("SELECT m.id as id, m.p
 				"FROM (" +
 				"    SELECT id, userid, problemid, start_time, end_time, status, memory, time " +
 				"    FROM my " +
-				"    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1) " +
+				"    WHERE userid = (SELECT id FROM member WHERE name = ? LIMIT 1) " +
 				"    and problemid = ? " +
 				") AS m " +
-				"JOIN user u ON m.userid = u.id JOIN problem p on m.problemid = p.problemid ORDER BY start_time IS NULL DESC, start_time DESC",
+				"JOIN member u ON m.userid = u.id JOIN problem p on m.problemid = p.problemid ORDER BY start_time IS NULL DESC, start_time DESC",
 		name, pid);
 String title = jdbcTemplate.queryForObject("SELECT titleKo from problem where problemid = ?",
 		(rs, rowNum) -> rs.getString("titleKo"), pid);
-Object status = jdbcTemplate.queryForObject("SELECT status from my where userid = (select id from user where name = ?) and problemid = ? order by id desc limit 1", (rs, rowNum) -> rs.getInt("status"), name, pid);
+Object status = jdbcTemplate.queryForObject("SELECT status from my where userid = (select id from member where name = ?) and problemid = ? order by id desc limit 1", (rs, rowNum) -> rs.getInt("status"), name, pid);
 int i_status=0;
 if (status != null) i_status = Integer.parseInt(status.toString());
 ```

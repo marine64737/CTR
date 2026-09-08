@@ -14,6 +14,14 @@ java {
 	}
 }
 
+sourceSets {
+	main {
+		java {
+			exclude 'com/shkim/CTR/config/SessionConfig.java'
+		}
+	}
+}
+
 configurations.all {
 	// tools.jackson 패키지를 사용하는 모든 라이브러리를 차단합니다.
 	exclude group: 'tools.jackson', module: 'jackson-databind'
