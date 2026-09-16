@@ -46,8 +46,8 @@
             <div th:if="${#authorization.expression('isAnonymous()')}">
                   <!--              <input type="hidden" name="logout" value="logout" />-->
                   <!--              <input type="submit" value="Log out" />-->
-                  <a href="/login"><button type="button" class="btn btn-primary" >로그인</button></a>
-                  <a href="/signup"><button type="button" class="btn btn-warning" >회원 가입</button></a>
+                  <a th:href="@{/login}"><button type="button" class="btn btn-primary" >로그인</button></a>
+                  <a th:href="@{/signup}"><button type="button" class="btn btn-warning" >회원 가입</button></a>
             </div>
 <!--            <button type="button" class="btn btn-outline-light me-2">-->
 <!--              Login-->
