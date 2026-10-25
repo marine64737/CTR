@@ -25,6 +25,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 /**
  * Spring Security configuration.
@@ -33,6 +34,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * @author Vedran Pavic
  */
 @Configuration
+@EnableRedisHttpSession
 public class SecurityConfig {
 
 	@Autowired

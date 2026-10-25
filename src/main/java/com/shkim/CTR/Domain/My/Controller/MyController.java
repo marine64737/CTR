@@ -1,6 +1,6 @@
 package com.shkim.CTR.Domain.My.Controller;
 
-import com.shkim.CTR.Config.SessionConfig;
+//import com.shkim.CTR.Config.SessionConfig;
 import com.shkim.CTR.Domain.My.DTO.*;
 import com.shkim.CTR.Domain.My.Service.MyService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,8 +24,8 @@ public class MyController {
     @Autowired
     public MyService myService;
 
-    @Autowired
-    public SessionConfig sessionConfig;
+//    @Autowired
+//    public SessionConfig sessionConfig;
 
     public static JdbcTemplate jdbcTemplate;
 
@@ -43,7 +43,7 @@ public class MyController {
     @GetMapping("/")
     public String home(@RequestParam(name = "key", required = false) String key,
                        @RequestParam(name = "value", required = false) String value, HttpServletRequest request, Model model, Principal principal){
-        sessionConfig.setSession(key, value, request);
+        // sessionConfig.setSession(key, value, request);
         List<SolvedProblemsDTO> my_solved = myService.solved_problems(principal);
         List<UnsolvedProblemsDTO> my_not_solved = myService.unsolved_problems(principal);
         int totalNum = myService.totalNum(principal.getName());
@@ -74,14 +74,14 @@ public class MyController {
                 (rs, rowNum) -> rs.getString("titleKo"), pid);
        Object status = jdbcTemplate.queryForObject(
                "SELECT status from my where userid = (select id from user where name = ?) and problemid = ? order by id desc limit 1",
-               (rs, rowNum) -> rs.getInt("status"), name, pid);
+               (rs, rowNum) -> rs.getInt("status"), principal.getName(), pid);
         int i_status=0;
         if (status != null) i_status = Integer.parseInt(status.toString());
         String link = "https://www.acmicpc.net/problem/"+pid;
         model.addAttribute("problemtitle", title);
         model.addAttribute("my", my);
         model.addAttribute("pid", pid);
-        model.addAttribute("name", name);
+        model.addAttribute("name", principal.getName());
         model.addAttribute("link", link);
         model.addAttribute("status", i_status);
         return "solve";

@@ -13,14 +13,14 @@ import java.util.Map;
 public class MyRepository {
     public static JdbcTemplate jdbcTemplate;
     MyRepository (JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+        MyRepository.jdbcTemplate = jdbcTemplate;
     }
     public List<SolvedProblemsDTO> solved_problems(Principal principal){
         String sql = """
                     SELECT m.problemid as pid, p.titleKo as title, m.status, p.level
-                    FROM (SELECT id, userid, problemid, start_time, end_time, status FROM my WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)
+                    FROM (SELECT id, userid, problemid, start_time, end_time, status FROM my WHERE userid = (SELECT id FROM Member WHERE name = ? LIMIT 1)
                     AND start_time IS NOT NULL ORDER BY id DESC LIMIT 100) AS m
-                    JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId where p.platform = u.platform order by end_time desc, start_time desc""";
+                    JOIN Member u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId where p.platform = u.platform order by end_time desc, start_time desc""";
         return jdbcTemplate.query(sql,
                 (rs, rowNum) -> new SolvedProblemsDTO(
                         rs.getInt("pid"),
@@ -33,30 +33,30 @@ public class MyRepository {
         String sql = """
                        SELECT m.id as id, m.problemid as pid, p.titleKo as title, m.status, m.nonvisible
                        FROM (SELECT id, userid, problemid, start_time, status, nonvisible FROM my
-                       WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)
+                       WHERE userid = (SELECT id FROM Member WHERE name = ? LIMIT 1)
                        AND start_time is null ORDER BY id DESC LIMIT 100) AS m
-                       JOIN user u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId where p.platform = u.platform order by id desc""";
+                       JOIN Member u ON m.userid = u.id JOIN problem p ON m.problemid = p.problemId where p.platform = u.platform order by id desc""";
         return jdbcTemplate.query(sql,
-                (rs, rowNum) -> new SolvedProblemsDTO(
+                (rs, rowNum) -> new UnsolvedProblemsDTO(
                         rs.getInt("pid"),
                         rs.getString("title"),
                         rs.getInt("status"),
-                        rs.getInt("nonvisible")
+                        rs.getBoolean("nonvisible")
                 ), principal.getName());
     }
     public int totalNum(String name){
         String query = """
                 SELECT count(distinct problemid) as count FROM my
-                WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1)
+                WHERE userid = (SELECT id FROM Member WHERE name = ? LIMIT 1)
                 AND start_time IS NOT NULL
                 """;
         return jdbcTemplate.queryForObject(query, Integer.class, name);
     }
     public int problemNum(String name){
         String query = """
-                SELECT count(distinct problemid) as count FROM my m JOIN user u ON u.id = m.userid
+                SELECT count(distinct p.problemid) as count FROM my m JOIN Member u ON u.id = m.userid
                 JOIN problem p ON p.platform = u.platform
-                WHERE m.userid = (SELECT id FROM user WHERE name = ? LIMIT 1)
+                WHERE m.userid = (SELECT id FROM Member WHERE name = ? LIMIT 1)
                 AND start_time IS NOT NULL
                 """;
         return jdbcTemplate.queryForObject(query, Integer.class, name);
@@ -65,8 +65,8 @@ public class MyRepository {
         String sql = """
                 select p.problemid as pid, p.titleKo as title, m.userid as uid from problem
                 as p left join (SELECT distinct problemId, userid FROM my WHERE userid
-                = (SELECT id FROM user WHERE name = ? LIMIT 1)) as m on p.problemid = m.problemid
-                join user as u on p.platform = u.platform where p.problemId LIKE ?
+                = (SELECT id FROM Member WHERE name = ? LIMIT 1)) as m on p.problemid = m.problemid
+                join Member as u on p.platform = u.platform where p.problemId LIKE ?
                 or p.titleKo LIKE ?
                 """;
         return jdbcTemplate.query(sql, new Object[]{name, word, word}, (rs, rowNum) -> new SearchCompleteDTO(
@@ -83,10 +83,10 @@ public class MyRepository {
                 "FROM (" +
                 "    SELECT id, userid, problemid, start_time, end_time, status, memory, time " +
                 "    FROM my " +
-                "    WHERE userid = (SELECT id FROM user WHERE name = ? LIMIT 1) " +
+                "    WHERE userid = (SELECT id FROM Member WHERE name = ? LIMIT 1) " +
                 "    and problemid = ? " +
                 ") AS m " +
-                "JOIN user u ON m.userid = u.id JOIN problem p on m.problemid = p.problemid and u.platform = p.platform ORDER BY start_time IS NULL DESC, start_time DESC";
+                "JOIN Member u ON m.userid = u.id JOIN problem p on m.problemid = p.problemid and u.platform = p.platform ORDER BY start_time IS NULL DESC, start_time DESC";
         return jdbcTemplate.query(sql,
                 new Object[]{name, problemId}, (rs, rowNum) -> new SolveProblemDTO(
                         rs.getInt("id"),
@@ -102,7 +102,7 @@ public class MyRepository {
     }
     public DetailDTO detail(int id) {
         String sql = "SELECT m.id as id, m.problemid as pid, p.titleKo as title, " +
-                "m.code, m.memo, m.memory, m.time FROM my as m join user as u on m.userid=u.id join problem as p on m.problemid=p.problemid " +
+                "m.code, m.memo, m.memory, m.time FROM my as m join Member as u on m.userid=u.id join problem as p on m.problemid=p.problemid " +
                 "and u.platform = p.platform where m.id=?";
         return jdbcTemplate.queryForObject(sql,
                 new Object[]{id}, (rs, rowNum) -> new DetailDTO(
